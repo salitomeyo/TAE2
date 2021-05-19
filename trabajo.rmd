@@ -1,0 +1,39 @@
+---
+title: "Lectura de los datos"
+author: "Miguel Ángel Londoño Ciceros"
+date: "19/5/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Lectura de los datos
+
+
+```{r}
+
+df <- read.csv("base_trabajo_segmentacion.csv", sep = ";", dec = '.', header = T)
+
+head(df)
+
+```
+
+```{r}
+str(df)
+```
+```{r}
+summary(df)
+```
+
+```{r}
+plot(df[2:11])
+```
+```{r}
+for (i in 2:47){
+  hist(df[, i], main = paste("Hist de ", names(df)[i]))
+}
+
+```
+
