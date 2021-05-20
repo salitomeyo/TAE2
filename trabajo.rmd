@@ -37,3 +37,151 @@ for (i in 2:47){
 
 ```
 
+```{r}
+df <- df[, -1]
+```
+
+```{r}
+df_scaled <- scale(df, center = T, scale = T)
+```
+
+
+# Reducción de la dimensionalidad
+
+```{r}
+library("FactoMineR")
+```
+
+## PCA
+
+```{r}
+comp_prin <- PCA(df_scaled, ncp = 3, scale.unit = T)
+```
+```{r}
+(pca_df <- comp_prin$eig)
+```
+
+```{r}
+plot(1:46, pca_df[, 3])
+```
+
+
+```{r}
+comp_prin$var
+```
+
+
+```{r}
+require(factoextra)
+
+fviz_screeplot(comp_prin, addlabels = TRUE, ylim = c(0, 20))
+```
+```{r}
+fviz_contrib(comp_prin, choice = "var", axes = 1, top = 10)
+```
+```{r}
+fviz_contrib(comp_prin, choice = "var", axes = 2, top = 10)
+```
+
+
+```{r}
+require(plot3D)
+
+
+plot3D::points3D(comp_prin$ind$coord[, 1], 
+                 comp_prin$ind$coord[, 2], 
+                 comp_prin$ind$coord[, 3])
+
+require(plotly)
+
+a <- as.data.frame(comp_prin$ind$coord)
+
+plot_ly(data = a,
+        x=~Dim.1, 
+        y=~Dim.2,
+        z=~Dim.3)
+
+```
+
+
+
+
+```{r}
+res.hcpc <- HCPC(comp_prin, graph = FALSE)
+
+
+
+fviz_dend(res.hcpc, 
+          cex = 0.7,                     # Label size
+          palette = "jco",               # Color palette see ?ggpubr::ggpar
+          rect = TRUE, rect_fill = TRUE, # Add rectangle around groups
+          rect_border = "jco",           # Rectangle color
+          labels_track_height = 0.8      # Augment the room for labels
+)
+```
+
+
+
+
+
+
+
+
+
+
+```{r}
+fviz_cluster(res.hcpc,
+             repel = TRUE,            # Avoid label overlapping
+             show.clust.cent = TRUE, # Show cluster centers
+             palette = "jco",         # Color palette see ?ggpubr::ggpar
+             ggtheme = theme_minimal(),
+             main = "Factor map"
+             )
+```
+
+# MFA
+
+```{r}
+str(df)
+```
+
+```{r}
+datos_mfa <-as.data.frame(df_scaled)
+
+
+df[1:10, 31:35]
+
+
+
+
+```
+
+
+```{r}
+res.mfa <- MFA(df, 
+               group = c(11, 11, 4, 4, 5, 2, 2, 2, 5),
+               type = c('s', 's', 's', 's', 'n', 's', 'n', 's', 'n'),
+               name.group = c('en_vm', 'en_tx', 'sal_vm', 'sal_tx', 'cat1', 'pagos', 'ventas', 'recaudos', 'rotacion_ciclo'), graph = T)
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
