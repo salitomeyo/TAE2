@@ -31,8 +31,8 @@ summary(df)
 plot(df[2:11])
 ```
 ```{r}
-for (i in 2:47){
-  hist(df[, i], main = paste("Hist de ", names(df)[i]))
+for (i in 1:46){
+  boxplot(df[, i], main = paste("Hist de ", names(df)[i]))
 }
 
 ```
@@ -149,28 +149,98 @@ str(df)
 datos_mfa <-as.data.frame(df_scaled)
 
 
-df[1:10, 31:35]
+datos_mfa[, 31:35] <- apply(df[, 31:35], 2, as.factor) 
 
+datos_mfa[, 38:39] <- apply(df[, 38:39], 2, as.factor) 
 
+datos_mfa[, 42:46] <- apply(df[, 42:46], 2, as.factor)
 
+```
 
+```{r}
+levels(datos_mfa$impo_cv)
 ```
 
 
 ```{r}
-res.mfa <- MFA(df, 
+str(datos_mfa)
+```
+
+
+```{r}
+res.mfa <- MFA(datos_mfa, 
                group = c(11, 11, 4, 4, 5, 2, 2, 2, 5),
                type = c('s', 's', 's', 's', 'n', 's', 'n', 's', 'n'),
                name.group = c('en_vm', 'en_tx', 'sal_vm', 'sal_tx', 'cat1', 'pagos', 'ventas', 'recaudos', 'rotacion_ciclo'), graph = T)
 ```
 
+```{r}
+res.mfa$eig
+```
 
 
 
 
+# Intentando escalar de otra forma
+
+## Eliminando los outliers
 
 
 
+```{r}
+
+robust_scaler <- function(columna){
+  
+  # value = (value – median) / (p75 – p25)
+  
+  denominador <- IQR(columna) + 0.000000001
+  
+  col_scaled <- columna - median(columna)
+  
+  col_scaled <- col_scaled/denominador
+  
+  return(col_scaled)
+}
+
+
+df_robscale <- apply(df, 2, robust_scaler)
+
+```
+
+
+```{r}
+FactoMineR::PCA(df_robscale[-outliers, ], ncp = 3, graph = T)
+```
+
+# Kmeans 
+
+```{r}
+
+require(cluster)
+
+kc <- kmeans(df_robscale[-outliers, ], 3 , nstart = 5, iter.max = 100)
+
+clusplot(df_robscale[-outliers, ], kc$cluster, color = TRUE, 
+          shade = FALSE, labels = 4, lines = 1,
+          col.p = kc$cluster )
+```
+
+```{r}
+which(df[, 1] > quantile(df[, 1], 0.95))
+```
+
+
+```{r}
+matrix_dist <- dist(df_robscale, upper = TRUE)
+
+distancias <- as.matrix(matrix_dist)[1, ]
+
+dim(distancias)
+```
+
+```{r}
+outliers <- as.numeric(names(sort(distancias, decreasing = T)[1:400]))
+```
 
 
 
