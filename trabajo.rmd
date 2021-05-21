@@ -183,7 +183,7 @@ res.mfa$eig
 
 
 ```{r}
-matrix_dist <- dist(df_robscale, upper = TRUE)
+matrix_dist <- dist(df_scaled, upper = TRUE)
 
 distancias <- as.matrix(matrix_dist)[1, ]
 
@@ -194,6 +194,16 @@ dim(distancias)
 outliers <- as.numeric(names(sort(distancias, decreasing = T)[1:400]))
 ```
 
+```{r}
+outliers[1:10]
+```
+
+```{r}
+row.names(datos_arbol[datos_arbol[, 'Y'] == 3, ])
+
+
+cat_3_outliers <- c(825, 1416, 1462, 1668, 1773)
+```
 
 ```{r}
 
@@ -280,12 +290,11 @@ ggplot() + geom_point(aes(x = 1:20, y = wcss), color = 'blue') +
 library(ggdendro)
 require(factoextra)
 
-dendrogram <- hclust(dist(df_scaled, method = 'euclidean'), method = 'ward.D')
+dendrogram <- hclust(dist(df_scaled[-cat_3_outliers, ], method = 'euclidean'), method = 'ward.D')
 
 
 plot(dendrogram, xlab="", sub="", cex=0.9)
 rect.hclust(dendrogram, k=3, border="cyan4")
-
 ```
 ```{r}
 ggdendrogram(dendrogram, rotate = FALSE, labels = FALSE, theme_dendro = TRUE)
@@ -293,20 +302,20 @@ ggdendrogram(dendrogram, rotate = FALSE, labels = FALSE, theme_dendro = TRUE)
 
 
 ```{r}
-km_scaled <- kmeans(df_scaled, 3, nstart = 10, iter.max = 1000)
+km_scaled <- kmeans(df_scaled[-cat_3_outliers, ], 3, nstart = 10, iter.max = 1000)
 
 # km_scaled$cluster
 
 require(cluster)
 
-clusplot(df_scaled, km_scaled$cluster, color = TRUE, 
+clusplot(df_scaled[-cat_3_outliers, ], km_scaled$cluster, color = TRUE, 
           shade = FALSE, labels = 4, lines = 1,
           col.p = km_scaled$cluster )
 
 ```
 
 ```{r}
-datos_arbol <- df
+datos_arbol <- df[-cat_3_outliers, ]
 
 Y <- km_scaled$cluster
 
@@ -335,5 +344,10 @@ arbol_1 <- rpart(formula = Y~., data = datos_arbol)
 
 
 rpart.plot(arbol_1)
+```
+```{r}
+y_pred <- predict(arbol_1, newdata = datos_arbol[, -1], type = "class")
+
+table(datos_arbol$Y, y_pred)
 ```
 
