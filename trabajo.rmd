@@ -21,6 +21,10 @@ head(df)
 ```
 
 ```{r}
+df <- df[, -1]
+```
+
+```{r}
 str(df)
 ```
 ```{r}
@@ -28,17 +32,15 @@ summary(df)
 ```
 
 ```{r}
-plot(df[2:11])
+plot(df[, 1:5])
 ```
+
+
 ```{r}
 for (i in 1:46){
   boxplot(df[, i], main = paste("Hist de ", names(df)[i]))
 }
 
-```
-
-```{r}
-df <- df[, -1]
 ```
 
 ```{r}
@@ -141,9 +143,6 @@ fviz_cluster(res.hcpc,
 
 # MFA
 
-```{r}
-str(df)
-```
 
 ```{r}
 datos_mfa <-as.data.frame(df_scaled)
@@ -157,9 +156,6 @@ datos_mfa[, 42:46] <- apply(df[, 42:46], 2, as.factor)
 
 ```
 
-```{r}
-levels(datos_mfa$impo_cv)
-```
 
 
 ```{r}
@@ -185,6 +181,18 @@ res.mfa$eig
 
 ## Eliminando los outliers
 
+
+```{r}
+matrix_dist <- dist(df_robscale, upper = TRUE)
+
+distancias <- as.matrix(matrix_dist)[1, ]
+
+dim(distancias)
+```
+
+```{r}
+outliers <- as.numeric(names(sort(distancias, decreasing = T)[1:400]))
+```
 
 
 ```{r}
@@ -225,33 +233,107 @@ clusplot(df_robscale[-outliers, ], kc$cluster, color = TRUE,
           col.p = kc$cluster )
 ```
 
+
+
+
+# K means
+
 ```{r}
-which(df[, 1] > quantile(df[, 1], 0.95))
+# Clustering iterativo kmeans
+x <- NULL
+for ( i in 1:10 ){
+  kc     <- kmeans(df, i)
+  x[ i ] <- kc$tot.withinss
+}
+plot( c( 1:10 ), x, type = "b" )
+```
+
+```{r}
+# Clustering iterativo kmeans
+x <- NULL
+for ( i in 1:10 ){
+  kc     <- kmeans(df_robscale, i)
+  x[ i ] <- kc$tot.withinss
+}
+plot( c( 1:10 ), x, type = "b" )
 ```
 
 
 ```{r}
-matrix_dist <- dist(df_robscale, upper = TRUE)
+require(ggplot2)
 
-distancias <- as.matrix(matrix_dist)[1, ]
+set.seed(1234)
+wcss <- vector()
+for(i in 1:20){
+  wcss[i] <- sum(kmeans(df_robscale, i)$withinss)
+}
+ggplot() + geom_point(aes(x = 1:20, y = wcss), color = 'blue') + 
+  geom_line(aes(x = 1:20, y = wcss), color = 'blue') + 
+  ggtitle("Método del Codo") + 
+  xlab('Cantidad de Centroides k') + 
+  ylab('WCSS')
+```
 
-dim(distancias)
+---
+
+```{r}
+library(ggdendro)
+require(factoextra)
+
+dendrogram <- hclust(dist(df_scaled, method = 'euclidean'), method = 'ward.D')
+
+
+plot(dendrogram, xlab="", sub="", cex=0.9)
+rect.hclust(dendrogram, k=3, border="cyan4")
+
+```
+```{r}
+ggdendrogram(dendrogram, rotate = FALSE, labels = FALSE, theme_dendro = TRUE)
+```
+
+
+```{r}
+km_scaled <- kmeans(df_scaled, 3, nstart = 10, iter.max = 1000)
+
+# km_scaled$cluster
+
+require(cluster)
+
+clusplot(df_scaled, km_scaled$cluster, color = TRUE, 
+          shade = FALSE, labels = 4, lines = 1,
+          col.p = km_scaled$cluster )
+
 ```
 
 ```{r}
-outliers <- as.numeric(names(sort(distancias, decreasing = T)[1:400]))
+datos_arbol <- df
+
+Y <- km_scaled$cluster
+
+Y <- as.factor(Y)
+
+datos_arbol <- data.frame(Y, datos_arbol)
 ```
 
+```{r}
+head(datos_arbol)
+```
+```{r}
+require(tree)
+
+arbol <- tree::tree(Y~., data = datos_arbol)
 
 
+summary(arbol)
+```
+
+```{r}
+require(rpart)
+require(rpart.plot)
+
+arbol_1 <- rpart(formula = Y~., data = datos_arbol)
 
 
-
-
-
-
-
-
-
-
+rpart.plot(arbol_1)
+```
 
