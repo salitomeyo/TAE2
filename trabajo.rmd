@@ -302,7 +302,7 @@ ggdendrogram(dendrogram, rotate = FALSE, labels = FALSE, theme_dendro = TRUE)
 
 
 ```{r}
-km_scaled <- kmeans(df_scaled[-cat_3_outliers, ], 3, nstart = 10, iter.max = 1000)
+km_scaled <- kmeans(df_scaled[-cat_3_outliers, ], 3, nstart = 25, iter.max = 1000)
 
 # km_scaled$cluster
 
@@ -349,5 +349,8 @@ rpart.plot(arbol_1)
 y_pred <- predict(arbol_1, newdata = datos_arbol[, -1], type = "class")
 
 table(datos_arbol$Y, y_pred)
+```
+```{r}
+sum(diag(table(datos_arbol$Y, y_pred)))/sum(table(datos_arbol$Y, y_pred))
 ```
 
