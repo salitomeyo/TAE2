@@ -21,6 +21,25 @@ head(df)
 ```
 
 ```{r}
+length()
+
+which(duplicated(df$nit))
+```
+
+```{r}
+a <- df[which(duplicated(df$nit)), ]
+
+unique(a$nit)
+```
+
+
+```{r}
+df[(which(df$pagos_pj + df$pagos_pn == 0)), ]
+```
+
+
+
+```{r}
 df <- df[, -1]
 ```
 

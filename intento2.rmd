@@ -1,0 +1,117 @@
+---
+title: 'Intento # 2'
+author: "Miguel Ángel Londoño Ciceros"
+date: "27/5/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Introducción
+
+```{r}
+df <- read.csv("base_trabajo_segmentacion.csv", sep = ";", dec = '.', header = T)
+
+head(df)
+```
+
+```{r}
+df <- df[, -1]
+colnames(df)
+```
+
+```{r}
+df_scaled <- scale(df, center = T, scale = T)
+```
+
+
+* canales y financiera ya estan escaladas:
+
+```{r}
+canales <- df_scaled[,1:30]
+financiera <- df_scaled[,31:46]
+```
+
+```{r}
+library(ggdendro)
+require(factoextra)
+
+dendrogram <- hclust(dist(financiera, method = 'euclidean'), method = 'ward.D')
+
+
+plot(dendrogram, xlab="", sub="", cex=0.9)
+rect.hclust(dendrogram, k=3, border="cyan4")
+```
+
+```{r}
+require(cluster)
+
+kc <- kmeans(financiera, 3 , nstart = 5, iter.max = 100)
+
+clusplot(financiera, kc$cluster, color = TRUE, 
+          shade = FALSE, labels = 4, lines = 1,
+          col.p = kc$cluster )
+```
+
+```{r}
+fina_group <- df[, 31:46]
+
+grupos <- as.factor(kc$cluster)
+
+fina_group <- data.frame(grupos, fina_group)
+```
+
+```{r}
+levels(fina_group$grupos)
+```
+
+```{r}
+
+# graf <- function(col){
+#     p <- ggplot(fina_group, aes(x = col)) +
+#      geom_bar(fill = "#0c4c8a") +
+#      theme_gray() +
+#      facet_grid(vars(), vars(grupos))
+# }
+
+
+for(i in 2:dim(fina_group)[2]){
+  
+  p <- ggplot(fina_group, aes(x = fina_group[, i],y = ..prop..)) +
+    geom_bar(fill = "#0c4c8a") +
+    labs(x = colnames(fina_group)[i]) +
+    theme_gray() +
+    facet_grid(vars(), vars(grupos))
+  
+  print(p)
+}
+
+```
+
+
+
+```{r}
+apply(df[kc$cluster == 1, 31:46], 2, function(x) barplot(table(x)))
+```
+
+```{r}
+apply(df[kc$cluster == 2, 31:46], 2, function(x) barplot(table(x)))
+```
+
+```{r}
+apply(df[kc$cluster == 3, 31:46], 2, function(x) barplot(table(x)))
+```
+
+* Media de los grupos
+```{r}
+aggregate(.~grupos,data=fina_group, FUN=mean)
+```
+* Varianza de cada grupo
+```{r}
+aggregate(.~grupos,data=fina_group, FUN=var)
+```
+```{r}
+aggregate(.~grupos,data=fina_group, FUN=median)
+```
