@@ -22,6 +22,8 @@ df <- df[, -1]
 colnames(df)
 ```
 
+
+
 ```{r}
 df_scaled <- scale(df, center = T, scale = T)
 ```
@@ -48,6 +50,7 @@ rect.hclust(dendrogram, k=3, border="cyan4")
 ```{r}
 require(cluster)
 
+set.seed(93284)
 kc <- kmeans(financiera, 3 , nstart = 5, iter.max = 100)
 
 clusplot(financiera, kc$cluster, color = TRUE, 
@@ -77,6 +80,99 @@ levels(fina_group$grupos)
 # }
 
 
+for(i in 2:dim(fina_group)[2]){
+  
+  p <- ggplot(fina_group, aes(x = fina_group[, i],y = ..prop..)) +
+    geom_bar(fill = "#0c4c8a") +
+    labs(x = colnames(fina_group)[i]) +
+    theme_gray() +
+    facet_grid(vars(), vars(grupos))
+  
+  print(p)
+}
+
+```
+```{r}
+df_scaled_group <- data.frame(grupos,df_scaled)
+outliers <- c(825, 1416, 1462, 1668, 1773)
+df_scaled_group <- df_scaled_group[-outliers,]
+```
+
+
+```{r}
+grupo1 <- df_scaled_group[df_scaled_group$grupos==1,]
+grupo2 <- df_scaled_group[df_scaled_group$grupos==2,]
+grupo3 <- df_scaled_group[df_scaled_group$grupos==3,]
+```
+
+```{r}
+require(cluster)
+
+set.seed(93284)
+kc1 <- kmeans(grupo1[,2:31], 1 , nstart = 5, iter.max = 100)
+
+clusplot(grupo1[,2:31], kc1$cluster, color = TRUE, 
+          shade = FALSE, labels = 4, lines = 1,
+          col.p = kc1$cluster )
+```
+
+```{r}
+require(cluster)
+
+set.seed(93284)
+kc2 <- kmeans(grupo2[,2:31], 2, nstart = 5, iter.max = 100)
+
+clusplot(grupo2[,2:31], kc2$cluster, color = TRUE, 
+          shade = FALSE, labels = 4, lines = 1,
+          col.p = kc2$cluster )
+```
+
+```{r}
+require(cluster)
+
+set.seed(93284)
+kc3 <- kmeans(grupo3[-19,2:31], 1 , nstart = 5, iter.max = 100)
+
+clusplot(grupo3[-19,2:31], kc3$cluster, color = TRUE, 
+          shade = FALSE, labels = 4, lines = 1,
+          col.p = kc3$cluster )
+```
+
+```{r}
+which(kc3$cluster == 1)
+```
+
+```{r}
+kc3$cluster
+```
+
+
+## 2 Grupos
+ 
+```{r}
+require(cluster)
+
+set.seed(93284)
+kc <- kmeans(financiera, 2 , nstart = 5, iter.max = 100)
+
+clusplot(financiera, kc$cluster, color = TRUE, 
+          shade = FALSE, labels = 4, lines = 1,
+          col.p = kc$cluster )
+```
+
+```{r}
+fina_group <- df[, 31:46]
+
+grupos <- as.factor(kc$cluster)
+
+fina_group <- data.frame(grupos, fina_group)
+```
+
+```{r}
+levels(fina_group$grupos)
+```
+
+```{r}
 for(i in 2:dim(fina_group)[2]){
   
   p <- ggplot(fina_group, aes(x = fina_group[, i],y = ..prop..)) +
