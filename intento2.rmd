@@ -27,17 +27,28 @@ df <- df[, -1]
 colnames(df)
 ```
 
-* Análisis descriptivo de las variables financieras
+* Separación de las variables financieras y canales (no escaladas)
 
 ```{r}
 finan_no_scaled <- df[, 31:46]
 Canal_no_scaled <- df[ , 1:30]
 ```
 
+* Escalamiento de los datos completos
+
 ```{r}
-dim(finan_no_scaled)[2]
+df_scaled <- scale(df, center = T, scale = T)
 ```
 
+
+* Separando en conjunto de datos de canales y financiera donde ya estan escaladas:
+
+```{r}
+canales <- df_scaled[,1:30]
+financiera <- df_scaled[,31:46]
+```
+
+## Análisis descriptivo de las variables financieras
 
 ```{r}
 library(ggplot2)
@@ -56,8 +67,6 @@ for(i in 1:dim(finan_no_scaled)[2]){
   
   print(p_final)
 }
-
-
 ```
 
 Interpretaciones de las varibles solas:
@@ -67,12 +76,15 @@ Interpretaciones de las varibles solas:
 Interpretaciones comparandolas con los grupos:
 
 ```{r}
-pairs(finan_no_scaled[,c(1,2,3,4,5,6,7,13,15,16)])
+pairs(finan_no_scaled[,c(6,7,10,11)])
 ```
 
 
 
 ### Matriz de correlaciones
+
+
+Correlaciones entre las variables 
 
 ```{r}
 library(corrplot)
@@ -86,18 +98,13 @@ corrplot(cor(finan_no_scaled),
          # hide correlation coefficient on the principal diagonal
          diag=FALSE 
          )
+
 ```
-
-
-Correlaciones entre las variables 
-
 
 
 Análisis descriptivo de los canales
 
-```{r}
-pairs(Canal_no_scaled)
-```
+
 
 ```{r}
 library(corrplot)
@@ -113,20 +120,33 @@ corrplot(cor(Canal_no_scaled),
          )
 ```
 
-
-* Escalamiento de los datos completos
+Matriz de dispersión del las variables más correlacionadas
 
 ```{r}
-df_scaled <- scale(df, center = T, scale = T)
+library(corrr)
+library(dplyr)
+corr_canales <- Canal_no_scaled %>%
+    correlate() %>% 
+    stretch() %>% 
+    arrange(r)
+
 ```
 
 
-* Separando en conjunto de datos de canales y financiera donde ya estan escaladas:
+```{r}
+corr_altas <- corr_canales[which(corr_canales$r > 0.9), ]
+
+nombres <- c(corr_altas$x, corr_altas$y)
+unique(nombres)
+```
+
+
 
 ```{r}
-canales <- df_scaled[,1:30]
-financiera <- df_scaled[,31:46]
+pairs(log(Canal_no_scaled[,unique(nombres)]+1))
 ```
+
+
 
 
 * Se utiliza agrupamiento jerarquico con la idea de que nos diga la cantidad de grupos que se deben considerar 
@@ -221,50 +241,99 @@ boxplot(fina_group$pagos_pj~fina_group$grupos)
 boxplot(fina_group$pagos_pn~fina_group$grupos)
 ```
 
-
+* Grupos de las variables escaladas 
 
 ```{r}
 df_scaled_group <- data.frame(grupos,df_scaled)
-outliers <- c(825, 1416, 1462, 1668, 1773)
-df_scaled_group <- df_scaled_group[-outliers,]
+#outliers <- c(825, 1416, 1462, 1668, 1773) # Esto va a ser un solo grupo posteriormente
+#df_scaled_group <- df_scaled_group[-outliers,]
 ```
 
 
 ```{r}
-grupo1 <- df_scaled_group[df_scaled_group$grupos==1,]
-grupo2 <- df_scaled_group[df_scaled_group$grupos==2,]
-grupo3 <- df_scaled_group[df_scaled_group$grupos==3,]
+grupo1_scaled <- df_scaled_group[df_scaled_group$grupos==1,]
+grupo2_scaled <- df_scaled_group[df_scaled_group$grupos==2,]
+grupo3_scaled <- df_scaled_group[df_scaled_group$grupos==3,]
 ```
+
+
+
+* Grupos de las variables no escaladas 
+
+```{r}
+df_group <- data.frame(grupos,df)
+#outliers <- c(825, 1416, 1462, 1668, 1773) # Esto va a ser un solo grupo posteriormente
+#df_group <- df_group[-outliers,]
+```
+
+
+```{r}
+grupo1_no_scaled <- df_group[df_group$grupos==1,]
+grupo2_no_scaled <- df_group[df_group$grupos==2,]
+grupo3_no_scaled <- df_group[df_group$grupos==3,]
+```
+
+
+* Agrupamiento en el grupo 1 por canales:
+
+```{r}
+dendrogram <- hclust(dist(log(grupo1_no_scaled[,2:31]+1), method = 'euclidean'), method = 'ward.D')
+
+plot(dendrogram, xlab="", sub="", cex=0.9)
+```
+
+
+
 
 ```{r}
 require(cluster)
 
-set.seed(93284)
-kc1 <- kmeans(grupo1[,2:31], 1 , nstart = 5, iter.max = 100)
 
-clusplot(grupo1[,2:31], kc1$cluster, color = TRUE, 
+set.seed(93284)
+kc1 <- kmeans(log(grupo1_no_scaled[,2:31]+1), 2 , nstart = 5, iter.max = 100)
+
+clusplot(log(grupo1_no_scaled[,2:31]+1), kc1$cluster, color = TRUE, 
           shade = FALSE, labels = 4, lines = 1,
           col.p = kc1$cluster )
 ```
 
+
+* Agrupamiento en el grupo 2 por canales:
+
+```{r}
+dendrogram <- hclust(dist(log(grupo2_no_scaled[,2:31]+1), method = 'euclidean'), method = 'ward.D')
+
+plot(dendrogram, xlab="", sub="", cex=0.9)
+```
+
+
 ```{r}
 require(cluster)
 
 set.seed(93284)
-kc2 <- kmeans(grupo2[,2:31], 2, nstart = 5, iter.max = 100)
+kc2 <- kmeans(log(grupo2_no_scaled[,2:31]+1), 2, nstart = 5, iter.max = 100)
 
-clusplot(grupo2[,2:31], kc2$cluster, color = TRUE, 
+clusplot(log(grupo2_no_scaled[,2:31]+1), kc2$cluster, color = TRUE, 
           shade = FALSE, labels = 4, lines = 1,
           col.p = kc2$cluster )
 ```
 
+* Agrupamiento en el grupo 3 por canales:
+
+```{r}
+dendrogram <- hclust(dist(log(grupo3_no_scaled[,2:31]+1), method = 'euclidean'), method = 'ward.D')
+
+plot(dendrogram, xlab="", sub="", cex=0.9)
+```
+
+
 ```{r}
 require(cluster)
 
 set.seed(93284)
-kc3 <- kmeans(grupo3[-19,2:31], 1 , nstart = 5, iter.max = 100)
+kc3 <- kmeans(log(grupo3_no_scaled[,2:31]+1), 2 , nstart = 5, iter.max = 100)
 
-clusplot(grupo3[-19,2:31], kc3$cluster, color = TRUE, 
+clusplot(log(grupo3_no_scaled[,2:31]+1), kc3$cluster, color = TRUE, 
           shade = FALSE, labels = 4, lines = 1,
           col.p = kc3$cluster )
 ```

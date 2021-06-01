@@ -13,16 +13,12 @@ knitr::opts_chunk$set(echo = TRUE)
 
 
 ```{r}
-
 df <- read.csv("base_trabajo_segmentacion.csv", sep = ";", dec = '.', header = T)
 
 head(df)
-
 ```
 
 ```{r}
-length()
-
 which(duplicated(df$nit))
 ```
 
