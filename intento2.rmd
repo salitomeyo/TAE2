@@ -31,6 +31,7 @@ colnames(df)
 
 ```{r}
 finan_no_scaled <- df[, 31:46]
+Canal_no_scaled <- df[ , 1:30]
 ```
 
 ```{r}
@@ -61,7 +62,7 @@ for(i in 1:dim(finan_no_scaled)[2]){
 
 Interpretaciones de las varibles solas:
 
-*
+ * La mayoría de las empresas presentan un nivel bajo de exportaciones
 
 Interpretaciones comparandolas con los grupos:
 
@@ -92,7 +93,25 @@ Correlaciones entre las variables
 
 
 
+Análisis descriptivo de los canales
 
+```{r}
+pairs(Canal_no_scaled)
+```
+
+```{r}
+library(corrplot)
+corrplot(cor(Canal_no_scaled), 
+         method="color",  
+         type="upper", order='original', 
+         addCoef.col = "black", # Add coefficient of correlation
+         tl.col="black", tl.srt=45, #Text label color and rotation
+         sig.level = 0.01, insig = "blank", 
+         number.cex = 0.5,
+         # hide correlation coefficient on the principal diagonal
+         diag=FALSE
+         )
+```
 
 
 * Escalamiento de los datos completos
@@ -174,6 +193,27 @@ for(i in 2:dim(fina_group)[2]){
 }
 
 ```
+
+
+```{r}
+library(ggplot2)
+for(i in 2:dim(fina_group)[2]){
+  
+  if(class(fina_group[, i])=="integer"){
+    p <- ggplot(fina_group, aes(x = fina_group[, i], y = ..prop..))+ geom_bar(fill = "#0c4c8a")
+  }else{
+    p <- ggplot(fina_group, aes(x = fina_group[, i])) +  geom_histogram(bins = 10)
+  }
+  
+  p_final <- p +
+    labs(x = colnames(fina_group)[i]) +
+    theme_gray() + 
+    facet_grid(vars(), vars(grupos))
+  
+  print(p_final)
+}
+```
+
 
 ```{r}
 par(mfrow=c(1,2))
