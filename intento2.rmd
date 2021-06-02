@@ -15,17 +15,10 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ```{r}
 df <- read.csv("base_trabajo_segmentacion.csv", sep = ";", dec = '.', header = T)
-
+df <- df[, -1]
 head(df)
 ```
 
-
-* Nombres de las variables de los datos originales
-
-```{r}
-df <- df[, -1]
-colnames(df)
-```
 
 * Separación de las variables financieras y canales (no escaladas)
 
@@ -44,8 +37,8 @@ df_scaled <- scale(df, center = T, scale = T)
 * Separando en conjunto de datos de canales y financiera donde ya estan escaladas:
 
 ```{r}
-canales <- df_scaled[,1:30]
-financiera <- df_scaled[,31:46]
+Canal_scaled <- df_scaled[,1:30]
+finan_scaled <- df_scaled[,31:46]
 ```
 
 ## Análisis descriptivo de las variables financieras
@@ -145,8 +138,8 @@ unique(nombres)
 ```{r}
 pairs(log(Canal_no_scaled[,unique(nombres)]+1))
 ```
-
-
+Aqui termina el análisis descriptivo 
+#######################################################################################
 
 
 * Se utiliza agrupamiento jerarquico con la idea de que nos diga la cantidad de grupos que se deben considerar 
@@ -156,7 +149,7 @@ library(ggdendro)
 library(ggplot2)
 require(factoextra)
 
-dendrogram <- hclust(dist(financiera, method = 'euclidean'), method = 'ward.D')
+dendrogram <- hclust(dist(finan_scaled, method = 'euclidean'), method = 'ward.D')
 
 
 plot(dendrogram, xlab="", sub="", cex=0.9)
@@ -170,7 +163,7 @@ rect.hclust(dendrogram, k=3, border="cyan4")
 require(cluster)
 
 set.seed(93284)
-kc <- kmeans(financiera, 3 , nstart = 5, iter.max = 100)
+kc <- kmeans(finan_no_scaled, 3 , nstart = 5, iter.max = 100)
 
 clusplot(financiera, kc$cluster, color = TRUE, 
           shade = FALSE, labels = 4, lines = 1,
