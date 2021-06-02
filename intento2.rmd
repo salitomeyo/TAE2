@@ -338,16 +338,9 @@ clusplot(log(grupo3_no_scaled[,2:31]+1), kc3$cluster, color = TRUE,
           col.p = kc3$cluster )
 ```
 
-```{r}
-which(kc3$cluster == 1)
-```
-
-```{r}
-kc3$cluster
-```
 
 
-## 2 Grupos
+## Resultados obtenidos donde se considerara 2 Grupos en la parte financiera
  
 ```{r}
 require(cluster)
@@ -386,19 +379,6 @@ for(i in 2:dim(fina_group)[2]){
 
 ```
 
-
-
-```{r}
-apply(df[kc$cluster == 1, 31:46], 2, function(x) barplot(table(x)))
-```
-
-```{r}
-apply(df[kc$cluster == 2, 31:46], 2, function(x) barplot(table(x)))
-```
-
-```{r}
-apply(df[kc$cluster == 3, 31:46], 2, function(x) barplot(table(x)))
-```
 
 * Media de los grupos
 ```{r}
