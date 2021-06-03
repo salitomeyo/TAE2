@@ -19,6 +19,10 @@ df <- df[, -1]
 head(df)
 ```
 
+```{r}
+colnames(df)
+```
+
 
 * Separación de las variables financieras y canales (no escaladas)
 
@@ -138,6 +142,37 @@ unique(nombres)
 ```{r}
 pairs(log(Canal_no_scaled[,unique(nombres)]+1))
 ```
+
+```{r}
+colnames(df)
+```
+
+```{r}
+plot(density(df$en_vm_canal2),xlim=c(0,100000000000))
+```
+
+
+```{r}
+par(mfrow=c(1,2))
+boxplot(df[,1:5], las=2, ylim=c(0, 1000000000))
+boxplot(df[,6:11], las=2, ylim=c(0, 1000000000))
+```
+
+
+Boxplots con los canales
+
+```{r}
+par(mfrow=c(2,3))
+boxplot(df[,1:5], las=2)
+boxplot(df[,6:10], las=2)
+boxplot(df[,11:15], las=2)
+boxplot(df[,16:20], las=2)
+boxplot(df[,21:25], las=2)
+boxplot(df[,26:30], las=2)
+```
+
+
+
 Aqui termina el análisis descriptivo 
 #######################################################################################
 
