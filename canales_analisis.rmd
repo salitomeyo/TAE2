@@ -1,0 +1,169 @@
+---
+title: "Canales análisis"
+author: "Miguel Ángel Londoño Ciceros"
+date: "2/6/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+Lectura de los datos
+
+
+```{r}
+df <- read.csv("base_trabajo_segmentacion.csv", sep = ";", dec = '.', header = T)
+df <- df[, -1]
+head(df)
+```
+
+* Separación de las variables financieras y canales (no escaladas)
+
+```{r}
+Canal_no_scaled <- df[ , 1:30]
+finan_no_scaled <- df[, 31:46]
+```
+
+```{r}
+Canal_no_scaled <- log(Canal_no_scaled + 1)
+#Canal_scaled <- Canal_no_scaled
+```
+
+* Escalamiento de los datos 
+
+```{r}
+Canal_scaled <- scale(Canal_no_scaled, center = T, scale = T)
+```
+
+
+```{r}
+summary(df[, 1:30])
+```
+
+
+```{r}
+plot(density(df$en_vm_canal2),xlim=c(0,10000000000))
+```
+
+
+```{r}
+apply(df[, 1:30], 2, hist)
+```
+
+```{r}
+apply(log(Canal_no_scaled + 1), 2, hist)
+```
+
+* Se utiliza agrupamiento jerarquico con la idea de que nos diga la cantidad de grupos que se deben considerar 
+
+```{r}
+library(ggdendro)
+library(ggplot2)
+require(factoextra)
+dendrogram <- hclust(dist(Canal_scaled, method = 'euclidean'), method = 'ward.D')
+
+
+plot(dendrogram, xlab="", sub="", cex=0.9)
+
+```
+
+
+
+
+* Agrupamiento k means con las variables canales:
+
+```{r}
+require(cluster)
+
+set.seed(23)
+Agru_canal <- kmeans(Canal_scaled, 4, nstart = 5, iter.max = 100)
+
+clusplot(Canal_scaled, Agru_canal$cluster, color = TRUE, 
+          shade = FALSE, labels = 4, lines = 1,
+          col.p = Agru_canal$cluster )
+```
+
+
+
+```{r}
+table(Agru_canal$cluster)
+```
+
+
+* Creación de un conjunto de datos con las variables de los canales y la variable grupo 
+
+```{r}
+grupos <- as.factor(Agru_canal$cluster)
+
+Canal_group <- data.frame(grupos, Canal_no_scaled)
+# outliers <- Canal_no_scaled[c(825, 1416, 1462, 1668, 1773),]
+# outliers <- data.frame(grupos=as.factor(rep(3, 5)), outliers)
+# Canal_group <- rbind(Canal_group, outliers)
+head(Canal_group)
+tail(Canal_group)
+```
+
+
+
+
+* Gráficos de barras que nos permitiran sacar carateristicas de cada uno de los grupos
+
+```{r}
+library(ggplot2)
+for(i in 2:dim(Canal_group)[2]){
+  
+  #p <-ggplot(Canal_group, aes(x = Canal_group[, i])) +  geom_histogram(bins = 10) +
+  p <- ggplot(Canal_group, aes(x = factor(grupos), y=Canal_group[, i])) + geom_boxplot() + 
+    labs(x = colnames(Canal_group)[i]) +
+    theme_gray() 
+    #facet_grid(vars(), vars(grupos))
+    
+  
+  print(p)
+}
+
+```
+
+```{r}
+aggregate(.~grupos,data=df[, 1:30], FUN=mean)[, ] 
+```
+
+
+```{r}
+aggregate(.~grupos,data=df[, 1:30], FUN=median)
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
