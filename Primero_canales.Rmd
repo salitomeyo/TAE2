@@ -50,7 +50,7 @@ finan_scaled <- df_scaled[,31:46]
 library(ggdendro)
 library(ggplot2)
 require(factoextra)
-dendrogram <- hclust(dist(Canal_scaled[-c(825, 1416, 1462, 1668, 1773),], method = 'euclidean'), method = 'ward.D')
+dendrogram <- hclust(dist(log(Canal_no_scaled+1), method = 'euclidean'), method = 'ward.D')
 
 
 plot(dendrogram, xlab="", sub="", cex=0.9)
@@ -65,10 +65,10 @@ plot(dendrogram, xlab="", sub="", cex=0.9)
 ```{r}
 require(cluster)
 
-set.seed(23)
-Agru_canal <- kmeans(Canal_scaled[-c(825, 1416, 1462, 1668, 1773),], 2 , nstart = 5, iter.max = 100)
+set.seed(4532)
+Agru_canal <- kmeans(log(Canal_no_scaled+1), 3 , nstart = 5, iter.max = 100)
 
-clusplot(Canal_scaled[-c(825, 1416, 1462, 1668, 1773),], Agru_canal$cluster, color = TRUE, 
+clusplot(log(Canal_no_scaled+1), Agru_canal$cluster, color = TRUE, 
           shade = FALSE, labels = 4, lines = 1,
           col.p = Agru_canal$cluster )
 ```
@@ -85,7 +85,7 @@ table(Agru_canal$cluster)
 ```{r}
 grupos <- as.factor(Agru_canal$cluster)
 
-Canal_group <- data.frame(grupos, Canal_no_scaled[-c(825, 1416, 1462, 1668, 1773),])
+Canal_group <- data.frame(grupos, Canal_no_scaled)
 # outliers <- Canal_no_scaled[c(825, 1416, 1462, 1668, 1773),]
 # outliers <- data.frame(grupos=as.factor(rep(3, 5)), outliers)
 # Canal_group <- rbind(Canal_group, outliers)
@@ -102,7 +102,7 @@ tail(Canal_group)
 library(ggplot2)
 for(i in 2:dim(Canal_group)[2]){
   
-  p <- ggplot(Canal_group, aes(x = factor(grupos), y=Canal_group[, i])) + 
+  p <- ggplot(Canal_group, aes(x = factor(grupos), y=log(Canal_group[, i]+1))) + 
     geom_boxplot() + 
     labs(x = colnames(Canal_group)[i]) +
     theme_gray() 

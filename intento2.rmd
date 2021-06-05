@@ -302,6 +302,27 @@ grupo3_no_scaled <- df_group[df_group$grupos==3,]
 ```
 
 
+* Analizando los canales en los grupos ya formados a partir de las variables financieras:
+
+
+```{r}
+library(ggplot2)
+for(i in 2:dim(grupo1_no_scaled)[2]){
+  
+  p <- ggplot(df_group, aes(x = factor(grupos), y=log(df_group[, i]+1))) +  geom_boxplot()+
+    labs(x = colnames(df_group)[i]) +
+    theme_gray() 
+    
+  
+  print(p)
+}
+
+```
+
+
+
+
+
 * Agrupamiento por canales en el grupo 1 de financieras:
 
 ```{r}
@@ -317,8 +338,8 @@ plot(dendrogram, xlab="", sub="", cex=0.9)
 require(cluster)
 
 
-set.seed(93284)
-kc1 <- kmeans(log(grupo1_no_scaled[,2:31]+1), 3 , nstart = 5, iter.max = 100)
+set.seed(932840)
+kc1 <- kmeans(log(grupo1_no_scaled[,2:31]+1), 2 , nstart = 5, iter.max = 100)
 
 clusplot(log(grupo1_no_scaled[,2:31]+1), kc1$cluster, color = TRUE, 
           shade = FALSE, labels = 4, lines = 1,
@@ -386,7 +407,7 @@ plot(dendrogram, xlab="", sub="", cex=0.9)
 require(cluster)
 
 set.seed(93284)
-kc2 <- kmeans(log(grupo2_no_scaled[,2:31]+1), 3, nstart = 5, iter.max = 100)
+kc2 <- kmeans(log(grupo2_no_scaled[,2:31]+1), 2, nstart = 5, iter.max = 100)
 
 clusplot(log(grupo2_no_scaled[,2:31]+1), kc2$cluster, color = TRUE, 
           shade = FALSE, labels = 4, lines = 1,
@@ -453,8 +474,8 @@ plot(dendrogram, xlab="", sub="", cex=0.9)
 ```{r}
 require(cluster)
 
-set.seed(93280)
-kc3 <- kmeans(log(grupo3_no_scaled[,2:31]+1), 3 , nstart = 5, iter.max = 100)
+set.seed(932840)
+kc3 <- kmeans(log(grupo3_no_scaled[,2:31]+1), 2 , nstart = 5, iter.max = 100)
 
 clusplot(log(grupo3_no_scaled[,2:31]+1), kc3$cluster, color = TRUE, 
           shade = FALSE, labels = 4, lines = 1,
@@ -513,30 +534,29 @@ En general siempre el grupo 1 de los canales son los que más manejan dinero a t
 
 * Grupos finales 
 
-```{r}
-finan1_canal
-```
-
-
 
 ```{r}
 Grupo1 <- finan1_canal[finan1_canal$sub_grupos==1,]
 Grupo2 <- finan1_canal[finan1_canal$sub_grupos==2,]
-Grupo3 <- finan1_canal[finan1_canal$sub_grupos==3,]
 
-Grupo4 <- finan2_canal[finan2_canal$sub_grupos==1,]
-Grupo5 <- finan2_canal[finan2_canal$sub_grupos==2,]
-Grupo6 <- finan2_canal[finan2_canal$sub_grupos==3,]
+Grupo3 <- finan2_canal[finan2_canal$sub_grupos==1,]
+Grupo4 <- finan2_canal[finan2_canal$sub_grupos==2,]
 
-Grupo7 <- finan3_canal[finan3_canal$sub_grupos==1,]
-Grupo8 <- finan3_canal[finan3_canal$sub_grupos==2,]
-Grupo9 <- finan3_canal[finan3_canal$sub_grupos==3,]
+Grupo5 <- finan3_canal[finan3_canal$sub_grupos==1,]
+Grupo6 <- finan3_canal[finan3_canal$sub_grupos==2,]
 
-
-Grupos <- c(rep(1, dim(Grupo1)[1]), rep(2, dim(Grupo2)[1]), rep(3, dim(Grupo3)[1]), rep(4, dim(Grupo4)[1]), rep(5, dim(Grupo5)[1]), rep(6, dim(Grupo6)[1]), rep(7, dim(Grupo7)[1]), rep(8, dim(Grupo8)[1]), rep(9, dim(Grupo9)[1]))
+# Grupo7 <- finan3_canal[finan3_canal$sub_grupos==1,]
+# Grupo8 <- finan3_canal[finan3_canal$sub_grupos==2,]
+# Grupo9 <- finan3_canal[finan3_canal$sub_grupos==3,]
 
 
-Datos_finales <- rbind(Grupo1, Grupo2, Grupo3, Grupo4, Grupo5, Grupo6, Grupo7, Grupo8, Grupo9)
+Grupos <- c(rep(1, dim(Grupo1)[1]), rep(2, dim(Grupo2)[1]), rep(3, dim(Grupo3)[1]), rep(4, dim(Grupo4)[1]), rep(5, dim(Grupo5)[1]), rep(6, dim(Grupo6)[1]))
+
+#  rep(7, dim(Grupo7)[1]), rep(8, dim(Grupo8)[1]), rep(9, dim(Grupo9)[1])
+
+Datos_finales <- rbind(Grupo1, Grupo2, Grupo3, Grupo4, Grupo5, Grupo6)
+
+# Grupo7, Grupo8, Grupo9
 Datos_finales <- data.frame(Grupos, Datos_finales)
 Datos_finales
 ```
@@ -550,12 +570,37 @@ for(i in 4:dim(Datos_finales)[2]){
   p <- ggplot(Datos_finales, aes(x = factor(Grupos), y=log(Datos_finales[, i]+1))) +  geom_boxplot()+
     labs(x = colnames(Datos_finales)[i]) +
     theme_gray() 
-    
   
   print(p)
 }
 
 ```
+
+
+* Media de los grupos
+
+```{r}
+aggregate(.~Grupos,data=Datos_finales, FUN=mean)
+```
+
+
+* Mediana de los grupos
+
+```{r}
+aggregate(.~Grupos,data=Datos_finales, FUN=median)
+```
+
+
+Los valores extremos encontrados inicialmente en los canales son los siguientes:
+
+"825, 1416, 1462, 1668, 1773"
+
+Los cuales pertenecen al grupo:
+
+"5, 3, 3, 1, 3" respectivamente lo cual significa que todos quedan en los grupos que más dinero mueven y más tranzan por los canales, por lo tanto la segmentación es confiable.
+
+
+
 
 
 
