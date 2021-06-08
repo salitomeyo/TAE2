@@ -746,3 +746,25 @@ matches <- sum(length(which(names1.2 %in% names1.1)), length(which(names2.2 %in%
 matches/2233
 ```
 
+
+
+```{r}
+length(names1.1)
+length(names2.1)
+length(names3.1)
+length(names4.1)
+length(names5.1)
+length(names6.1)
+```
+
+```{r}
+length(names1.2)
+length(names2.2)
+length(names3.2)
+length(names4.2)
+length(names5.2)
+length(names6.2)
+```
+
+
+
