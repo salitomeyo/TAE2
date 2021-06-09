@@ -768,3 +768,7 @@ length(names6.2)
 
 
 
+```{r}
+exp(Agru_canal$centers)-1
+```
+
