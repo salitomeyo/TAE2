@@ -12,7 +12,6 @@ knitr::opts_chunk$set(echo = TRUE)
 
 Lectura de los datos
 
-
 ```{r}
 df <- read.csv("base_trabajo_segmentacion.csv", sep = ";", dec = '.', header = T)
 df <- df[, -1]
@@ -85,6 +84,9 @@ clusplot(Canal_scaled, Agru_canal$cluster, color = TRUE,
           col.p = Agru_canal$cluster )
 ```
 
+```{r}
+Agru_canal$centers
+```
 
 
 ```{r}

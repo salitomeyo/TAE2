@@ -348,10 +348,19 @@ Datos_finales_2
 library(ggplot2)
 for(i in 4:dim(Datos_finales_2)[2]){
   
-  if(class(Datos_finales_2[, i])=="integer"){
-    p <- ggplot(Datos_finales_2, aes(x = Datos_finales_2[, i], y = ..prop..))+ geom_bar(fill = "#0c4c8a")+facet_grid(vars(), vars(Grupos))
+  if(i < 34){
+    # p <- ggplot(Datos_finales_2, aes(x = factor(Grupos), y=log(Datos_finales_2[, i]+1))) +  geom_boxplot()
+    
+        p <- ggplot(Datos_finales_2, aes(x=log(Datos_finales_2[, i]+1))) +  geom_histogram(bins = 10, fill = "#0c4c8a")+facet_grid(vars(), vars(Grupos))
+    
   }else{
-    p <- ggplot(Datos_finales_2, aes(x = factor(Grupos), y=log(Datos_finales_2[, i]+1))) +  geom_boxplot()
+    
+    if(class(Datos_finales_2[, i])=="integer"){
+      p <- ggplot(Datos_finales_2, aes(x = Datos_finales_2[, i], y = ..prop..))+ geom_bar(fill = "#0c4c8a")+facet_grid(vars(), vars(Grupos))
+    }else{
+      p <- ggplot(Datos_finales_2, aes(x = factor(Grupos), y=Datos_finales_2[, i])) +  geom_boxplot()
+    }
+    
   }
   
   p_final <- p +
