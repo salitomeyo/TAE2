@@ -454,37 +454,37 @@ Grupos <- c(rep(1, dim(Grupo1)[1]), rep(2, dim(Grupo2)[1]), rep(3, dim(Grupo3)[1
 
 #  rep(7, dim(Grupo7)[1]), rep(8, dim(Grupo8)[1]), rep(9, dim(Grupo9)[1])
 
-Datos_finales <- rbind(Grupo1, Grupo2, Grupo3, Grupo4, Grupo5, Grupo6)
+Datos_finales_3 <- rbind(Grupo1, Grupo2, Grupo3, Grupo4, Grupo5, Grupo6)
 
 # Grupo7, Grupo8, Grupo9
-Datos_finales <- data.frame(Grupos, Datos_finales)
-Datos_finales
+Datos_finales_3 <- data.frame(Grupos, Datos_finales_3)
+Datos_finales_3
 ```
 
 
 ```{r}
 library(ggplot2)
-for(i in 4:dim(Datos_finales)[2]){
+for(i in 4:dim(Datos_finales_3)[2]){
   
   
   if(i<34){
-    # p <- ggplot(Datos_finales, aes(x = factor(Grupos), y=log(Datos_finales[, i]+1))) +  geom_boxplot()
+    # p <- ggplot(Datos_finales_3, aes(x = factor(Grupos), y=log(Datos_finales_3[, i]+1))) +  geom_boxplot()
     
-    p <- ggplot(Datos_finales, aes(x=log(Datos_finales[, i]+1))) +  geom_histogram(bins = 10, fill = "#0c4c8a")+facet_grid(vars(), vars(Grupos))
+    p <- ggplot(Datos_finales_3, aes(x=log(Datos_finales_3[, i]+1))) +  geom_histogram(bins = 10, fill = "#0c4c8a")+facet_grid(vars(), vars(Grupos))
     
   }else{
   
-    if(class(Datos_finales[, i])=="integer"){
-      p <- ggplot(Datos_finales, aes(x = Datos_finales[, i], y = ..prop..))+ geom_bar(fill = "#0c4c8a")+facet_grid(vars(), vars(Grupos))
+    if(class(Datos_finales_3[, i])=="integer"){
+      p <- ggplot(Datos_finales_3, aes(x = Datos_finales_3[, i], y = ..prop..))+ geom_bar(fill = "#0c4c8a")+facet_grid(vars(), vars(Grupos))
     }else{
-      p <- ggplot(Datos_finales, aes(x = factor(Grupos), y=Datos_finales[, i])) +  geom_boxplot()
+      p <- ggplot(Datos_finales_3, aes(x = factor(Grupos), y=Datos_finales_3[, i])) +  geom_boxplot()
     }
   
     
   }  
     
   p_final <- p +
-    labs(x = colnames(Datos_finales)[i]) +
+    labs(x = colnames(Datos_finales_3)[i]) +
     theme_gray() 
     
   
@@ -499,14 +499,14 @@ for(i in 4:dim(Datos_finales)[2]){
 * Media de los grupos
 
 ```{r}
-aggregate(.~Grupos,data=Datos_finales, FUN=mean)
+aggregate(.~Grupos,data=Datos_finales_3, FUN=mean)
 ```
 
 
 * Mediana de los grupos
 
 ```{r}
-aggregate(.~Grupos,data=Datos_finales, FUN=median)
+aggregate(.~Grupos,data=Datos_finales_3, FUN=median)
 ```
 
 
@@ -537,12 +537,12 @@ Grupo6.1 <- Datos_finales[Datos_finales$Grupos==6, ]
 Grupos procedimiento 2
 
 ```{r}
-Grupo1.2 <- Datos_finales_2[Datos_finales_2$Grupos==1, ]
-Grupo2.2 <- Datos_finales_2[Datos_finales_2$Grupos==2, ]
-Grupo3.2 <- Datos_finales_2[Datos_finales_2$Grupos==3, ]
-Grupo4.2 <- Datos_finales_2[Datos_finales_2$Grupos==4, ]
-Grupo5.2 <- Datos_finales_2[Datos_finales_2$Grupos==5, ]
-Grupo6.2 <- Datos_finales_2[Datos_finales_2$Grupos==6, ]
+Grupo1.2 <- Datos_finales_3[Datos_finales_3$Grupos==1, ]
+Grupo2.2 <- Datos_finales_3[Datos_finales_3$Grupos==2, ]
+Grupo3.2 <- Datos_finales_3[Datos_finales_3$Grupos==3, ]
+Grupo4.2 <- Datos_finales_3[Datos_finales_3$Grupos==4, ]
+Grupo5.2 <- Datos_finales_3[Datos_finales_3$Grupos==5, ]
+Grupo6.2 <- Datos_finales_3[Datos_finales_3$Grupos==6, ]
 ```
 
 
