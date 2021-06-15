@@ -45,6 +45,15 @@ Canal_scaled <- df_scaled[,1:30]
 finan_scaled <- df_scaled[,31:46]
 ```
 
+
+```{r}
+Canal_log <- log(Canal_no_scaled + 1) 
+
+Canal_log_scaled <- scale(log(Canal_no_scaled + 1), center = T, scale = T)
+```
+
+
+
 ## Análisis descriptivo de las variables financieras
 
 ```{r}
@@ -171,7 +180,11 @@ boxplot(df[,21:25], las=2)
 boxplot(df[,26:30], las=2)
 ```
 
-
+```{r}
+plot(1:30, colMeans(Canal_log), type = 'b', col = 'black', 
+     xaxt = "n", xlab = '', lwd = 2, ylab = 'centroide')
+axis(1, 1:30, names(df)[2:31], las = 2)
+```
 
 Aqui termina el análisis descriptivo 
 #######################################################################################
