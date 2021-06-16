@@ -182,8 +182,14 @@ boxplot(df[,26:30], las=2)
 
 ```{r}
 plot(1:30, colMeans(Canal_log), type = 'b', col = 'black', 
-     xaxt = "n", xlab = '', lwd = 2, ylab = 'centroide')
+     xaxt = "n", xlab = '', lwd = 2, ylab = 'Media')
 axis(1, 1:30, names(df)[2:31], las = 2)
+```
+
+```{r}
+plot(1:16, colMeans(finan_no_scaled), type = 'b', col = 'black', 
+     xaxt = "n", xlab = '', lwd = 2, ylab = 'Media')
+axis(1, 1:16, names(df)[31:46], las = 2)
 ```
 
 Aqui termina el análisis descriptivo 
@@ -303,6 +309,9 @@ grupo3_scaled <- df_scaled_group[df_scaled_group$grupos==3,]
 
 ```{r}
 df_group <- data.frame(grupos,df)
+
+df_group_log <- data.frame(grupos, Canal_log, finan_no_scaled)
+
 #outliers <- c(825, 1416, 1462, 1668, 1773) # Esto va a ser un solo grupo posteriormente
 #df_group <- df_group[-outliers,]
 ```
@@ -334,7 +343,41 @@ for(i in 2:dim(grupo1_no_scaled)[2]){
 ```
 
 
+* Media de los grupos
 
+```{r}
+media_df_grupfin <-  aggregate(.~grupos,data=df_group_log, FUN=mean)
+
+media_df_grupfin
+```
+
+
+
+* Análisis de los centroides
+
+```{r}
+plot(1:16, media_df_grupfin[1, 32:47], type = 'b', col = 'darkgreen', 
+     xaxt = "n", xlab = '', lwd = 2, ylab = 'centroide')
+axis(1, 1:16, names(media_df_grupfin)[32:47], las = 2)
+lines(1:16, media_df_grupfin[2, 32:47], col = 'darkblue', type = "b", lwd = 2)
+lines(1:16, media_df_grupfin[3, 32:47], col = "red", type = "b", lwd = 2)
+lines(1:16, colMeans(finan_no_scaled), col = 'black', type = 'b', lwd = 2, lty = 3)
+
+legend("bottomright", legend=c("Grupo1","Grupo2", "Grupo3", "Sin agrupar"),
+       col=c("darkgreen", "darkblue", "red", "black"), lty=1, bty = 'n')
+```
+
+```{r}
+plot(1:30, media_df_grupfin[1, 2:31], type = 'b', col = 'darkgreen', 
+     xaxt = "n", xlab = '', lwd = 2, ylab = 'centroide', ylim  = c(0, 22))
+axis(1, 1:30, names(media_df_grupfin)[2:31], las = 2)
+lines(1:30, media_df_grupfin[2, 2:31], col = 'darkblue', type = "b", lwd = 2)
+lines(1:30, media_df_grupfin[3, 2:31], col = "red", type = "b", lwd = 2)
+lines(1:30, colMeans(Canal_log), col = 'black', type = 'b', lwd = 2, lty = 3)
+
+legend(25, 23, legend=c("Grupo1","Grupo2", "Grupo3", 'Sin agrupar'),
+       col=c("darkgreen", "darkblue", "red", "black"), lty=c(1, 1, 1, 3), lwd = 2, cex = 0.8, bty = 'n')
+```
 
 
 * Agrupamiento por canales en el grupo 1 de financieras:
@@ -403,8 +446,38 @@ for(i in 3:dim(finan1_canal)[2]){
 * Media de los grupos
 
 ```{r}
-aggregate(.~sub_grupos,data=finan1_canal, FUN=mean)
+finan1_canal_log <- finan1_canal
+
+finan1_canal_log[3:32] <- log(finan1_canal_log[3:32] + 1)
 ```
+
+
+```{r}
+media_finan1_canal <- aggregate(.~sub_grupos,data= finan1_canal_log, FUN=mean)
+
+media_finan1_canal
+```
+
+```{r}
+plot(1:30, media_finan1_canal[1, 3:32], type = 'b', col = '#8F2517', 
+     xaxt = "n", xlab = '', lwd = 2, ylab = 'centroide', main = 'Grupo 1 financieras - CANALES')
+axis(1, 1:30, names(media_finan1_canal)[3:32], las = 2)
+lines(1:30, media_finan1_canal[2, 3:32], col = 'red', type = "b", lwd = 2)
+lines(1:30, media_df_grupfin[1, 2:31], col = "#FF6F5C", type = "b", lwd = 2, lty = 3)
+
+legend("top", legend=c("Grupo1.1","Grupo1.2", "MEDIA GRUPO 1"),  col=c("#8F2517", "red", "#FF6F5C"), lty=c(1, 1, 3), lwd = 2, bty = 'n')
+```
+
+```{r}
+plot(1:16, media_finan1_canal[1, 33:48], type = 'b', col = '#8F2517', 
+     xaxt = "n", xlab = '', lwd = 2, ylab = 'centroide', main = 'Grupo1 financieras - financieras')
+axis(1, 1:16, names(media_finan1_canal)[33:48], las = 2)
+lines(1:16, media_finan1_canal[2, 33:48], col = 'red', type = "b", lwd = 2)
+lines(1:16, media_df_grupfin[1, 32:47], col = "#FF6F5C", type = "b", lwd = 2, lty = 3)
+
+legend("topleft", legend=c("Grupo1.1","Grupo1.2", "Media Grupo1"),  col=c("#8F2517", "red", "#FF6F5C"), lty=c(1, 1, 3), lwd = 2, bty = 'n')
+```
+
 
 
 * Mediana de los grupos
@@ -470,13 +543,40 @@ for(i in 3:dim(finan2_canal)[2]){
 }
 ```
 
+```{r}
+finan2_canal_log <- finan2_canal
+
+finan2_canal_log[3:32] <- log(finan2_canal_log[3:32] + 1)
+```
 
 
 * Media de los grupos
 
 ```{r}
-aggregate(.~sub_grupos,data=finan2_canal, FUN=mean)
+media_finan2_canal <- aggregate(.~sub_grupos,data=finan2_canal_log, FUN=mean)
+media_finan2_canal
 ```
+
+```{r}
+plot(1:30, media_finan2_canal[1, 3:32], type = 'b', col = '#1D418F', 
+     xaxt = "n", xlab = '', lwd = 2, ylab = 'centroide', main = 'Grupo 2 financieras - CANALES')
+axis(1, 1:30, names(media_finan2_canal)[3:32], las = 2)
+lines(1:30, media_finan2_canal[2, 3:32], col = '#4273DB', type = "b", lwd = 2)
+lines(1:30, media_df_grupfin[2, 2:31], col = "#93B2FF", type = "b", lwd = 2, lty = 3)
+
+legend("top", legend=c("Grupo2.1","Grupo2.2", "MEDIA GRUPO 2"),  col=c("#1D418F", "#4273DB", "#93B2FF"), lty=c(1, 1, 3), lwd = 2,  bty = 'n')
+```
+
+```{r}
+plot(1:16, media_finan2_canal[1, 33:48], type = 'b', col = '#1D418F', 
+     xaxt = "n", xlab = '', lwd = 2, ylab = 'centroide', main = 'Grupo2 financieras - financieras')
+axis(1, 1:16, names(media_finan2_canal)[33:48], las = 2)
+lines(1:16, media_finan2_canal[2, 33:48], col = '#4273DB', type = "b", lwd = 2)
+lines(1:16, media_df_grupfin[2, 32:47], col = "#93B2FF", type = "b", lwd = 2, lty = 3)
+
+legend("top", legend=c("Grupo2.1","Grupo2.2", "Media Grupo2"),  col = c("#1D418F", "#4273DB", "#93B2FF"), lty=c(1, 1, 3), lwd = 2, bty = 'n')
+```
+
 
 
 * Mediana de los grupos
@@ -544,13 +644,39 @@ for(i in 3:dim(finan3_canal)[2]){
 }
 ```
 
+```{r}
+finan3_canal_log <- finan3_canal
 
+finan3_canal_log[3:32] <- log(finan3_canal[3:32] + 1)
+```
 
 * Media de los grupos
 
 ```{r}
-aggregate(.~sub_grupos,data=finan3_canal, FUN=mean)
+media_finan3_canal <- aggregate(.~sub_grupos,data=finan3_canal_log, FUN=mean)
+media_finan3_canal
 ```
+
+```{r}
+plot(1:30, media_finan3_canal[1, 3:32], type = 'b', col = '#008F0E', 
+     xaxt = "n", xlab = '', lwd = 2, ylab = 'centroide', main = 'Grupo 3 financieras - CANALES')
+axis(1, 1:30, names(media_finan3_canal)[3:32], las = 2)
+lines(1:30, media_finan3_canal[2, 3:32], col = '#00DB2C', type = "b", lwd = 2)
+lines(1:30, media_df_grupfin[3, 2:31], col = "#5EFF7E", type = "b", lwd = 2, lty = 3)
+
+legend("top", legend=c("Grupo3.1","Grupo3.2", "MEDIA GRUPO 3"),  col=c("#008F0E", "#00DB2C", "#5EFF7E"), lty=c(1, 1, 3), lwd = 2,  bty = 'n')
+```
+
+```{r}
+plot(1:16, media_finan3_canal[1, 33:48], type = 'b', col = '#008F0E', 
+     xaxt = "n", xlab = '', lwd = 2, ylab = 'centroide', main = 'Grupo3 financieras - financieras')
+axis(1, 1:16, names(media_finan3_canal)[33:48], las = 2)
+lines(1:16, media_finan3_canal[2, 33:48], col = '#00DB2C', type = "b", lwd = 2)
+lines(1:16, media_df_grupfin[3, 32:47], col = "#5EFF7E", type = "b", lwd = 2, lty = 3)
+
+legend("top", legend=c("Grupo3.1","Grupo3.2", "Media Grupo3"),  col = c("#008F0E", "#00DB2C", "#5EFF7E"), lty=c(1, 1, 3), lwd = 2, bty = 'n')
+```
+
 
 
 * Mediana de los grupos
@@ -626,13 +752,50 @@ for(i in 4:dim(Datos_finales)[2]){
 ```
 
 
+```{r}
+Datos_finales_log <- Datos_finales
+
+Datos_finales_log[, 4:33] <- log(Datos_finales_log[, 4:33]+1)
+```
 
 
 * Media de los grupos
 
 ```{r}
-aggregate(.~Grupos,data=Datos_finales, FUN=mean)
+media_finan_canal <- aggregate(.~Grupos,data=Datos_finales_log, FUN=mean)
+media_finan_canal
 ```
+
+```{r}
+# par(mfrow = c(1, 2))
+
+plot(1:30, media_finan_canal[1, 4:33], type = 'b', col = '#E80EB8', 
+     xaxt = "n", xlab = '', lwd = 2, ylab = 'centroide', main = 'Grupos finales', ylim = c(0, 22))
+axis(1, 1:30, names(media_finan_canal)[4:33], las = 2)
+lines(1:30, media_finan_canal[2, 4:33], col = '#0F1EF2', type = "b", lwd = 2)
+lines(1:30, media_finan_canal[3, 4:33], col = '#19DBAD', type = "b", lwd = 2)
+lines(1:30, media_finan_canal[4, 4:33], col = '#92F20F', type = "b", lwd = 2)
+lines(1:30, media_finan_canal[5, 4:33], col = '#EBA81A', type = "b", lwd = 2)
+lines(1:30, media_finan_canal[6, 4:33], col = '#8C7AF5', type = "b", lwd = 2)
+
+legend("top", legend=c(paste("Grupo", 1:6, sep = '')),  col=c("#E80EB8", "#0F1EF2", "#19DBAD", "#92F20F", "#EBA81A", "#8C7AF5"), lty=1, lwd = 2,  bty = 'n')
+```
+
+
+```{r}
+plot(1:16, media_finan_canal[1, 34:49], type = 'b', col = "#E80EB8", 
+     xaxt = "n", xlab = '', lwd = 2, ylab = 'centroide', main = 'Grupos finales')
+axis(1, 1:16, names(media_finan_canal)[34:49], las = 2)
+lines(1:16, media_finan_canal[2, 34:49], col = '#0F1EF2', type = "b", lwd = 2)
+lines(1:16, media_finan_canal[3, 34:49], col = '#19DBAD', type = "b", lwd = 2)
+lines(1:16, media_finan_canal[4, 34:49], col = '#92F20F', type = "b", lwd = 2)
+lines(1:16, media_finan_canal[5, 34:49], col = '#EBA81A', type = "b", lwd = 2)
+lines(1:16, media_finan_canal[6, 34:49], col = '#8C7AF5', type = "b", lwd = 2)
+
+legend("top", legend=c(paste("Grupo", 1:6, sep = '')),  col = c("#E80EB8", "#0F1EF2", "#19DBAD", "#92F20F", "#EBA81A", "#8C7AF5"), lty=1, lwd = 2,  bty = 'n')
+```
+
+
 
 
 * Mediana de los grupos

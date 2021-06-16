@@ -47,6 +47,12 @@ finan_scaled <- df_scaled[,31:46]
 ```
 
 
+```{r}
+Canal_log <- log(Canal_no_scaled + 1) 
+
+Canal_log_scaled <- scale(log(Canal_no_scaled + 1), center = T, scale = T)
+```
+
 
 * Se utiliza agrupamiento jerarquico con la idea de que nos diga la cantidad de grupos que se deben considerar 
 
@@ -166,6 +172,47 @@ for(i in 32:dim(df_group)[2]){
 
 ```
 
+```{r}
+df_group_log <- df_group
+
+df_group_log[, 2:31] <- log(df_group[, 2:31] + 1)
+```
+
+
+
+* Media de los grupos
+
+```{r}
+media_df_grupfin <-  aggregate(.~grupos,data=df_group_log, FUN=mean)
+
+media_df_grupfin
+```
+
+
+
+* Análisis de los centroides
+
+```{r}
+plot(1:16, media_df_grupfin[1, 32:47], type = 'b', col = 'darkgreen', 
+     xaxt = "n", xlab = '', lwd = 2, ylab = 'centroide')
+axis(1, 1:16, names(media_df_grupfin)[32:47], las = 2)
+lines(1:16, media_df_grupfin[2, 32:47], col = 'darkblue', type = "b", lwd = 2)
+lines(1:16, colMeans(finan_no_scaled), col = 'black', type = 'b', lwd = 2, lty = 3)
+
+legend("bottomright", legend=c("Grupo1","Grupo2", "Sin agrupar"),
+       col=c("darkgreen", "darkblue", "black"), lty=1, bty = 'n')
+```
+
+```{r}
+plot(1:30, media_df_grupfin[1, 2:31], type = 'b', col = 'darkgreen', 
+     xaxt = "n", xlab = '', lwd = 2, ylab = 'centroide', ylim  = c(0, 22))
+axis(1, 1:30, names(media_df_grupfin)[2:31], las = 2)
+lines(1:30, media_df_grupfin[2, 2:31], col = 'darkblue', type = "b", lwd = 2)
+lines(1:30, colMeans(Canal_log), col = 'black', type = 'b', lwd = 2, lty = 3)
+
+legend(25, 23, legend=c("Grupo1","Grupo2", 'Sin agrupar'),
+       col=c("darkgreen", "darkblue", "black"), lty=c(1, 1, 1, 3), lwd = 2, cex = 0.8, bty = 'n')
+```
 
 
 

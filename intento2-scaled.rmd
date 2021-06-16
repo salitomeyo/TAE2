@@ -668,7 +668,7 @@ media_finan_canal[1, 4:33]
 # par(mfrow = c(1, 2))
 
 plot(1:30, media_finan_canal[1, 4:33], type = 'b', col = '#E80EB8', 
-     xaxt = "n", xlab = '', lwd = 2, ylab = 'centroide', main = 'Grupos finales')
+     xaxt = "n", xlab = '', lwd = 2, ylab = 'centroide', main = 'Grupos finales', ylim = c(0, 22))
 axis(1, 1:30, names(media_finan_canal)[4:33], las = 2)
 lines(1:30, media_finan_canal[2, 4:33], col = '#0F1EF2', type = "b", lwd = 2)
 lines(1:30, media_finan_canal[3, 4:33], col = '#19DBAD', type = "b", lwd = 2)
