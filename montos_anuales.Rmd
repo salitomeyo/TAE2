@@ -1,0 +1,717 @@
+---
+title: 'Intento # 2'
+author: ""
+date: "27/5/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Introducción
+
+* Lectura de la base de datos
+
+```{r}
+df <- read.csv("base_trabajo_segmentacion.csv", sep = ";", dec = '.', header = T)
+df <- df[, -1]
+head(df)
+```
+
+```{r}
+colnames(df)
+```
+
+
+
+```{r}
+montos_entrada <- df[,1:11]
+transacciones_entrada <- df[,12:22]
+montos_salida <- df[,23:26]
+transacciones_salida <- df[,27:30]
+
+
+monto_promedio_anual_entrada <- montos_entrada*(transacciones_entrada*12)
+monto_promedio_anual_salida <- montos_salida*(transacciones_salida*12)
+
+df <- cbind(monto_promedio_anual_entrada, monto_promedio_anual_salida, finan_no_scaled)
+```
+
+
+```{r}
+colnames(df)
+```
+
+
+* Separación de las variables financieras y canales (no escaladas)
+
+```{r}
+Canal_no_scaled <- df[ ,1:15]
+finan_no_scaled <- df[, 16:31]
+```
+
+
+* Escalamiento de los datos completos
+
+```{r}
+df_scaled <- scale(df, center = T, scale = T)
+```
+
+
+* Separando en conjunto de datos de canales y financiera donde ya estan escaladas:
+
+```{r}
+Canal_scaled <- df_scaled[,1:15]
+finan_scaled <- df_scaled[,16:31]
+```
+
+
+```{r}
+Canal_log <- log(Canal_no_scaled + 1) 
+
+Canal_log_scaled <- scale(log(Canal_no_scaled + 1), center = T, scale = T)
+```
+
+
+
+
+Análisis descriptivo de los canales
+
+Matriz de correlaciones de las variables de los canales
+
+
+```{r}
+library(corrplot)
+corrplot(cor(Canal_no_scaled), 
+         method="color",  
+         type="upper", order='original', 
+         addCoef.col = "black", # Add coefficient of correlation
+         tl.col="black", tl.srt=45, #Text label color and rotation
+         sig.level = 0.01, insig = "blank", 
+         number.cex = 0.5,
+         # hide correlation coefficient on the principal diagonal
+         diag=FALSE
+         )
+```
+
+
+```{r}
+plot(1:15, colMeans(Canal_log), type = 'b', col = 'black', 
+     xaxt = "n", xlab = '', lwd = 2, ylab = 'Media')
+axis(1, 1:15, names(df)[1:15], las = 2)
+```
+
+```{r}
+plot(1:16, colMeans(finan_no_scaled), type = 'b', col = 'black', 
+     xaxt = "n", xlab = '', lwd = 2, ylab = 'Media')
+axis(1, 1:16, names(df)[16:31], las = 2)
+```
+
+Aqui termina el análisis descriptivo 
+#######################################################################################
+
+
+* Se utiliza agrupamiento jerarquico con la idea de que nos diga la cantidad de grupos que se deben considerar 
+
+```{r}
+library(ggdendro)
+library(ggplot2)
+require(factoextra)
+
+dendrogram <- hclust(dist(finan_scaled, method = 'euclidean'), method = 'ward.D')
+
+
+plot(dendrogram, xlab="", sub="", cex=0.9)
+rect.hclust(dendrogram, k=3, border="cyan4")
+```
+
+
+* Agrupamiento k means con las variables financieras:
+
+```{r}
+require(cluster)
+
+set.seed(93284)
+Agru_finan <- kmeans(finan_scaled, 3 , nstart = 5, iter.max = 100)
+
+clusplot(finan_scaled, Agru_finan$cluster, color = TRUE, 
+          shade = FALSE, labels = 4, lines = 1,
+          col.p = Agru_finan$cluster )
+```
+
+
+```{r}
+table(Agru_finan$cluster)
+```
+
+
+* Creación de un conjunto de datos con las variables financieras y la variable grupo 
+
+```{r}
+grupos <- as.factor(Agru_finan$cluster)
+
+fina_group <- data.frame(grupos, finan_no_scaled)
+head(fina_group)
+```
+
+* Niveles de la variable grupo
+
+```{r}
+levels(fina_group$grupos)
+```
+
+* Gráficos de barras que nos permitiran sacar carateristicas de cada uno de los grupos
+
+```{r}
+library(ggplot2)
+for(i in 2:dim(fina_group)[2]){
+  
+  if(class(fina_group[, i])=="integer"){
+    p <- ggplot(fina_group, aes(x = fina_group[, i], y = ..prop..))+ geom_bar(fill = "#0c4c8a")+facet_grid(vars(), vars(grupos))
+  }else{
+    p <- ggplot(fina_group, aes(x = factor(grupos), y=fina_group[, i])) +  geom_boxplot()
+  }
+  
+  p_final <- p +
+    labs(x = colnames(fina_group)[i]) +
+    theme_gray() 
+    
+  
+  print(p_final)
+}
+
+```
+
+
+```{r}
+library(ggplot2)
+for(i in 2:dim(fina_group)[2]){
+  
+  if(class(fina_group[, i])=="integer"){
+    p <- ggplot(fina_group, aes(x = fina_group[, i], y = ..prop..))+ geom_bar(fill = "#0c4c8a")
+  }else{
+    p <- ggplot(fina_group, aes(x = fina_group[, i])) +  geom_histogram(bins = 10, fill = "#0c4c8a")
+  }
+  
+  p_final <- p +
+    labs(x = colnames(fina_group)[i]) +
+    theme_gray() + 
+    facet_grid(vars(), vars(grupos))
+  
+  print(p_final)
+}
+```
+
+
+* Grupos de las variables escaladas 
+
+```{r}
+df_scaled_group <- data.frame(grupos,df_scaled)
+#outliers <- c(825, 1416, 1462, 1668, 1773) # Esto va a ser un solo grupo posteriormente
+#df_scaled_group <- df_scaled_group[-outliers,]
+```
+
+
+```{r}
+grupo1_scaled <- df_scaled_group[df_scaled_group$grupos==1,]
+grupo2_scaled <- df_scaled_group[df_scaled_group$grupos==2,]
+grupo3_scaled <- df_scaled_group[df_scaled_group$grupos==3,]
+```
+
+
+
+* Grupos de las variables no escaladas 
+
+```{r}
+df_group <- data.frame(grupos,df)
+
+df_group_log <- data.frame(grupos, Canal_log, finan_no_scaled)
+
+#outliers <- c(825, 1416, 1462, 1668, 1773) # Esto va a ser un solo grupo posteriormente
+#df_group <- df_group[-outliers,]
+```
+
+
+```{r}
+grupo1_no_scaled <- df_group[df_group$grupos==1,]
+grupo2_no_scaled <- df_group[df_group$grupos==2,]
+grupo3_no_scaled <- df_group[df_group$grupos==3,]
+```
+
+
+
+* Analizando los canales en los grupos ya formados a partir de las variables financieras:
+
+
+```{r}
+library(ggplot2)
+for(i in 2:dim(grupo1_no_scaled)[2]){
+  
+  p <- ggplot(df_group, aes(x = factor(grupos), y=log(df_group[, i]+1))) +  geom_boxplot()+
+    labs(x = colnames(df_group)[i]) +
+    theme_gray() 
+    
+  
+  print(p)
+}
+
+```
+
+
+* Media de los grupos
+
+```{r}
+media_df_grupfin <-  aggregate(.~grupos,data=df_group_log, FUN=mean)
+
+media_df_grupfin
+```
+
+
+
+* Análisis de los centroides
+
+```{r}
+plot(1:16, media_df_grupfin[1, 17:32], type = 'b', col = 'darkgreen', 
+     xaxt = "n", xlab = '', lwd = 2, ylab = 'centroide')
+axis(1, 1:16, names(media_df_grupfin)[17:32], las = 2)
+lines(1:16, media_df_grupfin[2, 17:32], col = 'darkblue', type = "b", lwd = 2)
+lines(1:16, media_df_grupfin[3, 17:32], col = "red", type = "b", lwd = 2)
+lines(1:16, colMeans(finan_no_scaled), col = 'black', type = 'b', lwd = 2, lty = 3)
+
+legend("bottomright", legend=c("Grupo1","Grupo2", "Grupo3", "Sin agrupar"),
+       col=c("darkgreen", "darkblue", "red", "black"), lty=1, bty = 'n')
+```
+
+```{r}
+plot(1:15, media_df_grupfin[1, 2:16], type = 'b', col = 'darkgreen', 
+     xaxt = "n", xlab = '', lwd = 2, ylab = 'centroide', ylim  = c(0, 30))
+axis(1, 1:15, names(media_df_grupfin)[2:16], las = 2)
+lines(1:15, media_df_grupfin[2, 2:16], col = 'darkblue', type = "b", lwd = 2)
+lines(1:15, media_df_grupfin[3, 2:16], col = "red", type = "b", lwd = 2)
+lines(1:15, colMeans(Canal_log), col = 'black', type = 'b', lwd = 2, lty = 3)
+
+legend("top", legend=c("Grupo1","Grupo2", "Grupo3", 'Sin agrupar'),
+       col=c("darkgreen", "darkblue", "red", "black"), lty=c(1, 1, 1, 3), lwd = 2, cex = 0.8, bty = 'n')
+```
+
+
+* Agrupamiento por canales en el grupo 1 de financieras:
+
+```{r}
+dendrogram <- hclust(dist(log(grupo1_no_scaled[,2:16]+1), method = 'euclidean'), method = 'ward.D')
+
+plot(dendrogram, xlab="", sub="", cex=0.9)
+```
+
+
+
+
+```{r}
+require(cluster)
+
+
+set.seed(932840)
+kc1 <- kmeans(log(grupo1_no_scaled[,2:16]+1), 2 , nstart = 5, iter.max = 100)
+
+clusplot(log(grupo1_no_scaled[,2:16]+1), kc1$cluster, color = TRUE, 
+          shade = FALSE, labels = 4, lines = 1,
+          col.p = kc1$cluster )
+```
+
+
+```{r}
+table(kc1$cluster)
+
+```
+
+
+Creación del conjunto de datos con los grupos creados:
+
+
+```{r}
+finan1_canal <- data.frame(sub_grupos=kc1$cluster, grupo1_no_scaled)
+finan1_canal$sub_grupos <- as.factor(finan1_canal$sub_grupos)
+head(finan1_canal)
+```
+
+
+
+
+```{r}
+library(ggplot2)
+for(i in 3:dim(finan1_canal)[2]){
+  
+  if(class(finan1_canal[, i])=="integer"){
+    p <- ggplot(finan1_canal, aes(x = finan1_canal[, i], y = ..prop..))+ geom_bar(fill = "#0c4c8a")+facet_grid(vars(), vars(sub_grupos))
+  }else{
+    p <- ggplot(finan1_canal, aes(x = factor(sub_grupos), y=log(finan1_canal[, i]+1))) +  geom_boxplot()
+  }
+  
+  p_final <- p +
+    labs(x = colnames(finan1_canal)[i]) +
+    theme_gray() 
+    
+  
+  print(p_final)
+
+}
+
+```
+
+* Media de los grupos
+
+```{r}
+finan1_canal_log <- finan1_canal
+
+finan1_canal_log[3:17] <- log(finan1_canal_log[3:17] + 1)
+```
+
+
+```{r}
+media_finan1_canal <- aggregate(.~sub_grupos,data= finan1_canal_log, FUN=mean)
+
+media_finan1_canal
+```
+
+```{r}
+plot(1:15, media_finan1_canal[1, 3:17], type = 'b', col = '#8F2517', 
+     xaxt = "n", xlab = '', lwd = 2, ylab = 'centroide', main = 'Grupo 1 financieras - CANALES')
+axis(1, 1:15, names(media_finan1_canal)[3:17], las = 2)
+lines(1:15, media_finan1_canal[2, 3:17], col = 'red', type = "b", lwd = 2)
+lines(1:15, media_df_grupfin[1, 2:16], col = "#FF6F5C", type = "b", lwd = 2, lty = 3)
+
+legend("top", legend=c("Grupo1.1","Grupo1.2", "MEDIA GRUPO 1"),  col=c("#8F2517", "red", "#FF6F5C"), lty=c(1, 1, 3), lwd = 2, bty = 'n')
+```
+
+```{r}
+plot(1:16, media_finan1_canal[1, 18:33], type = 'b', col = '#8F2517', 
+     xaxt = "n", xlab = '', lwd = 2, ylab = 'centroide', main = 'Grupo1 financieras - financieras')
+axis(1, 1:16, names(media_finan1_canal)[18:33], las = 2)
+lines(1:16, media_finan1_canal[2, 18:33], col = 'red', type = "b", lwd = 2)
+lines(1:16, media_df_grupfin[1, 17:32], col = "#FF6F5C", type = "b", lwd = 2, lty = 3)
+
+legend("topleft", legend=c("Grupo1.1","Grupo1.2", "Media Grupo1"),  col=c("#8F2517", "red", "#FF6F5C"), lty=c(1, 1, 3), lwd = 2, bty = 'n')
+```
+
+
+
+* Mediana de los grupos
+
+```{r}
+aggregate(.~sub_grupos,data=finan1_canal, FUN=median)
+```
+
+
+
+ * Agrupamiento por canales en el grupo 2 de financieras:
+
+```{r}
+dendrogram <- hclust(dist(log(grupo2_no_scaled[,2:16]+1), method = 'euclidean'), method = 'ward.D')
+
+plot(dendrogram, xlab="", sub="", cex=0.9)
+```
+
+
+```{r}
+require(cluster)
+
+set.seed(93284)
+kc2 <- kmeans(log(grupo2_no_scaled[,2:16]+1), 2, nstart = 5, iter.max = 100)
+
+clusplot(log(grupo2_no_scaled[,2:16]+1), kc2$cluster, color = TRUE, 
+          shade = FALSE, labels = 4, lines = 1,
+          col.p = kc2$cluster )
+```
+
+
+```{r}
+table(kc2$cluster)
+```
+
+
+Creación del conjunto de datos con los grupos creados:
+
+
+```{r}
+finan2_canal <- data.frame(sub_grupos=kc2$cluster, grupo2_no_scaled)
+finan2_canal$sub_grupos <- as.factor(finan2_canal$sub_grupos)
+head(finan2_canal)
+```
+
+```{r}
+library(ggplot2)
+for(i in 3:dim(finan2_canal)[2]){
+  
+  if(class(finan2_canal[, i])=="integer"){
+    p <- ggplot(finan2_canal, aes(x = finan2_canal[, i], y = ..prop..))+ geom_bar(fill = "#0c4c8a")+facet_grid(vars(), vars(sub_grupos))
+  }else{
+    p <- ggplot(finan2_canal, aes(x = factor(sub_grupos), y=log(finan2_canal[, i]+1))) +  geom_boxplot()
+  }
+  
+  p_final <- p +
+    labs(x = colnames(finan2_canal)[i]) +
+    theme_gray() 
+    
+  
+  print(p_final)
+
+}
+```
+
+```{r}
+finan2_canal_log <- finan2_canal
+
+finan2_canal_log[3:17] <- log(finan2_canal_log[3:17] + 1)
+```
+
+
+* Media de los grupos
+
+```{r}
+media_finan2_canal <- aggregate(.~sub_grupos,data=finan2_canal_log, FUN=mean)
+media_finan2_canal
+```
+
+```{r}
+plot(1:15, media_finan2_canal[1, 3:17], type = 'b', col = '#1D418F', 
+     xaxt = "n", xlab = '', lwd = 2, ylab = 'centroide', main = 'Grupo 2 financieras - CANALES')
+axis(1, 1:15, names(media_finan2_canal)[3:17], las = 2)
+lines(1:15, media_finan2_canal[2, 3:17], col = '#4273DB', type = "b", lwd = 2)
+lines(1:15, media_df_grupfin[2, 2:16], col = "#93B2FF", type = "b", lwd = 2, lty = 3)
+
+legend("top", legend=c("Grupo2.1","Grupo2.2", "MEDIA GRUPO 2"),  col=c("#1D418F", "#4273DB", "#93B2FF"), lty=c(1, 1, 3), lwd = 2,  bty = 'n')
+```
+
+```{r}
+plot(1:16, media_finan2_canal[1, 18:33], type = 'b', col = '#1D418F', 
+     xaxt = "n", xlab = '', lwd = 2, ylab = 'centroide', main = 'Grupo2 financieras - financieras')
+axis(1, 1:16, names(media_finan2_canal)[18:33], las = 2)
+lines(1:16, media_finan2_canal[2, 18:33], col = '#4273DB', type = "b", lwd = 2)
+lines(1:16, media_df_grupfin[2, 17:32], col = "#93B2FF", type = "b", lwd = 2, lty = 3)
+
+legend("top", legend=c("Grupo2.1","Grupo2.2", "Media Grupo2"),  col = c("#1D418F", "#4273DB", "#93B2FF"), lty=c(1, 1, 3), lwd = 2, bty = 'n')
+```
+
+
+
+* Mediana de los grupos
+
+```{r}
+aggregate(.~sub_grupos,data=finan2_canal, FUN=median)
+```
+
+
+
+
+* Agrupamiento por canales en el grupo 3 de financieras:
+
+```{r}
+dendrogram <- hclust(dist(log(grupo3_no_scaled[,2:16]+1), method = 'euclidean'), method = 'ward.D')
+
+plot(dendrogram, xlab="", sub="", cex=0.9)
+```
+
+
+```{r}
+require(cluster)
+
+set.seed(932840)
+kc3 <- kmeans(log(grupo3_no_scaled[,2:16]+1), 2 , nstart = 5, iter.max = 100)
+
+clusplot(log(grupo3_no_scaled[,2:16]+1), kc3$cluster, color = TRUE, 
+          shade = FALSE, labels = 4, lines = 1,
+          col.p = kc3$cluster )
+```
+
+
+```{r}
+table(kc3$cluster)
+```
+
+
+Creación del conjunto de datos con los grupos creados:
+
+
+```{r}
+finan3_canal <- data.frame(sub_grupos=kc3$cluster, grupo3_no_scaled)
+finan3_canal$sub_grupos <- as.factor(finan3_canal$sub_grupos)
+head(finan3_canal)
+```
+
+
+```{r}
+library(ggplot2)
+for(i in 3:dim(finan3_canal)[2]){
+  
+  if(class(finan3_canal[, i])=="integer"){
+    p <- ggplot(finan3_canal, aes(x = finan3_canal[, i], y = ..prop..))+ geom_bar(fill = "#0c4c8a")+facet_grid(vars(), vars(sub_grupos))
+  }else{
+    p <- ggplot(finan3_canal, aes(x = factor(sub_grupos), y=log(finan3_canal[, i]+1))) +  geom_boxplot()
+  }
+  
+  p_final <- p +
+    labs(x = colnames(finan3_canal)[i]) +
+    theme_gray() 
+    
+  
+  print(p_final)
+
+}
+```
+
+```{r}
+finan3_canal_log <- finan3_canal
+
+finan3_canal_log[3:17] <- log(finan3_canal[3:17] + 1)
+```
+
+* Media de los grupos
+
+```{r}
+media_finan3_canal <- aggregate(.~sub_grupos,data=finan3_canal_log, FUN=mean)
+media_finan3_canal
+```
+
+```{r}
+plot(1:15, media_finan3_canal[1, 3:17], type = 'b', col = '#008F0E', 
+     xaxt = "n", xlab = '', lwd = 2, ylab = 'centroide', main = 'Grupo 3 financieras - CANALES')
+axis(1, 1:15, names(media_finan3_canal)[3:17], las = 2)
+lines(1:15, media_finan3_canal[2, 3:17], col = '#00DB2C', type = "b", lwd = 2)
+lines(1:15, media_df_grupfin[3, 2:16], col = "#5EFF7E", type = "b", lwd = 2, lty = 3)
+
+legend("top", legend=c("Grupo3.1","Grupo3.2", "MEDIA GRUPO 3"),  col=c("#008F0E", "#00DB2C", "#5EFF7E"), lty=c(1, 1, 3), lwd = 2,  bty = 'n')
+```
+
+```{r}
+plot(1:16, media_finan3_canal[1, 18:33], type = 'b', col = '#008F0E', 
+     xaxt = "n", xlab = '', lwd = 2, ylab = 'centroide', main = 'Grupo3 financieras - financieras')
+axis(1, 1:16, names(media_finan3_canal)[18:33], las = 2)
+lines(1:16, media_finan3_canal[2, 18:33], col = '#00DB2C', type = "b", lwd = 2)
+lines(1:16, media_df_grupfin[3, 17:32], col = "#5EFF7E", type = "b", lwd = 2, lty = 3)
+
+legend("top", legend=c("Grupo3.1","Grupo3.2", "Media Grupo3"),  col = c("#008F0E", "#00DB2C", "#5EFF7E"), lty=c(1, 1, 3), lwd = 2, bty = 'n')
+```
+
+
+
+* Mediana de los grupos
+
+```{r}
+aggregate(.~sub_grupos,data=finan3_canal, FUN=median)
+```
+
+
+
+En general siempre el grupo 1 de los canales son los que más manejan dinero a través de los canales, el segundo los que manejan más o menos y por último el grupo 3 los que menos dinero manejan, este mismo comportamiento se ve en los tres subgrupos que se crearon en los tres grupos de las variables financieras
+
+
+* Grupos finales 
+
+
+```{r}
+Grupo1 <- finan1_canal[finan1_canal$sub_grupos==1,]
+Grupo2 <- finan1_canal[finan1_canal$sub_grupos==2,]
+
+Grupo3 <- finan2_canal[finan2_canal$sub_grupos==1,]
+Grupo4 <- finan2_canal[finan2_canal$sub_grupos==2,]
+
+Grupo5 <- finan3_canal[finan3_canal$sub_grupos==1,]
+Grupo6 <- finan3_canal[finan3_canal$sub_grupos==2,]
+
+# Grupo7 <- finan3_canal[finan3_canal$sub_grupos==1,]
+# Grupo8 <- finan3_canal[finan3_canal$sub_grupos==2,]
+# Grupo9 <- finan3_canal[finan3_canal$sub_grupos==3,]
+
+
+Grupos <- c(rep(1, dim(Grupo1)[1]), rep(2, dim(Grupo2)[1]), rep(3, dim(Grupo3)[1]), rep(4, dim(Grupo4)[1]), rep(5, dim(Grupo5)[1]), rep(6, dim(Grupo6)[1]))
+
+#  rep(7, dim(Grupo7)[1]), rep(8, dim(Grupo8)[1]), rep(9, dim(Grupo9)[1])
+
+Datos_finales <- rbind(Grupo1, Grupo2, Grupo3, Grupo4, Grupo5, Grupo6)
+
+# Grupo7, Grupo8, Grupo9
+Datos_finales <- data.frame(Grupos, Datos_finales)
+Datos_finales
+```
+
+
+```{r}
+library(ggplot2)
+for(i in 4:dim(Datos_finales)[2]){
+  
+  
+  if(i<18){
+    # p <- ggplot(Datos_finales, aes(x = factor(Grupos), y=log(Datos_finales[, i]+1))) +  geom_boxplot()
+    
+    p <- ggplot(Datos_finales, aes(x=log(Datos_finales[, i]+1))) +  geom_histogram(bins = 10, fill = "#0c4c8a")+facet_grid(vars(), vars(Grupos))
+    
+  }else{
+  
+    if(class(Datos_finales[, i])=="integer"){
+      p <- ggplot(Datos_finales, aes(x = Datos_finales[, i], y = ..prop..))+ geom_bar(fill = "#0c4c8a")+facet_grid(vars(), vars(Grupos))
+    }else{
+      p <- ggplot(Datos_finales, aes(x = factor(Grupos), y=Datos_finales[, i])) +  geom_boxplot()
+    }
+  
+    
+  }  
+    
+  p_final <- p +
+    labs(x = colnames(Datos_finales)[i]) +
+    theme_gray() 
+    
+  
+  print(p_final)
+
+}
+```
+
+
+
+
+```{r}
+Datos_finales_log <- Datos_finales
+
+Datos_finales_log[, 4:18] <- log(Datos_finales_log[, 4:18]+1)
+```
+
+
+* Media de los grupos
+
+```{r}
+media_finan_canal <- aggregate(.~Grupos,data=Datos_finales_log, FUN=mean)
+media_finan_canal
+```
+
+```{r}
+# par(mfrow = c(1, 2))
+
+plot(1:15, media_finan_canal[1, 4:18], type = 'b', col = '#E80EB8', 
+     xaxt = "n", xlab = '', lwd = 2, ylab = 'centroide', main = 'Grupos finales', ylim = c(0, 30))
+axis(1, 1:15, names(media_finan_canal)[4:18], las = 2)
+lines(1:15, media_finan_canal[2, 4:18], col = '#0F1EF2', type = "b", lwd = 2)
+lines(1:15, media_finan_canal[3, 4:18], col = '#19DBAD', type = "b", lwd = 2)
+lines(1:15, media_finan_canal[4, 4:18], col = '#92F20F', type = "b", lwd = 2)
+lines(1:15, media_finan_canal[5, 4:18], col = '#EBA81A', type = "b", lwd = 2)
+lines(1:15, media_finan_canal[6, 4:18], col = '#8C7AF5', type = "b", lwd = 2)
+
+legend("top", legend=c(paste("Grupo", 1:6, sep = '')),  col=c("#E80EB8", "#0F1EF2", "#19DBAD", "#92F20F", "#EBA81A", "#8C7AF5"), lty=1, lwd = 2,  bty = 'n', cex=0.7)
+```
+
+
+```{r}
+plot(1:16, media_finan_canal[1, 19:34], type = 'b', col = "#E80EB8", 
+     xaxt = "n", xlab = '', lwd = 2, ylab = 'centroide', main = 'Grupos finales', ylim=c(0,6))
+axis(1, 1:16, names(media_finan_canal)[19:34], las = 2)
+lines(1:16, media_finan_canal[2, 19:34], col = '#0F1EF2', type = "b", lwd = 2)
+lines(1:16, media_finan_canal[3, 19:34], col = '#19DBAD', type = "b", lwd = 2)
+lines(1:16, media_finan_canal[4, 19:34], col = '#92F20F', type = "b", lwd = 2)
+lines(1:16, media_finan_canal[5, 19:34], col = '#EBA81A', type = "b", lwd = 2)
+lines(1:16, media_finan_canal[6, 19:34], col = '#8C7AF5', type = "b", lwd = 2)
+
+legend("top", legend=c(paste("Grupo", 1:6, sep = '')),  col = c("#E80EB8", "#0F1EF2", "#19DBAD", "#92F20F", "#EBA81A", "#8C7AF5"), lty=1, lwd = 2,  bty = 'n', cex=0.8)
+```
+
+
+
