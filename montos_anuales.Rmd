@@ -83,7 +83,7 @@ Matriz de correlaciones de las variables de los canales
 
 ```{r}
 library(corrplot)
-corrplot(cor(Canal_no_scaled), 
+corrplot(cor(Canal_log), 
          method="color",  
          type="upper", order='original', 
          addCoef.col = "black", # Add coefficient of correlation
