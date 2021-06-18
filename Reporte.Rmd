@@ -1,0 +1,250 @@
+---
+title: ''
+author: "Jennifer Salazar"
+date: "17/6/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+
+### Análisis descriptivo 
+
+* Lectura de la base de datos
+
+```{r}
+df <- read.csv("base_trabajo_segmentacion.csv", sep = ";", dec = '.', header = T)
+df <- df[, -1]
+head(df)
+```
+
+
+
+```{r}
+dim(df)
+```
+
+* El conjunto de datos cuenta con 2233 registros es decir 2233 empresas que son clientes de la compañia a realizar el estudio.
+
+* El conjunto de datos cuenta con 46 variables de la cual 1 es el identificador de cada empresa (nit), otras 30 hacen referencia al uso de los diferentes canales que dispone la corporación de los cuales se cuenta con canales de entrada y salida y además unos miden los montos de dinero que manejan estos y otras el número de transacciones, ya las 16 variables restantes tienen que ver con caracteristicas financieras, las cuales generan una mejor compresión de como esta estructurada la empresa(cliente).
+
+
+
+
+* Separación de las variables financieras y canales (no escaladas)
+
+```{r}
+finan_no_scaled <- df[, 31:46]
+Canal_no_scaled <- df[ , 1:30]
+```
+
+
+* Separando en conjunto de datos de canales y financiera donde ya estan escaladas:
+
+
+```{r}
+# Escalamiento de los datos completos
+df_scaled <- scale(df, center = T, scale = T)
+
+Canal_scaled <- df_scaled[,1:30]
+finan_scaled <- df_scaled[,31:46]
+```
+
+
+* Variables de los canales en logaritmo sin escalar y escalando
+
+```{r}
+Canal_log <- log(Canal_no_scaled + 1) 
+
+Canal_log_scaled <- scale(log(Canal_no_scaled + 1), center = T, scale = T)
+```
+
+
+
+Análisis descriptivo de las variables asociada a los canales:
+
+En millones de pesos
+
+```{r}
+summary(Canal_no_scaled/1000000)
+```
+
+
+
+- Dado que se cuenta con unas cifras numericas muy grandes, se decide realizar el análisis de estas variables mediante el logaritmo ya que este permite una mejor compresión de cuales canales tienen mayor uso, cual manejan mayor dinero y cuales mayor número de transacciones y asi comprender mejor el funcionamiento de los distintos canales
+
+* Gráfico de las medias de los logaritmos de cada una de las variables asociadas a los canales
+
+
+
+```{r}
+fila_porcentaje <- function(fila){
+  
+  fila_suma <- sum(fila)
+  
+  if(fila_suma != 0){
+    
+    return(fila/fila_suma)
+  }else{
+   
+    return(fila)
+  }
+}
+
+
+Canal_porcentaje <- Canal_no_scaled
+
+
+Canal_porcentaje[, 1:11] <- t(apply(Canal_no_scaled[, 1:11], 1, fila_porcentaje))
+
+Canal_porcentaje[, 12:22] <- t(apply(Canal_no_scaled[, 12:22], 1, fila_porcentaje))
+
+Canal_porcentaje[, 23:26] <- t(apply(Canal_no_scaled[, 23:26], 1, fila_porcentaje))
+
+Canal_porcentaje[, 27:30] <- t(apply(Canal_no_scaled[, 27:30], 1, fila_porcentaje))
+
+```
+
+
+```{r}
+#layout(rbind(c(1,1,1),c(2,2,2)))
+par(mfcol = c(2, 1), mar = numeric(4), oma = c(4, 4, .5, .5), 
+   mgp = c(2, .6, 0))
+plot(1:30, colMeans(Canal_log), type = 'b', xaxt = "n", xlab = '', 
+     lwd = 2, ylab = 'Media', col="cyan4")
+#axis(1, 1:30, names(df)[1:30], las = 2)
+grid()
+
+plot(1:30, colMeans(Canal_porcentaje), type = 'b', col = 'cyan4', 
+     xaxt = "n", xlab = '', lwd = 2, ylab = 'Media')
+axis(1, 1:30, names(df)[1:30], las = 2)
+grid()
+```
+
+
+```{r}
+layout(rbind(c(1,1,2,2),c(3,3,4,4)))
+boxplot(log(df[,1:11]+1), las=2, col="cyan4")
+boxplot(log(df[,12:22]+1), las=2, col="cyan4")
+boxplot(log(df[,23:26]+1), las=2, col="cyan4")
+boxplot(log(df[,27:30]+1), las=2, col="cyan4")
+```
+
+
+
+
+
+#### Mediante el gráfico se puede analizar que:
+
+_Análisis de los canales de entrada:_
+
+* los canales de entrada que manejan un monto promedio más alto de dinero son el canal1, canal2, canal6, canal8 y canal9
+
+
+* los canales de entrada que manejan un monto promedio más bajo de dinero son el canal4, canal7, canal10 y canalOtros
+
+* los canales de entrada que manejan en promedio un mayor número de transacciones son el canal1 y canal2
+
+* los canales de entrada que manejan en promedio un número intermedio de transacciones son el canal3, canal4, canal5, canal6, canal8 y canal9
+
+* los canales de entrada que manejan en promedio un menor número de transacciones son el canal7, canal10 y CanalOtros.
+
+En general en los canales de entrada, el canal1 y el canal2 son los que manejan un mayor monto promedio de dinero y además un mayor número de transacciones; por otro lado el canal7 y el canal10 son los que manejan menor monto promedio de dinero y además y un menor número de transacciones. También se puede visualizar particularmente que a pesar de que el canal5 maneja un mayor monto promedio de dinero que el canal4, en el canal5 se presenta un menor número de transacciones que en el canal4.
+
+
+
+_Análisis de los canales de salida:_
+
+* El canal de salida que maneja un monto promedio mayor de dinero es el canal2
+
+* El canal de salida que maneja un monto promedio intermedio de dinero es el canal5
+
+* El canales de salida que maneja un monto promedio menor de dinero son el canal8 y canalOtros
+
+* los canal de salida que manejan en promedio un mayor número de transacciones es el canal2.
+
+* los canales de salida que manejan en promedio un menor número de transacciones son el canal5, canal8 y CanalOtros, aunque es mayor el del canal5 que el de los otros.
+
+En general en los canales de salida, el canal2 es el que maneja un mayor monto promedio de dinero, además un mayor número de transacciones; por otro lado los canales8 y canalOtros son los que manejan los menores montos promedios de dinero y menores números de transacciones.
+
+
+* Matriz de correlació asociada a las variables de los canales:
+
+```{r}
+library(corrplot)
+corrplot(cor(Canal_no_scaled), 
+         method="color",  
+         type="upper", order='original', 
+         addCoef.col = "black", # Add coefficient of correlation
+         tl.col="black", tl.srt=45, #Text label color and rotation
+         sig.level = 0.01, insig = "blank", 
+         number.cex = 0.5,
+         # hide correlation coefficient on the principal diagonal
+         diag=FALSE
+         )
+```
+
+(Interpretar)
+
+
+
+Las variables asociadas a los canales más correlacionadas son:
+
+
+```{r, message=FALSE}
+library(corrr)
+library(dplyr)
+corr_canales <- Canal_no_scaled %>%
+    correlate() %>% 
+    stretch() %>% 
+    arrange(r)
+
+corr_altas <- corr_canales[which(corr_canales$r > 0.9), ]
+
+nombres <- c(corr_altas$x, corr_altas$y)
+unique(nombres)
+```
+
+
+<hr>
+
+Análisis descriptivo de las variables financieras:
+
+```{r}
+summary(finan_no_scaled)
+```
+
+
+
+```{r}
+library(ggplot2)
+for(i in 1:dim(finan_no_scaled)[2]){
+  
+  if(class(finan_no_scaled[, i])=="integer"){
+    p <- ggplot(finan_no_scaled, aes(x = finan_no_scaled[, i], y = ..prop..))+ geom_bar(fill = "#0c4c8a")
+  }else{
+    p <- ggplot(finan_no_scaled, aes(x=finan_no_scaled[, i])) +  geom_histogram(bins = 10, fill = "#0c4c8a")
+  }
+  
+  p_final <- p +
+    labs(x = colnames(finan_no_scaled)[i]) +
+    theme_gray() 
+    
+  
+  print(p_final)
+}
+```
+
+```{r}
+plot(1:16, colMeans(finan_no_scaled), type = 'b', col = 'cyan4', 
+     xaxt = "n", xlab = '', lwd = 2, ylab = 'Media')
+axis(1, 1:16, names(df)[31:46], las = 2)
+grid()
+```
+
+
+
+
