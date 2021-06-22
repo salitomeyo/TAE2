@@ -29,7 +29,7 @@ dim(df)
 
 * El conjunto de datos cuenta con 2233 registros es decir 2233 empresas que son clientes de la compañia a realizar el estudio.
 
-* El conjunto de datos cuenta con 46 variables de la cual 1 es el identificador de cada empresa (nit), otras 30 hacen referencia al uso de los diferentes canales que dispone la corporación de los cuales se cuenta con canales de entrada y salida y además unos miden los montos de dinero que manejan estos y otras el número de transacciones, ya las 16 variables restantes tienen que ver con caracteristicas financieras, las cuales generan una mejor compresión de como esta estructurada la empresa(cliente).
+* El conjunto de datos cuenta con 46 variables, de las cuales, la primera es el identificador (nit) de cada empresa (cliente), las siguientes 30, hacen referencia al uso de los clientes de los diferentes canales con los que dispone la organización, estos se dividen en canales de entrada y de salida y además unos miden los montos de dinero que manejan y otras el número de transacciones que pasan a traves de estos. Las 16 variables restantes tienen que ver con caracteristicas financieras, las cuales permiten conocer algunas peculiaridades de como esta estructurada la empresa(cliente).
 
 
 
@@ -64,20 +64,26 @@ Canal_log_scaled <- scale(log(Canal_no_scaled + 1), center = T, scale = T)
 
 
 
-Análisis descriptivo de las variables asociada a los canales:
+Análisis descriptivo de las variables de los montos en los canales de entrada y salida:
 
 En millones de pesos
 
 ```{r}
-summary(Canal_no_scaled/1000000)
+summary(Canal_no_scaled[c(1:11, 23:26)]/1000000)
+```
+
+Análisis descriptivo de las variables de número de transacciones por canal de entrada y salida:
+
+En número de transacciones
+
+```{r}
+summary(Canal_no_scaled[c(12:22, 27:30)])
 ```
 
 
+- Dado que se cuenta con unas cifras numericas muy grandes, se decide realizar el análisis gráfico de estas variables mediante el logaritmo, ya que este permite una mejor visualización y compresión de cuales canales tienen mayor uso, cual manejan mayor dinero y cuales mayor número de transacciones y asi comprender mejor el funcionamiento de los distintos canales.
 
-- Dado que se cuenta con unas cifras numericas muy grandes, se decide realizar el análisis de estas variables mediante el logaritmo ya que este permite una mejor compresión de cuales canales tienen mayor uso, cual manejan mayor dinero y cuales mayor número de transacciones y asi comprender mejor el funcionamiento de los distintos canales
-
-* Gráfico de las medias de los logaritmos de cada una de las variables asociadas a los canales
-
+* Gráfico de la media del logaritmo de cada variable asociadas a los canales
 
 
 ```{r}
@@ -122,6 +128,8 @@ plot(1:30, colMeans(Canal_porcentaje), type = 'b', col = 'cyan4',
      xaxt = "n", xlab = '', lwd = 2, ylab = 'Media')
 axis(1, 1:30, names(df)[1:30], las = 2)
 grid()
+mtext("Media", side = 2, outer = TRUE, line = 1.7, adj = 0.75)
+mtext("Porcentaje", side = 2, outer = F, line = 1.7)
 ```
 
 
@@ -141,16 +149,16 @@ boxplot(log(df[,27:30]+1), las=2, col="cyan4")
 
 _Análisis de los canales de entrada:_
 
-* los canales de entrada que manejan un monto promedio más alto de dinero son el canal1, canal2, canal6, canal8 y canal9
+* los canales de entrada que manejan un monto promedio más alto de dinero son: canal1, canal2, canal6, canal8 y canal9
 
 
-* los canales de entrada que manejan un monto promedio más bajo de dinero son el canal4, canal7, canal10 y canalOtros
+* los canales de entrada que manejan un monto promedio más bajo de dinero son: canal4, canal7, canal10 y canalOtros
 
-* los canales de entrada que manejan en promedio un mayor número de transacciones son el canal1 y canal2
+* los canales de entrada que manejan en promedio un mayor número de transacciones son: canal1 y canal2
 
-* los canales de entrada que manejan en promedio un número intermedio de transacciones son el canal3, canal4, canal5, canal6, canal8 y canal9
+* los canales de entrada que manejan en promedio un número intermedio de transacciones son: canal3, canal4, canal5, canal6, canal8 y canal9
 
-* los canales de entrada que manejan en promedio un menor número de transacciones son el canal7, canal10 y CanalOtros.
+* los canales de entrada que manejan en promedio un menor número de transacciones son: canal7, canal10 y CanalOtros.
 
 En general en los canales de entrada, el canal1 y el canal2 son los que manejan un mayor monto promedio de dinero y además un mayor número de transacciones; por otro lado el canal7 y el canal10 son los que manejan menor monto promedio de dinero y además y un menor número de transacciones. También se puede visualizar particularmente que a pesar de que el canal5 maneja un mayor monto promedio de dinero que el canal4, en el canal5 se presenta un menor número de transacciones que en el canal4.
 
@@ -162,11 +170,11 @@ _Análisis de los canales de salida:_
 
 * El canal de salida que maneja un monto promedio intermedio de dinero es el canal5
 
-* El canales de salida que maneja un monto promedio menor de dinero son el canal8 y canalOtros
+* Los canales de salida que manejan un monto promedio menor de dinero son el canal8 y canalOtros
 
-* los canal de salida que manejan en promedio un mayor número de transacciones es el canal2.
+* El canal de salida que maneja en promedio un mayor número de transacciones es el canal2.
 
-* los canales de salida que manejan en promedio un menor número de transacciones son el canal5, canal8 y CanalOtros, aunque es mayor el del canal5 que el de los otros.
+* Los canales de salida que manejan en promedio un menor número de transacciones son el canal5, canal8 y CanalOtros, aunque entre estos el canal5 es el que realiza un mayor número de transacciones.
 
 En general en los canales de salida, el canal2 es el que maneja un mayor monto promedio de dinero, además un mayor número de transacciones; por otro lado los canales8 y canalOtros son los que manejan los menores montos promedios de dinero y menores números de transacciones.
 
@@ -194,7 +202,7 @@ corrplot(cor(Canal_no_scaled),
 Las variables asociadas a los canales más correlacionadas son:
 
 
-```{r, message=FALSE}
+```{r, message=FALSE, warning=FALSE}
 library(corrr)
 library(dplyr)
 corr_canales <- Canal_no_scaled %>%
