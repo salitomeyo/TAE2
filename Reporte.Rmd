@@ -221,11 +221,6 @@ unique(nombres)
 
 Análisis descriptivo de las variables financieras:
 
-```{r}
-summary(finan_no_scaled)
-```
-
-
 
 ```{r, message=FALSE, warning=FALSE}
 library(ggplot2)
@@ -299,6 +294,9 @@ plot(1:16, colMeans(finan_no_scaled), type = 'b', col = 'cyan4',
      xaxt = "n", xlab = '', lwd = 2, ylab = 'Media')
 axis(1, 1:16, names(df)[31:46], las = 2)
 grid()
+```
+```{r}
+apply(finan_no_scaled, 2, mean)
 ```
 
 
