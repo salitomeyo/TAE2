@@ -9,8 +9,18 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+---
+Introducción
+---
+Resumen
 
+---
+Retos
 
+---
+Contextualización
+
+---
 ### Análisis descriptivo 
 
 * Lectura de la base de datos
@@ -195,6 +205,7 @@ corrplot(cor(Canal_no_scaled),
          )
 ```
 
+(Pegar esa matriz como img)
 (Interpretar)
 
 
@@ -291,12 +302,10 @@ _ **pagos_pj: **
 
 ```{r}
 plot(1:16, colMeans(finan_no_scaled), type = 'b', col = 'cyan4', 
-     xaxt = "n", xlab = '', lwd = 2, ylab = 'Media')
+     xaxt = "n", xlab = '', lwd = 2, ylab = 'Media', ylim = c(0, 4.3))
 axis(1, 1:16, names(df)[31:46], las = 2)
+text(apply(finan_no_scaled, 2, mean)+0.2, labels = round(apply(finan_no_scaled, 2, mean), 1))
 grid()
-```
-```{r}
-apply(finan_no_scaled, 2, mean)
 ```
 
 
@@ -305,7 +314,7 @@ apply(finan_no_scaled, 2, mean)
 
 Correlaciones entre las variables financieras
 
-```{r}
+```{r, message=FALSE, warning=FALSE}
 library(corrplot)
 corrplot(cor(finan_no_scaled), 
          method="color",  
@@ -337,4 +346,38 @@ corrplot(cor(finan_no_scaled),
 - Se observa una relación positiva moderada entre totalinventory y cxc, con una correlación de 0.52
 
 - Se observa una relación positiva moderada entre cxp y cxc, con una correlación de 0.68.
+
+---
+PREPROCESAMIENTO
+
+
+---
+Metodo 1 - (fina - canal - log - scaled)
+
+
+---
+
+Metodo 2 - (canal - fina - log - scaled)
+
+
+---
+Metodo 3 - (Resumido - log )
+
+
+---
+
+Caracterización del mejor
+
+---
+
+Conclusiones
+
+---
+
+Que se puede mejorar
+
+---
+
+Referencias
+
 
