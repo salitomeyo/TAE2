@@ -181,7 +181,7 @@ En general en los canales de salida, el canal2 es el que maneja un mayor monto p
 
 * Matriz de correlació asociada a las variables de los canales:
 
-```{r}
+```{r, message=FALSE, warning=FALSE}
 library(corrplot)
 corrplot(cor(Canal_no_scaled), 
          method="color",  
@@ -227,7 +227,7 @@ summary(finan_no_scaled)
 
 
 
-```{r}
+```{r, message=FALSE, warning=FALSE}
 library(ggplot2)
 for(i in 1:dim(finan_no_scaled)[2]){
   
@@ -246,6 +246,54 @@ for(i in 1:dim(finan_no_scaled)[2]){
 }
 ```
 
+- **impo_cv: ** Más del 60% de los clientes tiene un nivel de importación entre 1 y 2.
+
+- **expo_vt: ** Más del 50% de los clientes tiene un nivel del exportación de 2.
+
+- **cxp: ** Más del 50% de los clientes tiene un número bajo de cuentas por cobrar (1 y 2). También destaca que más del 15% de los clientes están en el nivel más alto de cuentas por cobrar (6).
+
+- **cxp: ** Más del 25% de los clientes se encuentran en el nivel más alto del número de cuentas por cobra (6), sin embargo más del 55% de los clientes se encuentra en el nivel 1, 2 y 3 de cuentas por cobrar.
+ 
+- **totalinventory: ** Casi un 25% de los clientes está en el nivel más alto del valor de inventario al 31 de diciembre, El grueso de los clientes se encuntra en el nivel 1, 2 y 3.
+
+_ **pagos_pj: ** 
+
+  * El 75% de los clientes tiene un porcentaje de pago a personas jurídicas que ronda entre el 31.6 y el 77.4 porciento. 
+  
+  * También se puede observar que en promedio el porcentaje de pago a personas jurídicas está en el 53.9%.
+  
+  * Aproximadamente un 25% de los clientes del la empresa, tiene un porcentaje de pago a personas jurídicas que ronda entre el 78 y el 100 porciento.
+  
+- **pagos_pn: **
+
+  * El 75% de los clientes tiene un porcentaje de pago a personas naturales que ronda entre el 20 y el 66.5 porciento. 
+  
+  * También se puede observar que en promedio el porcentaje de pago a personas naturales está en el 44%.
+  
+  * Aproximadamente un 25% de los clientes del la empresa, tiene un porcentaje de pago a personas naturales que ronda entre el 0 y el 19 porciento.
+
+- **tiene_ventas_fisicas: ** El 52.4% de los clientes no tiene ventas fisicas, mientras que el 47.5% si.
+
+- **tiene_ventas_electronicas: ** Aproximadamente el 95% de los clientes no tiene ventas electronicas.
+
+- **recaudos_pj: ** El 93.2% de los clientes de la empresa no tienen ingresos provenientes de personas jurídicas. Aproximadamente el 0.8% de los clientes tienen todos sus igresos de personas jurídicas.
+
+- **recaudos_pn: ** El 92.1% de los clientes de la empresa no tiene ingresos provenientes de personas neturales. Aproximadamente el 2% de los clientes tienen todos sus igresos de personas naturales.
+
+- **rotacion_inventarios: ** Un poco más del 20% de los clientes se encuentra en el nivel de rotación más lento de inventario en días (nivel 6). Aproximadamente el 48% de los clientes se encuentra en el nivel de rotación más rápido (nivel 1 y 2).
+
+- **rotacion_cxc: ** Aproximadamente el 55% de los clientes tiene una velocidad alta (nivel 1 y 2) para cobrar sus cuentas.
+
+- **rotacion_cxp: ** Aproximadamente el 65% de los clientes tiene una velocidad alta (nivel 1 y 2) para pagar sus cuentas.
+
+- **cliclo_negocio: ** El 45% de los clientes tiene un ciclo de negocio lento, es decir en los niveles más altos (5 y 6). Aproximadamente el 23% de los clientes tiene un ciclo de negocio nivel 4, es medir medio-lento.
+
+- **cliclo_financiero: ** El 45% de los clientes tiene un ciclo de financiero lento, es decir en los niveles más altos (5 y 6).
+
+
+
+* A continuación se pueden observar las características financieras de un cliente promedio.
+
 ```{r}
 plot(1:16, colMeans(finan_no_scaled), type = 'b', col = 'cyan4', 
      xaxt = "n", xlab = '', lwd = 2, ylab = 'Media')
@@ -254,5 +302,41 @@ grid()
 ```
 
 
+* Matriz de correlaciones
 
+
+Correlaciones entre las variables financieras
+
+```{r}
+library(corrplot)
+corrplot(cor(finan_no_scaled), 
+         method="color",  
+         type="upper", order="hclust", 
+         addCoef.col = "black", # Add coefficient of correlation
+         tl.col="black", tl.srt=45, #Text label color and rotation
+         sig.level = 0.01, insig = "blank", 
+         number.cex = 0.6,
+         # hide correlation coefficient on the principal diagonal
+         diag=FALSE 
+         )
+
+```
+
+- Se observa una relación inversamente proporcional entre las variables pagos_pj y pagos_pn, con una correlación de 0.88.
+
+- Se observa una buena relación lineal entre las variables rotacion_inventarios y ciclo_negocio, con un coeficiente de correlación de 0.77.
+
+- Se observa una relación positiva buena entre ciclo_negocio y ciclo_financiero, con un coeficiente de correlación del 0.77.
+
+- Se observa una relación moderada entre rotacion_inventarios y ciclo_financiero, con una correlación de 0.65
+
+- Se observa una relación moderada entre ciclo_negocio y rotacion_cxc, con una correlación de 0.59
+
+- Se observa una relación positiva grande entre impo_cv y expo_vt, con una correlación de 0.87
+
+- Se observa una relación positiva moderada entre totalinventory y cxp, con una correlación de 0.58.
+
+- Se observa una relación positiva moderada entre totalinventory y cxc, con una correlación de 0.52
+
+- Se observa una relación positiva moderada entre cxp y cxc, con una correlación de 0.68.
 
