@@ -10,15 +10,69 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 ---
-Introducción
+###Introducción
+
+En la actualidad, se observa una tendencia en las empresas de adoptar un enfoque orientado hacia sus clientes, los comportamientos y necesidades de estos. Esto implica que la organización y todas las personas pertenecientes a ella deben responder a las necesidades de los diferentes clientes, logrando que la empresa responda en tiempo y forma oportuna las exigencias del medio.
+
+Aquellas empresas con un enfoque orientado hacia los clientes, son más rentables. Puesto que, al conocer y satisfacer mejor las necesidades de los mismos desarrollan relaciones de largo plazo generando mayor lealtad y la
+posibilidad de futuras negociaciones.
+
+Por ello se entra en la necesidad de realizar un proceso de segmentación de clientes  el cual es un  proceso que permite a las empresas dividir a sus consumidores en categorías específicas, basadas en características que se extraen de su comportamiento como clientes y la información que pueden obtener de sus interacciones con la empresa; en este estudio en particular se está trabajando con  información de clientes corporativos de una empresa cuyos clientes son empresas, las cuales se busca crear grupos de estas empresas(clientes) para ayudar a la empresa principal que se esta enfocada en el sector bancario a como tratar sus clientes, a que servicios y beneficios ofrecer a estos según sus condiciones, es decir ayudar a la toma de decisiones para que todo el entorno corporativo funciona de una manera efectiva, es por ello que se considera de suma importancia efectuar una segmentación de clientes y poder detectar aquel segmento que genera mayor rentabilidad para el Banco. De este modo, se desarrolla una herramienta que colabore con la nueva percepción de la entidad y que permita migrar con mayor facilidad a un enfoque de gestión orientado hacia los clientes.
 ---
-Resumen
+###Resumen
+
+El objetivo es crear grupos  que tengan sentido es decir interpretables para ser clasificados y caracterizados mediante la identificación de patrones de uso de productos y canales y su relación con los estados financieros de los diferentes clientes(empresas)  que permitan tomar acción sobre esos grupos, como el ofrecimiento de sus servicios y entender más a fondo cómo se comportan en el entorno.
+
+El presente trabajo se concentrará en una segmentación de clientes de un banco (las cuales son empresas), las cuales se dispone información de estos, como la utilización de los diferentes canales de entrada y de salida, permitiendo entender cómo  es el comportamiento de uso de los diferentes medios que tiene el  banco, por otro lado también se dispone información de las estados o características financieras de los diferentes clientes, las cuales permiten entender a esta como esta estructurada, ya sea saber que tipo de empresa es, si de servicios, de productos, si es grande, pequeña, si se mueve a nivel nacional y/o internacional, como es el comportamiento de sus inventarios, de sus cuentas por cobrar y  pagar y de los diferentes ciclos de negocios y financieros, etc. los cuales permiten entender que caracteriza al cliente y más que eso el cliente que necesita y de qué manera se le puede ofrecer diferentes beneficios o servicios.
+
+El proceso de segmentación está basado en un algoritmo llamado k-means, 
+K-means es un algoritmo de clasificación no supervisado (clusterización) que agrupa objetos en k grupos basándose en sus características. El agrupamiento se realiza minimizando la suma de distancias entre cada objeto y el centroide de su grupo o cluster.
 
 ---
-Retos
+###Retos
+
+* Entender el entorno en el que se está trabajando, cuál es el objetivo del trabajo y saber que debido a que es un problema de aprendizaje no supervisado se debe intentar llegar a los resultados que intuitivamente sean más adecuados y coherentes.
+* Contextualización de la base de datos (Interpretación correcta de cada variables, sus unidades y rangos)
+Presentación de las variables mediante tablas y gráficas permitiendo entender su comportamiento y estructura
+* Transformaciones y escalamiento de variables
+Utilización correcta de las variables como métodos de selección y/o manipulación de variables
+* Diferentes ideas y caminos para realizar los agrupamientos mediante k-means
+* Escoger cual es el mejor agrupamiento de los realizados mediante los resultados obtenidos y con el uso de un método de interés para realizar comparaciones.
+* Caracterización de los diferentes grupos.
+* Posibles estrategias o recomendaciones que se le puede dar a la organización para trabajar con sus diferentes grupos de clientes.
+Conclusiones del estudio.
 
 ---
-Contextualización
+###Contextualización
+
+El estudio se quiere realizar o contextualizar en un entorno o sector bancario el cual tiene como clientes a  empresas que utilizan sus diferentes servicios, que están basados en canales de entrada y de salida, donde cada uno es utilizado con un fin específico y según la necesidad del respectivo cliente, los diferentes clientes pueden utilizar diversos canales, montos y número de transacciones diferentes por lo tanto el objetivo de la entidad bancaria es comprender cómo pueden agruparse sus diferentes clientes según sus características financieras y según el uso que hacen de los diferentes canales con el fin de más adelante ofrecer condiciones que se adapten más a sus hábitos, además de incentivar la manera como participa, permitiendo beneficios por los canales que son de su interés, por lo tanto la entidad bancaria busca obtener un proceso de segmentación muy bien elaborado, lo cual le permita tomar decisiones frente a sus clientes y contribuyan al crecimiento de la organización ya que aparte de entender a los clientes actuales, se espera entender a los nuevos clientes que puedan llegar y poder ofrecerles los servicios que mejor se adapten a sus características.
+
+(describir a las diferentes empresas con diferentes necesidades-especificar más sobre los canales que ofrece el banco-decir más decisiones que podría tomar el banco a partir de la segmentación-poner una ejemplificación del proceso cliente/empresa que puede presentarse-hablar más sobre cómo funciona el sector bancario).
+
+#### Contextualización de variables
+
+* impo_cv: [importaciones]/[compras] categorizadas (Nivel que representa el porcentaje de los insumos que compra esa empresa importados?)
+* expo_vt: [exportaciones]/[ventas] categorizadas (Nivel que representa el porcentaje de lo que la empresa produce es para exportar?, 0.5 mitad en colombia lo otro lo exporta
+* cxp: [cuentas por pagar] categorizada con seis niveles (Número de cuentas que tiene por pagar el cliente-Deudas)
+* cxc: [cuentas por cobrar] categorizada con seis niveles  (Número de cuentas que tiene por cobrar el  cliente-Adquisiciones) (Se ha vendido)
+* totalinventory: [valor de inventarios] categorizada con seis niveles (Cuanto valen los inventarios de la empresa al 31 de diciembre) Si presta servicios son casi 0, lo que estaba para la venta pero no ha vendido.
+* pagos_pj: [pagos hechos a personas jurídicas]/[pagos totales] ( Porcentaje de los pagos que van hacia empresas)
+* pagos_pn: [pagos hechos a personas naturales]/[pagos totales]  Porcentaje de los pagos que van hacia personas)
+* tiene_ventas_fisicas: la empresa tiene puntos de venta físicos (1:Si, 0:No)
+* tiene_ventas_electronicas: la empresa tiene ventas electrónicas (1:Si, 0:No)
+* recaudos_pj: [recaudos provenientes de personas jurídicas]/[recaudos totales] ( Porcentaje de los recaudos que provienen de empresas)
+* recaudos_pn: [recaudos provenientes de personas naturales]/[recaudos totales] (Porcentaje de los recaudos que provienen de personas)
+* recaudo: todos los ingresos registrados en un tiempo estimado
+* rotacion_inventarios: [rotación de inventarios en días] categorizada con seis niveles (Índice del número de veces que se han renovado las existencias en días)
+* rotacion_cxp: [rotación de cuentas por pagar en días] categorizada con seis niveles (Hay 4 niveles)(índice de la velocidad con que la empresa ha pagado las deudas contraídas con proveedores en días, es decir, capacidad de saldar sus deudas)
+* rotacion_cxc: [rotación de cuentas por cobrar en días] categorizada con seis niveles (Hay 4 niveles) (Índice de la velocidad con la que una empresa cobra sus cuentas, es decir, capacidad de transformarlas en dinero efectivo)
+* ciclo_negocio: [ciclo de negocio en días] categorizada con seis niveles (Índice del número de días que le toma a una empresa llevar a cabo todas sus operaciones de negocio)
+* ciclo_financiero: [ciclo financiero en días] categorizada con seis niveles (Índice del número de días que le toma a una empresa llevar a cabo todas sus operaciones financieras) - (Entre más pequeño, más rápido recupera la empresa su inversión)
+* en_vm_canalX: valor del ticket promedio de entrada por el canal X
+* sal_vm_canalX: valor del ticket promedio de salida por el canal X
+* en_tx_canalX: cantidad de transacciones de entrada mensuales en promedio por el canal X
+* sal_tx_canalX: cantidad de transacciones de salida mensuales en promedio por el canal X
+
 
 ---
 ### Análisis descriptivo 
@@ -31,8 +85,6 @@ df <- df[, -1]
 head(df)
 ```
 
-
-
 ```{r}
 dim(df)
 ```
@@ -41,9 +93,6 @@ dim(df)
 
 * El conjunto de datos cuenta con 46 variables, de las cuales, la primera es el identificador (nit) de cada empresa (cliente), las siguientes 30, hacen referencia al uso de los clientes de los diferentes canales con los que dispone la organización, estos se dividen en canales de entrada y de salida y además unos miden los montos de dinero que manejan y otras el número de transacciones que pasan a traves de estos. Las 16 variables restantes tienen que ver con caracteristicas financieras, las cuales permiten conocer algunas peculiaridades de como esta estructurada la empresa(cliente).
 
-
-
-
 * Separación de las variables financieras y canales (no escaladas)
 
 ```{r}
@@ -51,9 +100,7 @@ finan_no_scaled <- df[, 31:46]
 Canal_no_scaled <- df[ , 1:30]
 ```
 
-
 * Separando en conjunto de datos de canales y financiera donde ya estan escaladas:
-
 
 ```{r}
 # Escalamiento de los datos completos
@@ -63,7 +110,6 @@ Canal_scaled <- df_scaled[,1:30]
 finan_scaled <- df_scaled[,31:46]
 ```
 
-
 * Variables de los canales en logaritmo sin escalar y escalando
 
 ```{r}
@@ -71,8 +117,6 @@ Canal_log <- log(Canal_no_scaled + 1)
 
 Canal_log_scaled <- scale(log(Canal_no_scaled + 1), center = T, scale = T)
 ```
-
-
 
 Análisis descriptivo de las variables de los montos en los canales de entrada y salida:
 
@@ -90,11 +134,9 @@ En número de transacciones
 summary(Canal_no_scaled[c(12:22, 27:30)])
 ```
 
-
 - Dado que se cuenta con unas cifras numericas muy grandes, se decide realizar el análisis gráfico de estas variables mediante el logaritmo, ya que este permite una mejor visualización y compresión de cuales canales tienen mayor uso, cual manejan mayor dinero y cuales mayor número de transacciones y asi comprender mejor el funcionamiento de los distintos canales.
 
 * Gráfico de la media del logaritmo de cada variable asociadas a los canales
-
 
 ```{r}
 fila_porcentaje <- function(fila){
@@ -151,16 +193,11 @@ boxplot(log(df[,23:26]+1), las=2, col="cyan4")
 boxplot(log(df[,27:30]+1), las=2, col="cyan4")
 ```
 
-
-
-
-
 #### Mediante el gráfico se puede analizar que:
 
 _Análisis de los canales de entrada:_
 
 * los canales de entrada que manejan un monto promedio más alto de dinero son: canal1, canal2, canal6, canal8 y canal9
-
 
 * los canales de entrada que manejan un monto promedio más bajo de dinero son: canal4, canal7, canal10 y canalOtros
 
@@ -171,8 +208,6 @@ _Análisis de los canales de entrada:_
 * los canales de entrada que manejan en promedio un menor número de transacciones son: canal7, canal10 y CanalOtros.
 
 En general en los canales de entrada, el canal1 y el canal2 son los que manejan un mayor monto promedio de dinero y además un mayor número de transacciones; por otro lado el canal7 y el canal10 son los que manejan menor monto promedio de dinero y además y un menor número de transacciones. También se puede visualizar particularmente que a pesar de que el canal5 maneja un mayor monto promedio de dinero que el canal4, en el canal5 se presenta un menor número de transacciones que en el canal4.
-
-
 
 _Análisis de los canales de salida:_
 
@@ -187,7 +222,6 @@ _Análisis de los canales de salida:_
 * Los canales de salida que manejan en promedio un menor número de transacciones son el canal5, canal8 y CanalOtros, aunque entre estos el canal5 es el que realiza un mayor número de transacciones.
 
 En general en los canales de salida, el canal2 es el que maneja un mayor monto promedio de dinero, además un mayor número de transacciones; por otro lado los canales8 y canalOtros son los que manejan los menores montos promedios de dinero y menores números de transacciones.
-
 
 * Matriz de correlació asociada a las variables de los canales:
 
@@ -208,10 +242,7 @@ corrplot(cor(Canal_no_scaled),
 (Pegar esa matriz como img)
 (Interpretar)
 
-
-
 Las variables asociadas a los canales más correlacionadas son:
-
 
 ```{r, message=FALSE, warning=FALSE}
 library(corrr)
@@ -227,11 +258,9 @@ nombres <- c(corr_altas$x, corr_altas$y)
 unique(nombres)
 ```
 
-
 <hr>
 
 Análisis descriptivo de las variables financieras:
-
 
 ```{r, message=FALSE, warning=FALSE}
 library(ggplot2)
