@@ -10,7 +10,9 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 
-# Introducción
+
+# Se realizan cambios en el conjunto de datos, donde en cada fila celda esta el porcetaje de uso del respectivo canal en comparación a los demás canales, teniendo en cuenta de manera independiente los montos de entrada, transacciones de entrada, montos de salida y transacciones de salida, además la segmentación se realiza primero por los canales, sin logaritmo natural y sin escalar, luego se realiza mediante las variables financieras escaladas.
+
 
 * Lectura de la base de datos
 

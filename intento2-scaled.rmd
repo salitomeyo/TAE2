@@ -9,7 +9,7 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-# Introducción
+# Documento que muestra un procedimiento de segmentación realizado primero con las variables financieras escaladas y luego con el logartimo natural escalado de las variables de los canales.
 
 * Lectura de la base de datos
 

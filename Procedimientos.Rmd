@@ -1,0 +1,36 @@
+---
+title: ''
+author: "Jennifer Salazar"
+date: "28/7/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Procedimientos para llegar a la segmentación 
+
+Ya que se tuvo una exploración de las diferentes variables de canales y financieras, se pudo comprender mediante estas que el comportamiento de los clientes en este tipo de variables es muy particular, ya que las variables asociadas a los canales nos dan a entender mejor como usa el cliente la compañia y las variables financieras nos ayudan a entender que necesita el cliente de la compañia a partir de las caracteristicas de este y es por este motivo que se considera que los procedimientos de segmentación de clientes se deben hacer de manera independiente entre las variables de los canales y las variables financieras, dado que se espera que salgan grupos muy diferentes realizando la segmentación mediante estos dos tipos de variables debido a que cada una estudia perspectivas muy diferentes del cliente, se concilio realizar el proceso de segmentación por un tipo de variable y luego realizar subgrupos por el otro tipo de variable a partir de los grupos creados inicialmente.
+
+En este caso se decide realizar una segmentación mediante las variables asociadas a los canales y en cada uno de los grupos que se obtengan a partir de esta se va a realizar una segmentación adicional (subgrupos) teniendo en cuenta las variables financieras, de tal manera que cada grupo final se caracterice por tener un comportamiento particular tanto en las variables de los canales como en las variables financieras.
+
+Las variables de los canales son variables cuantitativas, las cuales en general cuenta con valores extremos los cuales al ser utilizados en la segmentación pueden crear un gran impacto en los grupos resultantes, dado que el algoritmo que se usa "K-means" es muy sensible a observaciones extremas, por lo tanto para solucionar este problema se decide realizar una transformación logaritmo natural sobre las diferentes variable asociadas a los canales.
+
+
+**(¿Por qué realizar la transformación de logaritmo natural?)** recuerden poner un link de desplazamiento................
+
+Además de ello el algoritmo de segmentación K-means es muy sensible a las unidades de las diferentes variables dado que es un basado en distancias, por lo que asi se aplique una transformación logaritmo natural, se deben de escalar las variables para que todas las variables puedas ser comparadas entre si y los resultados sean estadisticamente validos.
+
+
+**¿Por qué escalar las variables para realizar las agrupaciones?** recuerden poner un link de desplazamiento................
+
+
+
+
+
+
+
+
+
+

@@ -9,9 +9,7 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-# Introducción
-
-* Lectura de la base de datos
+# conjunto de datos en donde se redujeron el número de variables mediante la creación de una nueva variable que es el resultado de realizar una operación entre los montos y transacciones por cada canal en donde primero se realiza la segmentación con las variables financieras escaladas y luego con el logartimo natural escalado de las variables de los canales.
 
 ```{r}
 df <- read.csv("base_trabajo_segmentacion.csv", sep = ";", dec = '.', header = T)
