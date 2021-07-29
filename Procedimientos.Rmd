@@ -62,9 +62,8 @@ rect.hclust(dendrogram, k=2, border="cyan4")
 
 
 # fviz_dend(x = dendrogram, k = 2, cex = 0.6) +
-#   geom_hline(yintercept = 1300, linetype = "dashed") +
-#   labs(title = "Herarchical clustering",
-#        subtitle = "Distancia euclídea, Lincage complete, K=2")
+#   geom_hline(yintercept = 1400, linetype = "dashed") +
+#   labs(title = "Dendograma")
 ```
 
 * Del gráfico se concluye adecuado considerar dos grupos.
