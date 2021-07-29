@@ -139,6 +139,8 @@ media_df_grupfin <-  aggregate(.~grupos,data=df_group_log, FUN=mean)
 
 
 
+
+
 * Análisis de los centroides
 
 
@@ -154,6 +156,9 @@ legend(25, 23, legend=c("Grupo1","Grupo2"),
 ```
 
 
+De la gráfica anterior, se puede ver en general un comportamiento similar entre ambos grupos, sin embargo, el grupo 1 presenta en promedio un monto y un número mayor de transacciones. Siendo la diferencia más amplia en los canales de entrada 3, 5, 6, 8, 9 y en los canales de salida 5 y 2.
+
+
 
 ```{r}
 plot(1:16, media_df_grupfin[1, 32:47], type = 'b', col = 'darkgreen', 
@@ -165,4 +170,4 @@ legend("bottomright", legend=c("Grupo1","Grupo2"),
        col=c("darkgreen", "darkblue"), lty=1, bty = 'n')
 ```
 
-
+Dado que el grupo 1 maneja montos más grandes en los canales y un número mayor de transacciones, a su vez, se pueden observar valores primedios más grandes en las cuentas por pagar, cuentas por cobrar y en el total de inventario. En las demás variables el comportamiento promedio es bastante similar.
