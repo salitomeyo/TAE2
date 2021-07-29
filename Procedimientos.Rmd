@@ -26,11 +26,143 @@ Además de ello el algoritmo de segmentación K-means es muy sensible a las unid
 **¿Por qué escalar las variables para realizar las agrupaciones?** recuerden poner un link de desplazamiento................
 
 
+A continuación se presenta el  procedimiento desarrollado realizando una segmentación con todas las variables asociadas a los canales, primero a estas se les aplica logaritmo natural y luego se escalan, posteriormente en cada uno de los grupos resultantes se realiza una subagrupación pero solo teniendo en cuenta las variables financieras:
+
+```{r, echo =FALSE}
+
+# * Separación de las variables financieras y canales
+
+#Variables no escaladas
+finan_no_scaled <- df[, 31:46]
+Canal_no_scaled <- df[ , 1:30]
+
+# Variables escaladas
+df_scaled <- scale(df, center = T, scale = T)
+Canal_scaled <- df_scaled[,1:30]
+finan_scaled <- df_scaled[,31:46]
+
+# Variables con logaritmo natural
+Canal_log <- log(Canal_no_scaled + 1) 
+Canal_log_scaled <- scale(log(Canal_no_scaled + 1), center = T, scale = T)
+```
+
+
+* Se utiliza agrupamiento jerarquico con la idea de conocer la cantidad de grupos que se deben considerar 
+
+```{r, echo =FALSE, message=FALSE, warning=FALSE}
+library(ggdendro)
+library(ggplot2)
+require(factoextra)
+
+dendrogram <- hclust(dist(Canal_log_scaled, method = 'euclidean'), method = 'ward.D')
+
+
+plot(dendrogram, xlab="", sub="", cex=0.9)
+rect.hclust(dendrogram, k=2, border="cyan4")
+
+
+# fviz_dend(x = dendrogram, k = 2, cex = 0.6) +
+#   geom_hline(yintercept = 1300, linetype = "dashed") +
+#   labs(title = "Herarchical clustering",
+#        subtitle = "Distancia euclídea, Lincage complete, K=2")
+```
+
+* Del gráfico se concluye adecuado considerar dos grupos.
 
 
 
+* Agrupamiento k means con las variables de los canales(con log y escaladas):
+
+```{r}
+require(cluster)
+
+set.seed(93285)
+Agru_canal<- kmeans(Canal_log_scaled, 2 , nstart = 5, iter.max = 100)
+
+clusplot(Canal_log_scaled, Agru_canal$cluster, color = TRUE, 
+          shade = FALSE, labels = 4, lines = 1,
+          col.p = Agru_canal$cluster)
+```
+
+Mediante el gráfico anterior se puede observar los dos grupos plasmados en dos dimensiones.
+
+
+* Creación de un conjunto de datos con las variables de los canales y la variable grupo 
+
+```{r}
+grupos <- as.factor(Agru_canal$cluster)
+
+canal_group <- data.frame(grupos, Canal_no_scaled)
+head(canal_group)
+```
+
+
+```{r}
+aggregate(.~grupos, data=canal_group, FUN = mean)
+```
+
+
+```{r}
+table(Agru_canal$cluster)
+```
+
+
+El grupo 1 cuenta con 1281 clientes y el grupo 2 con 952 clientes de los cuales en general el grupo 1 tiene a los clientes que tienden a manejar montos más altos de dinero y mayor número de transacciones por todos los canales en comparación con los del grupo 2.
+
+
+* Gráficos de boxplot que nos permitiran sacar carateristicas de cada uno de los grupos
+
+```{r}
+library(ggplot2)
+for(i in 2:dim(canal_group)[2]){
+ 
+ p <-  ggplot(canal_group, aes(x = factor(grupos), y=log(canal_group[, i]+1))) +  
+   geom_boxplot() +
+    labs(x = colnames(canal_group)[i]) +
+    theme_gray() 
+    
+  
+  print(p)
+}
+
+```
+
+
+```{r, echo = FALSE}
+df_group <- data.frame(grupos,df)
+df_group_log <- df_group
+df_group_log[, 2:31] <- log(df_group[, 2:31] + 1)
+
+media_df_grupfin <-  aggregate(.~grupos,data=df_group_log, FUN=mean)
+
+```
 
 
 
+* Análisis de los centroides
+
+
+```{r}
+plot(1:30, media_df_grupfin[1, 2:31], type = 'b', col = 'darkgreen', 
+     xaxt = "n", xlab = '', lwd = 2, ylab = 'centroide', ylim  = c(0, 22))
+axis(1, 1:30, names(media_df_grupfin)[2:31], las = 2)
+lines(1:30, media_df_grupfin[2, 2:31], col = 'darkblue', type = "b", lwd = 2)
+
+
+legend(25, 23, legend=c("Grupo1","Grupo2"),
+       col=c("darkgreen", "darkblue"), lty=c(1, 1, 1, 3), lwd = 2, cex = 0.8, bty = 'n')
+```
+
+
+
+```{r}
+plot(1:16, media_df_grupfin[1, 32:47], type = 'b', col = 'darkgreen', 
+     xaxt = "n", xlab = '', lwd = 2, ylab = 'centroide')
+axis(1, 1:16, names(media_df_grupfin)[32:47], las = 2)
+lines(1:16, media_df_grupfin[2, 32:47], col = 'darkblue', type = "b", lwd = 2)
+
+legend("bottomright", legend=c("Grupo1","Grupo2"),
+       col=c("darkgreen", "darkblue"), lty=1, bty = 'n')
+```
 
 

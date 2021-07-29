@@ -376,8 +376,18 @@ corrplot(cor(finan_no_scaled),
 
 - Se observa una relación positiva moderada entre cxp y cxc, con una correlación de 0.68.
 
+
+
+
+### Debemos hablar del algoritmo de segmentación que vamos a utilizar (hablar de Kmeans, citarlo para las referencias, poner link de documento)
+
+### 
+
+
 ---
 PREPROCESAMIENTO
+
+
 
 
 ---
