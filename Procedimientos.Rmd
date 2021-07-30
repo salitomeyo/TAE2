@@ -15,7 +15,7 @@ Ya que se tuvo una exploración de las diferentes variables de canales y financi
 
 En este caso se decide realizar una segmentación mediante las variables asociadas a los canales y en cada uno de los grupos que se obtengan a partir de esta se va a realizar una segmentación adicional (subgrupos) teniendo en cuenta las variables financieras, de tal manera que cada grupo final se caracterice por tener un comportamiento particular tanto en las variables de los canales como en las variables financieras.
 
-Las variables de los canales son variables cuantitativas, las cuales en general cuenta con valores extremos los cuales al ser utilizados en la segmentación pueden crear un gran impacto en los grupos resultantes, dado que el algoritmo que se usa "K-means" es muy sensible a observaciones extremas, por lo tanto para solucionar este problema se decide realizar una transformación logaritmo natural sobre las diferentes variable asociadas a los canales.
+Las variables de los canales son variables cuantitativas, las cuales en general cuenta con valores extremos los cuales al ser utilizados en la segmentación pueden crear un gran impacto en los grupos resultantes, dado que el algoritmo que se usa "K-means" es muy sensible a observaciones extremas, por lo tanto para solucionar este problema se decide realizar una transformación logaritmo natural sobre las variables asociadas a los canales.
 
 
 **(¿Por qué realizar la transformación de logaritmo natural?)** recuerden poner un link de desplazamiento................
@@ -30,18 +30,18 @@ A continuación se presenta el  procedimiento desarrollado realizando una segmen
 
 ```{r, echo =FALSE}
 
-# * Separación de las variables financieras y canales
+# Separación de las variables financieras y canales
 
-#Variables no escaladas
+# Se crea un conjunto con las variables sin escalar
 finan_no_scaled <- df[, 31:46]
 Canal_no_scaled <- df[ , 1:30]
 
-# Variables escaladas
+# Se crea un conjunto con las variables escaladas
 df_scaled <- scale(df, center = T, scale = T)
 Canal_scaled <- df_scaled[,1:30]
 finan_scaled <- df_scaled[,31:46]
 
-# Variables con logaritmo natural
+# Se aplica transformación logaritmo natural a los canales y se escala
 Canal_log <- log(Canal_no_scaled + 1) 
 Canal_log_scaled <- scale(log(Canal_no_scaled + 1), center = T, scale = T)
 ```
@@ -70,7 +70,7 @@ rect.hclust(dendrogram, k=2, border="cyan4")
 
 
 
-* Agrupamiento k means con las variables de los canales(con log y escaladas):
+* Agrupamiento k means con las variables de los canales (usando transformación logaritmo natural):
 
 ```{r}
 require(cluster)
@@ -79,27 +79,36 @@ set.seed(93285)
 Agru_canal<- kmeans(Canal_log_scaled, 2 , nstart = 5, iter.max = 100)
 
 clusplot(Canal_log_scaled, Agru_canal$cluster, color = TRUE, 
-          shade = FALSE, labels = 4, lines = 1,
-          col.p = Agru_canal$cluster)
+          shade = FALSE, labels = 4, lines = 1, 
+          col.clus = c("darkgreen", "darkblue"),
+          col.p = ifelse(Agru_canal$cluster == 2, "darkblue","darkgreen"), 
+          main = "Grupos seleccionados por Kmeans", 
+          xlab = "Componente principal 1 canales",
+          ylab = "Componente principal 2 canales",
+          sub = "")
+grid()
 ```
 
-Mediante el gráfico anterior se puede observar los dos grupos plasmados en dos dimensiones.
+En el gráfico anterior se puede observar una representación en dos dimensiones de los grupos encontrados por K-means. 
 
 
-* Creación de un conjunto de datos con las variables de los canales y la variable grupo 
+- Se agrega la variable que indica el grupo al conjunto de datos
 
 ```{r}
-grupos <- as.factor(Agru_canal$cluster)
+grupos <- as.factor(Agru_canal$cluster) # Se extraen los grupos
 
+# Se agrega a los canales la variable grupo
 canal_group <- data.frame(grupos, Canal_no_scaled)
 head(canal_group)
 ```
 
+- Valor medio de cada variable en canal discriminada por grupo
 
 ```{r}
 aggregate(.~grupos, data=canal_group, FUN = mean)
 ```
 
+- Número de clientes en cada uno de los grupos
 
 ```{r}
 table(Agru_canal$cluster)
@@ -109,7 +118,7 @@ table(Agru_canal$cluster)
 El grupo 1 cuenta con 1281 clientes y el grupo 2 con 952 clientes de los cuales en general el grupo 1 tiene a los clientes que tienden a manejar montos más altos de dinero y mayor número de transacciones por todos los canales en comparación con los del grupo 2.
 
 
-* Gráficos de boxplot que nos permitiran sacar carateristicas de cada uno de los grupos
+* Gráficos de boxplot que permitirán sacar caraterísticas de cada uno de los grupos
 
 ```{r}
 library(ggplot2)
@@ -117,7 +126,8 @@ for(i in 2:dim(canal_group)[2]){
  
  p <-  ggplot(canal_group, aes(x = factor(grupos), y=log(canal_group[, i]+1))) +  
    geom_boxplot() +
-    labs(x = colnames(canal_group)[i]) +
+   geom_jitter(color="darkblue", size=0.4, alpha=0.9) +
+    labs(x = colnames(canal_group)[i], y = "Escala log natural") +
     theme_gray() 
     
   
@@ -125,6 +135,13 @@ for(i in 2:dim(canal_group)[2]){
 }
 
 ```
+
+- En términos generales, se puede observar que el grupo 1 presenta en promedio un monto y un número mayor de transacciones.
+
+- Se puede notar una mayor dispersión del grupo 2 en los canales de entrada 3, 6, 8, y 9 y en el grupo1 en el canal otros. 
+- en general en los canales de entrada asociados al número de transaciones el grupo 1 presenta una mayor dispersión, en parte debido a una mayor cantidad de valores extremos.
+
+- En los canales de salida, tanto para montos como para transacciones, el grupo 1 parece estar más disperso en el canal 5, mientras que el grupo 2 lo esta en el canal 2, en el resto de canales el comportamiento es similar aunque el grupo 1 presenta más valores extremos. 
 
 
 ```{r, echo = FALSE}
@@ -138,9 +155,7 @@ media_df_grupfin <-  aggregate(.~grupos,data=df_group_log, FUN=mean)
 
 
 
-
-
-* Análisis de los centroides
+* Análisis del valor medio de los grupos en cada variable
 
 
 ```{r}
@@ -152,6 +167,7 @@ lines(1:30, media_df_grupfin[2, 2:31], col = 'darkblue', type = "b", lwd = 2)
 
 legend(25, 23, legend=c("Grupo1","Grupo2"),
        col=c("darkgreen", "darkblue"), lty=c(1, 1, 1, 3), lwd = 2, cex = 0.8, bty = 'n')
+grid()
 ```
 
 
@@ -167,6 +183,89 @@ lines(1:16, media_df_grupfin[2, 32:47], col = 'darkblue', type = "b", lwd = 2)
 
 legend("bottomright", legend=c("Grupo1","Grupo2"),
        col=c("darkgreen", "darkblue"), lty=1, bty = 'n')
+grid()
 ```
 
 Dado que el grupo 1 maneja montos más grandes en los canales y un número mayor de transacciones, a su vez, se pueden observar valores primedios más grandes en las cuentas por pagar, cuentas por cobrar y en el total de inventario. En las demás variables el comportamiento promedio es bastante similar.
+
+---
+
+## Se crean subgrupos mediante las variables financieras para cada grupo creado con canales
+
+
+* Agrupamiento por variables financieras para el grupo 1 de canales:
+
+
+- Se utiliza agrupamiento jerárquico con la idea de conocer la cantidad de grupos que se deben considerar 
+
+```{r}
+dendrogram <- hclust(dist(grupo1_scaled[,32:47], method = 'euclidean'), method = 'ward.D')
+
+plot(dendrogram, xlab="", sub="", cex=0.9)
+rect.hclust(dendrogram, k=3, border="cyan4")
+```
+
+Del dendograma anterior se concluye considerar 3 subgrupos.
+
+
+* Subagrupamientos mediante las variables de estados financieros usando k-means :
+
+
+```{r}
+require(cluster)
+
+get_color <- function(valor){
+  
+  if(valor == 1){
+    return("#B2F768") 
+  }
+  else if (valor == 2){
+    return("#206B2E")
+  }
+  else{
+    return("#46EB65")
+  }
+  
+}
+
+set.seed(9325)
+kc1 <- kmeans(grupo1_scaled[,32:47], 3 , nstart = 5, iter.max = 100)
+
+clusplot(grupo1_scaled[,32:47], kc1$cluster, color = TRUE, 
+          shade = FALSE, labels = 4, lines = 1,
+          col.clus = c("#206B2E", "#46EB65", "#B2F768"),
+          col.p = sapply(kc1$cluster, get_color), 
+          main = "Subgrupos seleccionados por Kmeans", 
+          xlab = "Componente principal 1 canales",
+          ylab = "Componente principal 2 canales",
+          sub = "")
+grid()
+
+
+```
+
+```{r}
+table(kc1$cluster)
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
