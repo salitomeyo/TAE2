@@ -208,22 +208,22 @@ rect.hclust(dendrogram, k=3, border="cyan4")
 Del dendograma anterior se concluye considerar 3 subgrupos.
 
 
-* Subagrupamientos mediante las variables de estados financieros usando k-means :
+Subagrupamientos mediante las variables de estados financieros usando k-means :
 
 
 ```{r}
 require(cluster)
 
-get_color <- function(valor){
+get_color_grupo1 <- function(valor){
   
   if(valor == 1){
     return("#B2F768") 
   }
   else if (valor == 2){
-    return("#206B2E")
+    return("#46EB65")
   }
   else{
-    return("#46EB65")
+    return("#206B2E")
   }
   
 }
@@ -233,8 +233,8 @@ kc1 <- kmeans(grupo1_scaled[,32:47], 3 , nstart = 5, iter.max = 100)
 
 clusplot(grupo1_scaled[,32:47], kc1$cluster, color = TRUE, 
           shade = FALSE, labels = 4, lines = 1,
-          col.clus = c("#206B2E", "#46EB65", "#B2F768"),
-          col.p = sapply(kc1$cluster, get_color), 
+          col.clus = c("#46EB65", "#206B2E", "#B2F768"),
+          col.p = sapply(kc1$cluster, get_color_grupo1), 
           main = "Subgrupos seleccionados por Kmeans", 
           xlab = "Componente principal 1 canales",
           ylab = "Componente principal 2 canales",
@@ -248,6 +248,354 @@ grid()
 table(kc1$cluster)
 
 ```
+
+Nuevamente se le agrega al conjunto de datos la variable que indica el sub-grupo a partir de la segmentación con K-means en las variables financieras
+
+
+```{r}
+canal1_finan <- data.frame(sub_grupos=kc1$cluster, grupo1_no_scaled)
+canal1_finan$sub_grupos <- as.factor(canal1_finan$sub_grupos)
+head(canal1_finan)
+```
+
+
+
+```{r, echo = FALSE}
+
+canal1_finan_log <- canal1_finan
+canal1_finan_log[, 3:32] <- log(canal1_finan_log[, 3:32] + 1)
+
+media_canal1_finan <-  aggregate(.~sub_grupos,data=canal1_finan_log, FUN=mean)
+
+```
+
+
+
+* Análisis del valor medio de los grupos en cada variable
+
+
+```{r}
+plot(1:30, media_canal1_finan[1, 3:32], type = 'b', col = get_color_grupo1(1), 
+     xaxt = "n", xlab = '', lwd = 2, ylab = 'centroide', ylim  = c(0, 22))
+axis(1, 1:30, names(media_canal1_finan)[3:32], las = 2)
+lines(1:30, media_canal1_finan[2, 3:32], col = get_color_grupo1(2), type = "b", lwd = 2)
+lines(1:30, media_canal1_finan[3, 3:32], col = get_color_grupo1(3), type = "b", lwd = 2)
+
+
+legend(25, 23, legend=c("Grupo1","Grupo2", "Grupo3"),
+       col=c(get_color_grupo1(1), get_color_grupo1(2), get_color_grupo1(3)), lty=c(1, 1, 1, 3), lwd = 2, cex = 0.8, bty = 'n')
+grid()
+```
+
+
+De la grafica presentada previamente se espera que los tres grupos tengan un comportamiento y valores muy similares, dado que esta siendo graficada en las variables asociados a los canales y estos sub grupos fueron hallados a partir del grupo 1 de las variables de los canales, por lo tanto se espera que es estos tres grupos, tengan sus diferencias en las variables financieras pero muy similares en los canales.  
+
+
+
+```{r}
+plot(1:16, media_canal1_finan[1, 33:48], type = 'b', col = get_color_grupo1(1), 
+     xaxt = "n", xlab = '', lwd = 2, ylab = 'centroide')
+axis(1, 1:16, names(media_canal1_finan)[33:48], las = 2)
+lines(1:16, media_canal1_finan[2, 33:48], col = get_color_grupo1(2), type = "b", lwd = 2)
+lines(1:16, media_canal1_finan[3, 33:48], col = get_color_grupo1(3), type = "b", lwd = 2)
+
+legend("bottomright", legend=c("Grupo1","Grupo2", "Grupo3"),
+       col=c(get_color_grupo1(1), get_color_grupo1(2), get_color_grupo1(3)), lty=1, bty = 'n')
+grid()
+```
+
+
+* Los tres grupos toman valores diferentes en las distintas variables financieras, lo que indica la diferencia esperada en estas variables.
+
+* El sub-grupo 1 del grupo 1 tiende a tener el mayor número de importaciones, exportaciones, inventarios y además de ello es al que le toma más tiempo realizar las rotaciones de inventarios, rotaciones de cuenta por cobrar y pagar y realizar los ciclos de negocio y financieros. a los pagos y recaudos a personas juridicas y naturales tiende a tener porcentajes bajos.
+
+* El sub-grupo 2 del grupo 1 en comparación a los otros grupos, tiende a tener un número promedio o intermedio de importaciones, exportaciones, inventarios, al igual que las rotaciones de inventarios, rotaciones de cuenta por cobrar y pagar y realizar los ciclos de negocio y financiero, pero cabe aclarar que es el que tiene mayor número de cuentas por cobrar y cuentas por pagar, pagos a personas juridicas y naturales, recaudos a personas juridicas y naturales, además que es el que cuenta con mayor número de tiendas fisicas y electronicas.
+
+* El sub-grupo 3 del grupo 1 es el que en general tiende a tener menores niveles en todas las variables financieras, es decir es el que realiza menos importaciones, exportaciones, tiene menores cuentas por cobrar y por pagar, menores inventarios, le toma menos tiempo realizar las rotaciones de inventarios, rotaciones de cuenta por cobrar y pagar y realizar los ciclos de negocio y financieros. a los pagos y recaudos a personas juridicas y naturales tiende a tener porcentajes bajos.
+
+###############################################
+
+* Agrupamiento por variables financieras para el grupo 2 de canales:
+
+
+- Se utiliza agrupamiento jerárquico con la idea de conocer la cantidad de grupos que se deben considerar 
+
+
+```{r}
+dendrogram <- hclust(dist(grupo2_scaled[, 32:47], method = 'euclidean'), method = 'ward.D')
+
+plot(dendrogram, xlab="", sub="", cex=0.9)
+```
+
+Del dendograma anterior se concluye considerar 3 subgrupos.
+
+
+Subagrupamientos mediante las variables de estados financieros usando k-means :
+
+
+```{r}
+require(cluster)
+
+get_color_grupo2 <- function(valor){
+  
+  if(valor == 1){
+    return("#48D9FB") 
+  }
+  else if (valor == 2){
+    return("#0669AC")
+  }
+  else{
+    return("#000080")
+  }
+  
+}
+
+
+require(cluster)
+
+set.seed(9326)
+kc2 <- kmeans(grupo2_scaled[, 32:47], 3, nstart = 5, iter.max = 100)
+
+clusplot(grupo2_scaled[,32:47], kc2$cluster, color = TRUE, 
+          shade = FALSE, labels = 4, lines = 1,
+          col.clus = c("#0688AC", "#0669AC", "#000080"),
+          col.p = sapply(kc2$cluster, get_color_grupo2), 
+          main = "Subgrupos seleccionados por Kmeans", 
+          xlab = "Componente principal 1 canales",
+          ylab = "Componente principal 2 canales",
+          sub = "")
+grid()
+
+
+```
+
+
+```{r}
+table(kc2$cluster)
+```
+
+
+Nuevamente se le agrega al conjunto de datos la variable que indica el sub-grupo a partir de la segmentación con K-means en las variables financieras
+
+
+```{r}
+canal2_finan <- data.frame(sub_grupos=kc2$cluster, grupo2_no_scaled)
+canal2_finan$sub_grupos <- as.factor(canal2_finan$sub_grupos)
+head(canal2_finan)
+```
+
+
+
+```{r, echo = FALSE}
+canal2_finan_log <- canal2_finan
+canal2_finan_log[, 3:32] <- log(canal2_finan_log[, 3:32] + 1)
+
+media_canal2_finan <-  aggregate(.~sub_grupos,data=canal2_finan_log, FUN=mean)
+
+```
+
+
+
+* Análisis del valor medio de los grupos en cada variable
+
+
+```{r}
+plot(1:30, media_canal2_finan[1, 3:32], type = 'b', col = get_color_grupo2(1), 
+     xaxt = "n", xlab = '', lwd = 2, ylab = 'centroide', ylim  = c(0, 22))
+axis(1, 1:30, names(media_canal2_finan)[3:32], las = 2)
+lines(1:30, media_canal2_finan[2, 3:32], col = get_color_grupo2(2), type = "b", lwd = 2)
+lines(1:30, media_canal2_finan[3, 3:32], col = get_color_grupo2(3), type = "b", lwd = 2)
+
+
+legend(25, 23, legend=c("Grupo1","Grupo2", "Grupo3"),
+       col=c(get_color_grupo2(1), get_color_grupo2(2), get_color_grupo2(3)), lty=c(1, 1, 1, 3), lwd = 2, cex = 0.8, bty = 'n')
+grid()
+```
+
+
+De la grafica presentada previamente se espera que los tres grupos tengan un comportamiento y valores muy similares, dado que esta siendo graficada en las variables asociados a los canales y estos sub grupos fueron hallados a partir del grupo 2 de las variables de los canales, por lo tanto se espera que es estos tres grupos, tengan sus diferencias en las variables financieras pero muy similares en los canales.  
+
+
+
+```{r}
+plot(1:16, media_canal2_finan[1, 33:48], type = 'b', col = get_color_grupo2(1), 
+     xaxt = "n", xlab = '', lwd = 2, ylab = 'centroide')
+axis(1, 1:16, names(media_canal2_finan)[33:48], las = 2)
+lines(1:16, media_canal2_finan[2, 33:48], col = get_color_grupo2(2), type = "b", lwd = 2)
+lines(1:16, media_canal2_finan[3, 33:48], col = get_color_grupo2(3), type = "b", lwd = 2)
+
+legend("bottomright", legend=c("Grupo1","Grupo2", "Grupo3"),
+       col=c(get_color_grupo2(1), get_color_grupo2(2), get_color_grupo2(3)), lty=1, bty = 'n')
+grid()
+```
+
+
+* Los tres grupos toman valores diferentes en las distintas variables financieras, lo que indica la diferencia esperada en estas variables.
+
+* El sub-grupo 1 del grupo 2 tiende a tener un número intermedio de importaciones, pocas exportaciones, tiene la menor cantidad de cuentas por pagar, y una cantidad promedio de inventario, además es el grupo que le toma mayor tiempo realizar las rotaciones de inventarios, realizar los ciclos de negocio y financieros, pero para realizar las rotaciones de cuentas por cobrar y pagar si toma valores más intermedios.
+
+* El sub-grupo 2 del grupo 2 es el que realiza mayor número de importaciones y exportaciones, el que más cuenta por pagar y cobrar tiene, además de mayor inventario, además el que le toma mayor tiempo de hacer las rotaciones de cuentas por cobrar y pagar, pero tiene un número intermedio de rotaciones de inventario, ciclo de negocio y financiero.
+
+* El sub-grupo 3 del grupo 2 es el que tiene menor número de importaciones y exportaciones, el que menos cuentas por cobrar tiene, además de la menor cantidad de inventario, por otro lado también es el que le tarda menos tiempo realizar las rotaciones de inventario, de cuentas por cobrar y pagar, de realizar su ciclo de negocio y financiero.
+
+En general, los tres grupos tienen un comportamiento muy similar en los pagos y recaudos a personas naturales y juridicas y en las ventas fisicas y electronicas.
+
+
+* Grupos finales 
+
+Dado que en los procedimientos anteriores se obtuvieron grupos y subgrupos, ahora llega el momento de crear los 6 grupos resultates, que consiste en la combinación de un grupo y subgrupo respectivamente: 
+
+
+Grupo 1: grupo 1 subgrupo 1
+Grupo 2: grupo 2 subgrupo 1
+Grupo 3: grupo 1 subgrupo 2
+Grupo 4: grupo 2 subgrupo 2
+Grupo 5: grupo 1 subgrupo 3
+Grupo 6: grupo 2 subgrupo 3
+
+```{r}
+Grupo1 <- canal1_finan[canal1_finan$sub_grupos==1,] # grupo 1 subgrupo 1
+Grupo2 <- canal2_finan[canal2_finan$sub_grupos==1,] # grupo 2 subgrupo 1
+
+Grupo3 <- canal1_finan[canal1_finan$sub_grupos==2,] # grupo 1 subgrupo 2
+Grupo4 <- canal2_finan[canal2_finan$sub_grupos==2,] # grupo 2 subgrupo 2
+
+Grupo5 <- canal1_finan[canal1_finan$sub_grupos==3,] # grupo 1 subgrupo 3
+Grupo6 <- canal2_finan[canal2_finan$sub_grupos==3,] # grupo 2 subgrupo 3
+
+
+Grupos <- c(rep(1, dim(Grupo1)[1]), rep(2, dim(Grupo2)[1]), rep(3, dim(Grupo3)[1]), rep(4, dim(Grupo4)[1]), rep(5, dim(Grupo5)[1]), rep(6, dim(Grupo6)[1]))
+
+Datos_finales_2 <- rbind(Grupo1, Grupo2, Grupo3, Grupo4, Grupo5, Grupo6)
+
+# Grupo7, Grupo8, Grupo9
+Datos_finales_2 <- data.frame(Grupos, Datos_finales_2)
+Datos_finales_2
+```
+
+
+
+```{r}
+Datos_finales_2_log <- Datos_finales_2
+
+Datos_finales_2_log[4:33] <- log(Datos_finales_2_log[4:33] + 1)
+```
+
+
+* Media de los grupos 
+
+```{r}
+media_canal_finan <- aggregate(.~Grupos,data=Datos_finales_2, FUN=mean)
+media_canal_finan 
+```
+
+
+* Mediana de los grupos
+
+```{r}
+aggregate(.~Grupos,data=Datos_finales_2, FUN=median)
+```
+
+```{r}
+# par(mfrow = c(1, 2))
+
+plot(1:30, media_canal_finan [1, 4:33], type = 'b', col = '#E80EB8', 
+     xaxt = "n", xlab = '', lwd = 2, ylab = 'centroide', main = 'Grupos finales', ylim = c(0, 22))
+axis(1, 1:30, names(media_canal_finan )[4:33], las = 2)
+lines(1:30, media_canal_finan [2, 4:33], col = '#0F1EF2', type = "b", lwd = 2)
+lines(1:30, media_canal_finan [3, 4:33], col = '#19DBAD', type = "b", lwd = 2)
+lines(1:30, media_canal_finan [4, 4:33], col = '#92F20F', type = "b", lwd = 2)
+lines(1:30, media_canal_finan [5, 4:33], col = '#EBA81A', type = "b", lwd = 2)
+lines(1:30, media_canal_finan [6, 4:33], col = '#8C7AF5', type = "b", lwd = 2)
+
+legend("top", legend=c(paste("Grupo", 1:6, sep = '')),  col=c("#E80EB8", "#0F1EF2", "#19DBAD", "#92F20F", "#EBA81A", "#8C7AF5"), lty=1, lwd = 2,  bty = 'n')
+```
+
+* En general el grupo 1, 3 y 5 son los que manejan mayores montos de dinero y mayor número de transacciones, por lo tanto el grupo 2, 4 y 6 son los que manejan menores montos de dinero y mayor número de transacciones.
+
+* El grupo 3 a pesar de tener un comportamiento de manejar mayores montos de dinero al igual que el grupo 1 y 5, este se destaca particularmente en el canal de entrada de otros, dado que toma valores muy altos, más que cualquiera de los otros grupos.
+
+```{r}
+par(mfrow=c(1,3))
+plot(1:5, media_canal_finan [1, 34:38], type = 'b', col = "#E80EB8", 
+     xaxt = "n", xlab = '', lwd = 2, ylab = 'centroide', main = 'Grupos finales', ylim = c(0,5.5))
+axis(1, 1:5, names(media_canal_finan )[34:38], las = 2)
+lines(1:5, media_canal_finan [2, 34:38], col = '#0F1EF2', type = "b", lwd = 2)
+lines(1:5, media_canal_finan [3, 34:38], col = '#19DBAD', type = "b", lwd = 2)
+lines(1:5, media_canal_finan [4, 34:38], col = '#92F20F', type = "b", lwd = 2)
+lines(1:5, media_canal_finan [5, 34:38], col = '#EBA81A', type = "b", lwd = 2)
+lines(1:5, media_canal_finan [6, 34:38], col = '#8C7AF5', type = "b", lwd = 2)
+grid()
+
+legend("bottom", legend=c(paste("Grupo", 1:6, sep = '')),  col = c("#E80EB8", "#0F1EF2", "#19DBAD", "#92F20F", "#EBA81A", "#8C7AF5"), lty=1, lwd = 2,  bty = 'n')
+
+
+plot(1:6, media_canal_finan [1, 39:44], type = 'b', col = "#E80EB8", 
+     xaxt = "n", xlab = '', lwd = 2, ylab = 'centroide', main = 'Grupos finales', ylim = c(0,1))
+axis(1, 1:6, names(media_canal_finan )[39:44], las = 2)
+lines(1:6, media_canal_finan [2, 39:44], col = '#0F1EF2', type = "b", lwd = 2)
+lines(1:6, media_canal_finan [3, 39:44], col = '#19DBAD', type = "b", lwd = 2)
+lines(1:6, media_canal_finan [4, 39:44], col = '#92F20F', type = "b", lwd = 2)
+lines(1:6, media_canal_finan [5, 39:44], col = '#EBA81A', type = "b", lwd = 2)
+lines(1:6, media_canal_finan [6, 39:44], col = '#8C7AF5', type = "b", lwd = 2)
+grid()
+legend("topright", legend=c(paste("Grupo", 1:6, sep = '')),  col = c("#E80EB8", "#0F1EF2", "#19DBAD", "#92F20F", "#EBA81A", "#8C7AF5"), lty=1, lwd = 2,  bty = 'n')
+
+
+plot(1:5, media_canal_finan [1, 45:49], type = 'b', col = "#E80EB8", 
+     xaxt = "n", xlab = '', lwd = 2, ylab = 'centroide', main = 'Grupos finales', ylim = c(0,5.5))
+axis(1, 1:5, names(media_canal_finan )[45:49], las = 2)
+lines(1:5, media_canal_finan [2, 45:49], col = '#0F1EF2', type = "b", lwd = 2)
+lines(1:5, media_canal_finan [3, 45:49], col = '#19DBAD', type = "b", lwd = 2)
+lines(1:5, media_canal_finan [4, 45:49], col = '#92F20F', type = "b", lwd = 2)
+lines(1:5, media_canal_finan [5, 45:49], col = '#EBA81A', type = "b", lwd = 2)
+lines(1:5, media_canal_finan [6, 45:49], col = '#8C7AF5', type = "b", lwd = 2)
+grid()
+legend("bottom", legend=c(paste("Grupo", 1:6, sep = '')),  col = c("#E80EB8", "#0F1EF2", "#19DBAD", "#92F20F", "#EBA81A", "#8C7AF5"), lty=1, lwd = 2,  bty = 'n')
+```
+
+
+* El grupo 1, 3 y 4 es el que realiza mayor número de importaciones y exportaciones, tiene mayor número de cuentas por pagar y cobrar y mayor inventario, por otro lado el grupo 2, 5 y 6 es el que realiza menor número de importaciones y exportaciones, tiene menor número de cuentas por pagar y cobrar y menor inventario, pero respecto al inventario el grupo 2 es el que tiene mas en comparación con los grupos 5 y 6 a pesar de que es el que tiene menor numero de cuentas por pagar.
+
+* En general todos los grupos presentan mayor número de ventas fisicas que electronicas, además el grupo 3 es el que presenta mayor promedio de pagos a personas naturales, mayor número de ventas fisicas y electronicas y mayor número de recaudos a personas juridicas y naturales. El grupo 2 y 6 es el que realiza mayor proporción de pagos a personas juridicas, pero son los que realizan menor proporción de pagos a personas naturales, tiene la menor cantidad de ventas fisicas y electronicas, además de los menores recaudos a personas juridicas y naturales. El grupo 1, 4 y 5 toma valores intermedios.
+
+
+* El grupo 1 y 2, el grupo 3 y 4, el grupo 5 y 6 tiene comportamientos muy similares en las rotaciones de inventario, de cuentas por cobrar y pagar y en los ciclos de negocio y financieros, en donde el grupo 5 y 6 es al que le toma menos tiempo realizar estas rotaciones y ciclos, al grupo 1 y 2 le toma mayor tiempo realizar las rotaciones de inventario y hacer los ciclos de negocio y financiero, por otro lado el grupo 4 es al que más tiempo le toma realizar las rotaciones de cuenta por cobrar y pagar.
+
+En general asi los grupos se parezcan entre si, estos se difieren en algo, ya sea en las variables financieras o en los canales.
+
+### Conclusión general de los grupos formados
+
+
+* Grupo 1: es de los que tiende a manejar mayores montos de dinero y mayor número de transacciones a través de los canales, además de que es el grupo que mayores importaciones y exportaciones realiza, tiene buena cantidad de cuentas por cobrar y pagar además de una gran cantidad de inventarios, maneja muchas ventas fisicas, se demora más rotando el inventario y realizando su ciclo de negocio y financiero, por lo tanto se piensa que los clientes que pertenecen a este grupo, son empresas grandes, de productos, por ello manejan mucho inventario y se demoran mucho para rotarlo, además de que venden y compran productos al exterior.
+
+* Grupo 2: es de los que tiende a manejar menores montos de dinero y menor número de transacciones a través de los canales, realizan pocas importaciones y exportaciones, tienen pocas cuentas por pagar y aunque tiene mas cuentas por cobrar, tampoco estas son altas, tiene un inventario de un nivel intermedio, es el grupo que tiene mayor porcentaje de pagos a personas juridicas que a personas naturales, además de menores ventas fisicas  y electronicas, es decir las menores ventas en general, además de ser el grupo que más se demora rotando el inventario y realizando el su ciclo de negocio y financiero, por lo tanto se piensa que los clientes que pertenecen a este grupo, son empresas que quizas no estan tan desarrolladas y estan en un proceso de crecimiento, en donde sus ventas no son las mejores y no tiene tanto contacto a nivel internacional.
+
+
+* Grupo 3: es el que tiene mayores montos de dinero y mayor número de transacciones a través de los canales, no tiene un nivel alto de importaciones y exportaciones, tiene relativamente un nivel alto en la cuentas por pagar, cuentas por cobrar e inventario, además el grupo 3 es el que presenta mayor promedio de pagos a personas naturales, mayor número de ventas fisicas y electronicas y mayor número de recaudos a personas juridicas y naturales y en general tiene un nivel promedio en las rotaciones y ciclos, por lo tanto se piensa que los clientes que pertenecen a este grupo, son empresas grandes que se mueven más a nivel nacional, tienen muchas ventas ya sean fisicas o electronicas y sus rotaciones de inventario y de cuentas al igual que si sus ciclos no tienden a ser tan rapidos ni tal lentos (ejemplos: almacenes de cadena)
+
+* Grupo 4: es de los que tiende a manejar menores montos de dinero y menor número de transacciones a través de los canales, tiene un nivel medio de importaciones y exportaciones y un nivel muy alto de cuenta por cobrar y pagar, también dispone de un nivel alto de inventario, su nivel de ventas es intermedio al igual que la rotación de inventario y ciclo de negocio y financiero y en comparación con los otros grupos es el que tiene las rotaciones de cuentas por cobrar y pagar más lenta,  por lo tanto se piensa que los clientes que pertenecen a este grupo, son empresas que ofrecen un servicio o producto en donde su forma de pago no es inmediata, como por ejemplo empresas que realizan pedidos o encargos, empresas distribuidores, etc.
+
+* Grupo 5: es de los que tiende a manejar mayores montos de dinero y mayor número de transacciones a través de los canales, tiene un nivel bajo de importaciones y exportaciones y un nivel intermedio de cuentas por cobrar, cuentas por pagar e inventario, también tiene un alto porcentaje de pagos a personas juridicas y naturales, además un buen porcentaje de ventas fisicas y en general tiene rotaciones de inventario, rotaciones de cuentas y ciclos relativamente rápidos, por lo tanto se piensa que los clientes que pertenecen a este grupo, son empresas que se encargan de distribuir productos nacionales, los cuales tienen un proceso de venta rápido, dado que el inventario no es grande ni pequeño pero tienden a realizar rotaciones en poco tiempo y por el hecho de manejar buen monto de dinero nos da idea de que puede ser una empresa grande o muy bien acreditada.
+
+* Grupo 6: es de los que tiende a manejar menores montos de dinero y menor número de transacciones a través de los canales, tiene niveles bajos de importaciones, exportaciones, de cuentas por cobrar y pagar e inventario, tiene porcentajes altos de pagos a personas juridicas y naturales y sus rotaciones de inventario, de cuentas y ciclos son rápidos, por lo tanto se piensa que los clientes que pertenecen a este grupo, son empresas que en general se espera que no sean grandes y tiendan a ofrecer servicios a nivel nacional.
+
+_Comentario adicional:_
+
+Los valores extremos encontrados inicialmente en los canales son los siguientes:
+
+"825, 1416, 1462, 1668, 1773"
+
+Los cuales pertenecen al grupo:
+
+"5, 3, 3, 1, 3" respectivamente lo cual significa que todos quedan en los grupos que más dinero mueven y más tranzan por los canales, por lo tanto la segmentación es confiable.
+
+
+
+
+
+
+
 
 
 
