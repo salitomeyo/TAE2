@@ -26,7 +26,6 @@ Además de ello el algoritmo de segmentación K-means es muy sensible a las unid
 **¿Por qué escalar las variables para realizar las agrupaciones?** recuerden poner un link de desplazamiento................
 
 
-A continuación se presenta el  procedimiento desarrollado realizando una segmentación con todas las variables asociadas a los canales, primero a estas se les aplica logaritmo natural y luego se escalan, posteriormente en cada uno de los grupos resultantes se realiza una subagrupación pero solo teniendo en cuenta las variables financieras:
 
 ```{r, echo =FALSE}
 
@@ -46,6 +45,10 @@ Canal_log <- log(Canal_no_scaled + 1)
 Canal_log_scaled <- scale(log(Canal_no_scaled + 1), center = T, scale = T)
 ```
 
+
+## Procedimiento de segmentación 1
+
+A continuación se presenta el  procedimiento desarrollado realizando una segmentación con todas las variables asociadas a los canales, primero a estas se les aplica logaritmo natural y luego se escalan, posteriormente en cada uno de los grupos resultantes se realiza una subagrupación pero solo teniendo en cuenta las variables financieras:
 
 * Se utiliza agrupamiento jerarquico con la idea de conocer la cantidad de grupos que se deben considerar 
 
@@ -144,12 +147,22 @@ for(i in 2:dim(canal_group)[2]){
 - En los canales de salida, tanto para montos como para transacciones, el grupo 1 parece estar más disperso en el canal 5, mientras que el grupo 2 lo esta en el canal 2, en el resto de canales el comportamiento es similar aunque el grupo 1 presenta más valores extremos. 
 
 
-```{r, echo = FALSE}
+
+```{r}
+df_scaled_group <- data.frame(grupos, Canal_log_scaled, finan_scaled)
+
+grupo1_scaled <- df_scaled_group[df_scaled_group$grupos==1,]
+grupo2_scaled <- df_scaled_group[df_scaled_group$grupos==2,]
+
 df_group <- data.frame(grupos,df)
+
+grupo1_no_scaled <- df_group[df_group$grupos==1,]
+grupo2_no_scaled <- df_group[df_group$grupos==2,]
+
 df_group_log <- df_group
 df_group_log[, 2:31] <- log(df_group[, 2:31] + 1)
 
-media_df_grupfin <-  aggregate(.~grupos,data=df_group_log, FUN=mean)
+media_df_grupcanal <-  aggregate(.~grupos,data=df_group_log, FUN=mean)
 
 ```
 
@@ -159,10 +172,10 @@ media_df_grupfin <-  aggregate(.~grupos,data=df_group_log, FUN=mean)
 
 
 ```{r}
-plot(1:30, media_df_grupfin[1, 2:31], type = 'b', col = 'darkgreen', 
+plot(1:30, media_df_grupcanal[1, 2:31], type = 'b', col = 'darkgreen', 
      xaxt = "n", xlab = '', lwd = 2, ylab = 'centroide', ylim  = c(0, 22))
-axis(1, 1:30, names(media_df_grupfin)[2:31], las = 2)
-lines(1:30, media_df_grupfin[2, 2:31], col = 'darkblue', type = "b", lwd = 2)
+axis(1, 1:30, names(media_df_grupcanal)[2:31], las = 2)
+lines(1:30, media_df_grupcanal[2, 2:31], col = 'darkblue', type = "b", lwd = 2)
 
 
 legend(25, 23, legend=c("Grupo1","Grupo2"),
@@ -176,10 +189,10 @@ De la gráfica anterior, se puede ver en general un comportamiento similar entre
 
 
 ```{r}
-plot(1:16, media_df_grupfin[1, 32:47], type = 'b', col = 'darkgreen', 
+plot(1:16, media_df_grupcanal[1, 32:47], type = 'b', col = 'darkgreen', 
      xaxt = "n", xlab = '', lwd = 2, ylab = 'centroide')
-axis(1, 1:16, names(media_df_grupfin)[32:47], las = 2)
-lines(1:16, media_df_grupfin[2, 32:47], col = 'darkblue', type = "b", lwd = 2)
+axis(1, 1:16, names(media_df_grupcanal)[32:47], las = 2)
+lines(1:16, media_df_grupcanal[2, 32:47], col = 'darkblue', type = "b", lwd = 2)
 
 legend("bottomright", legend=c("Grupo1","Grupo2"),
        col=c("darkgreen", "darkblue"), lty=1, bty = 'n')
@@ -590,27 +603,178 @@ Los cuales pertenecen al grupo:
 
 "5, 3, 3, 1, 3" respectivamente lo cual significa que todos quedan en los grupos que más dinero mueven y más tranzan por los canales, por lo tanto la segmentación es confiable.
 
+################################################################################
+
+## Procedimiento de segmentación 2
+
+A continuación se presenta el  procedimiento desarrollado realizando una segmentación con todas las variables financieras, para ser ingresadas al algoritmo de segmentación estas son escaladas, posteriormente en cada uno de los grupos resultantes se realiza una subagrupación pero solo teniendo en cuenta las variables asociadas a los canales, las cuales se les aplica logaritmo natural y luego son escaladas:
+
+* Se utiliza agrupamiento jerarquico con la idea de conocer la cantidad de grupos que se deben considerar 
+
+
+
+
+```{r}
+library(ggdendro)
+library(ggplot2)
+require(factoextra)
+
+dendrogram <- hclust(dist(finan_scaled, method = 'euclidean'), method = 'ward.D')
+
+
+plot(dendrogram, xlab="", sub="", cex=0.9)
+rect.hclust(dendrogram, k=3, border="cyan4")
+```
+
+
+
+* Agrupamiento k means con las variables financieras:
+
+```{r}
+require(cluster)
+
+get_color <- function(valor){
+  
+  if(valor == 1){
+    return("red") 
+  }
+  else if (valor == 2){
+    return("purple")
+  }
+  else{
+    return("blue")
+  }
+  
+}
+  
+
+set.seed(93284)
+Agru_finan <- kmeans(finan_scaled, 3 , nstart = 5, iter.max = 100)
+
+clusplot(finan_scaled, Agru_finan$cluster, color = TRUE, 
+          shade = FALSE, labels = 4, lines = 1,
+          col.clus = c("purple", "red", "blue"),
+          col.p = sapply(Agru_finan$cluster, get_color),
+          main = "Grupos seleccionados por Kmeans", 
+          xlab = "Componente principal 1 canales",
+          ylab = "Componente principal 2 canales",
+          sub = "")
+```
+
+
+En el gráfico anterior se puede observar una representación en dos dimensiones de los grupos encontrados por K-means. 
+
+
+- Se agrega la variable que indica el grupo al conjunto de datos
+
+```{r}
+grupos <- as.factor(Agru_finan$cluster)
+
+fina_group <- data.frame(grupos, finan_no_scaled)
+head(fina_group)
+```
+
+- Valor medio de cada variable financiera discriminada por grupo
+
+
+```{r}
+aggregate(.~grupos, data=fina_group, FUN = mean)
+```
+
+
+- Número de clientes en cada uno de los grupos
+
+```{r}
+table(Agru_finan$cluster)
+```
 
 
 
 
 
+El grupo 1 cuenta con 809 clientes y el grupo 2 con 659 clientes  y el grupo 3 con 765 clientes.
 
 
 
+* Gráficos que permitirán sacar caraterísticas de cada uno de los grupos
+
+```{r}
+library(ggplot2)
+for(i in 2:dim(fina_group)[2]){
+  
+  if(class(fina_group[, i])=="integer"){
+    p <- ggplot(fina_group, aes(x = fina_group[, i], y = ..prop..))+ geom_bar(fill = "#0c4c8a")+facet_grid(vars(), vars(grupos))
+  }else{
+    p <- ggplot(fina_group, aes(x = factor(grupos), y=fina_group[, i])) +  geom_boxplot()
+  }
+  
+  p_final <- p +
+    labs(x = colnames(fina_group)[i]) +
+    theme_gray() 
+    
+  
+  print(p_final)
+}
+
+```
+
+
+* Grupos de las variables escaladas 
+
+```{r, echo=FALSE}
+df_scaled_group <- data.frame(grupos, Canal_log_scaled, finan_scaled)
+
+grupo1_scaled <- df_scaled_group[df_scaled_group$grupos==1,]
+grupo2_scaled <- df_scaled_group[df_scaled_group$grupos==2,]
+grupo3_scaled <- df_scaled_group[df_scaled_group$grupos==3,]
+
+df_group <- data.frame(grupos, Canal_log, finan_no_scaled)
+
+grupo1_no_scaled <- df_group[df_group$grupos==1,]
+grupo2_no_scaled <- df_group[df_group$grupos==2,]
+grupo3_no_scaled <- df_group[df_group$grupos==3,]
+
+
+media_df_grupfin <- aggregate(.~grupos,data=df_group, FUN=mean)
+
+```
 
 
 
+* Análisis del valor medio de los grupos en cada variable
+
+```{r, echo=FALSE}
+
+media_fin <- attr(df_scaled,"scaled:center")[31:46]
+
+stdev_fin <-  attr(df_scaled,"scaled:scale")[31:46]
+
+centroid1 <- apply(Agru_finan$centers, 1, function(x) x * attr(df_scaled,'scaled:scale')[31:46] + attr(df_scaled,'scaled:center')[31:46])
+```
+
+```{r}
+plot(centroid1[, 1], type = 'b', col = 'red', 
+     xaxt = "n", xlab = '', lwd = 2, ylab = 'centroide')
+axis(1, 1:16, row.names(centroid1), las = 2)
+lines(centroid1[, 2], col = 'purple', type = "b", lwd = 2)
+lines(centroid1[, 3], col = "blue", type = "b", lwd = 2)
 
 
+legend("bottomright", legend=c("Grupo1","Grupo2", "Grupo3"),
+       col=c("red", "purple", "blue"), lty=1, bty = 'n')
+```
 
 
+```{r}
+plot(1:30, media_df_grupfin[1, 2:31], type = 'b', col = 'red', 
+     xaxt = "n", xlab = '', lwd = 2, ylab = 'centroide', ylim  = c(0, 22))
+axis(1, 1:30, names(media_df_grupfin)[2:31], las = 2)
+lines(1:30, media_df_grupfin[2, 2:31], col = 'purple', type = "b", lwd = 2)
+lines(1:30, media_df_grupfin[3, 2:31], col = "blue", type = "b", lwd = 2)
 
-
-
-
-
-
+legend(25, 23, legend=c("Grupo1","Grupo2", "Grupo3"),
+       col=c("red", "purple", "blue"), lty=c(1, 1, 1, 3), lwd = 2, cex = 0.8, bty = 'n')
+```
 
 
 
