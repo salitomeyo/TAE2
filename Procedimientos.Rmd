@@ -1545,7 +1545,8 @@ Canal_scaled <- df_scaled[,1:15]
 finan_scaled <- df_scaled[,16:31]
 ```
 
-
+* Sacando logaritmo a los canales y escalando
+ 
 ```{r}
 Canal_log <- log(Canal_no_scaled + 1) 
 
@@ -1557,7 +1558,7 @@ Análisis descriptivo de los canales
 
 
 ```{r}
-plot(1:15, colMeans(Canal_no_scaled), type = 'b', col = '#038EC3', 
+plot(1:15, colMeans(Canal_log), type = 'b', col = '#038EC3', 
      xaxt = "n", xlab = '', lwd = 2, ylab = 'Media', main = 'Logaritmo del dinero que se maneja anualmente por cada canal')
 axis(1, 1:15, names(df)[1:15], las = 2)
 grid()
@@ -1565,10 +1566,17 @@ grid()
 
 Del gráfico anterior se observa que:
  
- - El canal 2 tiene un mayor ingreso de dinero, pero a la misma vez es el que tiene menor salida de dinero, por lo que se puede intuir que es un canal de pagos.
+ - El canal 2 es el que en promedio maneja mayor cantidad de dinero de entrada y salida.
  
- - El canal 5
+ - Los canales 1 y 2 son los que en promedio manejan mayor cantidad de dinero de entrada.
+ 
+ - Los canales que manejan en promedio una cantidad intermedia de dinero de entrada son los canales 3, 5, 6, 8 y 9.
+ 
+ - Los canales 7, 10 y otros son los que en promedio tienen menores ingresos de dinero.
+ 
+ - Los canales 8 y otros de salida son los que en promedio tiene menor cantidad de dinero.
 
+ - El canal 5 tanto en entrada como salida maneja una cantidad de dinero similar.
 
 
 
