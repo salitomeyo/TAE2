@@ -1486,16 +1486,23 @@ Por lo tanto se quiere realizar un procedimiento adicional que sigue la misma es
  
   - en_vm_canalX: valor del ticket promedio anual de entrada por el canal X
   - sal_vm_canalX: valor del ticket promedio anual de salida por el canal X
-  - en_tx_canalX: cantidad de transacciones mensuales en promedio por el canal X
+  - en_tx_canalX: cantidad de transacciones de entrada mensuales en promedio por el canal X
   - sal_tx_canalX: cantidad de transacciones de salida mensuales en promedio por el canal X
 
-Se realiza el proceso de reducción de variables de los canales siguiendo los siguientes criterios:
+Se realiza el proceso de reducción de variables de los canales con los siguientes criterios:
 
+ 1. Primero se deben llevar todos los canales a una forma similar, es decir, las variables que son de tipo en_tx_canalX y sal_tx_canalX, estan en valores mensuales, por lo tanto se deben multiplicar por 12 para que esten en promedios anuales, así como lo están las variables en_vm_canalX y sal_vm_canalX. 
+ 
+ 2. Se obtiene la cantidad de dinero de entrada promedio anual en cada empresa, para eso se multiplican las variables que son de tipo en_vm_canalX por en_tx_canalX.
+ 
+ 3. Se obtiene la cantidad de dinero de salida promedio anual en cada empresa, para eso se multiplican las variables que son de tipo sal_vm_canalX por sal_tx_canalX.
 
-
-
+Por lo tanto, las variables resultantes indican el dinero promedio anual de cada uno de los clientes en los diferentes canales.
 
 ```{r}
+df <- read.csv("base_trabajo_segmentacion.csv", sep = ";", dec = '.', header = T)
+df <- df[, -1]
+
 montos_entrada <- df[,1:11] # Variables en_vm_canalX
 transacciones_entrada <- df[,12:22] #  Variables en_tx_canalX
 montos_salida <- df[,23:26] # Variables sal_vm_canalX
@@ -1511,11 +1518,100 @@ colnames(df)[1:15] <- c("entrada_canal1","entrada_canal2","entrada_canal3","entr
 "entrada_canal5","entrada_canal6","entrada_canal7","entrada_canal8",
 "entrada_canal9","entrada_canal10","entrada_otros", "salida_canal5",
 "salida_canal2","salida_canal8","salida_otros")
+
+head(df)
 ```
 
 
+* Separación de las variables financieras y canales (no escaladas)
+
+```{r}
+Canal_no_scaled <- df[ ,1:15]
+finan_no_scaled <- df[, 16:31]
+```
 
 
+* Escalamiento de los datos completos
+
+```{r}
+df_scaled <- scale(df, center = T, scale = T)
+```
+
+
+* Separando en conjunto de datos de canales y financiera donde ya estan escaladas:
+
+```{r}
+Canal_scaled <- df_scaled[,1:15]
+finan_scaled <- df_scaled[,16:31]
+```
+
+
+```{r}
+Canal_log <- log(Canal_no_scaled + 1) 
+
+Canal_log_scaled <- scale(log(Canal_no_scaled + 1), center = T, scale = T)
+```
+
+
+Análisis descriptivo de los canales
+
+
+```{r}
+plot(1:15, colMeans(Canal_no_scaled), type = 'b', col = '#038EC3', 
+     xaxt = "n", xlab = '', lwd = 2, ylab = 'Media', main = 'Logaritmo del dinero que se maneja anualmente por cada canal')
+axis(1, 1:15, names(df)[1:15], las = 2)
+grid()
+```
+
+Del gráfico anterior se observa que:
+ 
+ - El canal 2 tiene un mayor ingreso de dinero, pero a la misma vez es el que tiene menor salida de dinero, por lo que se puede intuir que es un canal de pagos.
+ 
+ - El canal 5
+
+
+
+
+
+
+Ya que el procedimiento 3 es una modificación del procedimiento 2 en la parte de segmentación que se realizó con las variables de canales, entonces la segmentación que involucra las variables financieras sigue siendo exactamente igual.
+
+
+```{r}
+par(mfrow=c(1,3))
+plot(centroid1[1:5, 1], type = 'b', col = 'red', 
+     xaxt = "n", xlab = '', lwd = 2, ylab = 'centroide', ylim=c(0, 5.5))
+axis(1, 1:5, row.names(centroid1)[1:5], las = 2)
+lines(centroid1[1:5, 2], col = 'purple', type = "b", lwd = 2)
+lines(centroid1[1:5, 3], col = "blue", type = "b", lwd = 2)
+
+
+legend("bottomright", legend=c("Grupo1","Grupo2", "Grupo3"),
+       col=c("red", "purple", "blue"), lty=1, bty = 'n')
+
+
+plot(centroid1[6:11, 1], type = 'b', col = 'red', 
+     xaxt = "n", xlab = '', lwd = 2, ylab = 'centroide', ylim=c(0,1))
+axis(1, 1:6, row.names(centroid1)[6:11], las = 2)
+lines(centroid1[6:11, 2], col = 'purple', type = "b", lwd = 2)
+lines(centroid1[6:11, 3], col = "blue", type = "b", lwd = 2)
+
+
+legend("topright", legend=c("Grupo1","Grupo2", "Grupo3"),
+       col=c("red", "purple", "blue"), lty=1, bty = 'n')
+
+plot(centroid1[12:16, 1], type = 'b', col = 'red', 
+     xaxt = "n", xlab = '', lwd = 2, ylab = 'centroide', ylim=c(0, 5.5))
+axis(1, 1:5, row.names(centroid1)[12:16], las = 2)
+lines(centroid1[12:16, 2], col = 'purple', type = "b", lwd = 2)
+lines(centroid1[12:16, 3], col = "blue", type = "b", lwd = 2)
+
+
+legend("bottomright", legend=c("Grupo1","Grupo2", "Grupo3"),
+       col=c("red", "purple", "blue"), lty=1, bty = 'n')
+```
+
+De la gráfica anterior se muestra los grupos obtenidos con la segmentación en las variables financieras. Su análisis se puede observar en el procedimiento 2 (boton atajis devuelvis de las conclusiones)
 
 
 
