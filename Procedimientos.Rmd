@@ -609,7 +609,7 @@ En general asi los grupos se parezcan entre si, estos se difieren en algo, ya se
 * Grupo 2: es de los que tiende a manejar menores montos de dinero y menor número de transacciones a través de los canales, realizan pocas importaciones y exportaciones, tienen pocas cuentas por pagar y aunque tiene mas cuentas por cobrar, tampoco estas son altas, tiene un inventario de un nivel intermedio, es el grupo que tiene mayor porcentaje de pagos a personas juridicas que a personas naturales, además de menores ventas fisicas  y electronicas, es decir las menores ventas en general, además de ser el grupo que más se demora rotando el inventario y realizando el su ciclo de negocio y financiero, por lo tanto se piensa que los clientes que pertenecen a este grupo, son empresas que quizas no estan tan desarrolladas y estan en un proceso de crecimiento, en donde sus ventas no son las mejores y no tiene tanto contacto a nivel internacional.
 
 
-* Grupo 3: es el que tiene mayores montos de dinero y mayor número de transacciones a través de los canales, no tiene un nivel alto de importaciones y exportaciones, tiene relativamente un nivel alto en la cuentas por pagar, cuentas por cobrar e inventario, además el grupo 3 es el que presenta mayor promedio de pagos a personas naturales, mayor número de ventas fisicas y electronicas y mayor número de recaudos a personas juridicas y naturales y en general tiene un nivel promedio en las rotaciones y ciclos, por lo tanto se piensa que los clientes que pertenecen a este grupo, son empresas grandes que se mueven más a nivel nacional, tienen muchas ventas ya sean fisicas o electronicas y sus rotaciones de inventario y de cuentas al igual que si sus ciclos no tienden a ser tan rapidos ni tal lentos (ejemplos: almacenes de cadena)
+* Grupo 3: es el que tiene mayores montos de dinero y mayor número de transacciones a través de los canales, no tiene un nivel alto de importaciones y exportaciones, tiene relativamente un nivel alto en la cuentas por pagar, cuentas por cobrar e inventario, además el grupo 3 es el que presenta mayor promedio de pagos a personas naturales, mayor número de ventas fisicas y electronicas y mayor número de recaudos a personas juridicas y naturales y en general tiene un nivel promedio en las rotaciones y ciclos, por lo tanto se piensa que los clientes que pertenecen a este grupo, son empresas grandes que se mueven más a nivel nacional, tienen muchas ventas ya sean fisicas o electronicas y sus rotaciones de inventario y de cuentas al igual que si sus ciclos no tienden a ser tan rapidos ni tan lentos (ejemplos: almacenes de cadena)
 
 * Grupo 4: es de los que tiende a manejar menores montos de dinero y menor número de transacciones a través de los canales, tiene un nivel medio de importaciones y exportaciones y un nivel muy alto de cuenta por cobrar y pagar, también dispone de un nivel alto de inventario, su nivel de ventas es intermedio al igual que la rotación de inventario y ciclo de negocio y financiero y en comparación con los otros grupos es el que tiene las rotaciones de cuentas por cobrar y pagar más lenta,  por lo tanto se piensa que los clientes que pertenecen a este grupo, son empresas que ofrecen un servicio o producto en donde su forma de pago no es inmediata, como por ejemplo empresas que realizan pedidos o encargos, empresas distribuidores, etc.
 
@@ -629,13 +629,18 @@ Los cuales pertenecen al grupo:
 
 ################################################################################
 
+conclusión:
+
+En la segmentación (primero canales luego financieras) anterior se obtuvieron muy buenos resultados dado que se puedo interpretar de manera acertada cada uno de los grupos formados, ahora se intenta realizar el proceso de segmentación con un procedimiento contrario (primero financieras luego canales) con el fin de observar si se obtienen grupos similares a los obtenidos hasta ahora, para mirar si hay consistencia con los análisis realizados y mirar si hay influencia alta de hacer los procedimientos en un orden especifico.
+
+<br>
+
+
 ## Procedimiento de segmentación 2
 
-A continuación se presenta el  procedimiento desarrollado realizando una segmentación con todas las variables financieras, para ser ingresadas al algoritmo de segmentación estas son escaladas, posteriormente en cada uno de los grupos resultantes se realiza una subagrupación pero solo teniendo en cuenta las variables asociadas a los canales, las cuales se les aplica logaritmo natural y luego son escaladas:
+A continuación se presenta el  procedimiento desarrollado realizando una segmentación con todas las variables financieras, para ser ingresadas al algoritmo de segmentación siendo escaladas, posteriormente en cada uno de los grupos resultantes se realiza una subagrupación pero solo teniendo en cuenta las variables asociadas a los canales, las cuales se les aplica logaritmo natural y luego son escaladas:
 
 * Se utiliza agrupamiento jerarquico con la idea de conocer la cantidad de grupos que se deben considerar 
-
-
 
 
 ```{r}
@@ -1445,15 +1450,100 @@ En general asi los grupos se parezcan entre si, estos se difieren en algo, ya se
 ### Conclusión general de los grupos formados
 
 
-* Grupo 1: es de los que tiende a manejar mayores montos de dinero y mayor número de transacciones a través de los canales, además de que es el grupo que mayores importaciones y exportaciones realiza, tiene buena cantidad de cuentas por cobrar y pagar además de una gran cantidad de inventarios, maneja muchas ventas fisicas, se demora más rotando el inventario y realizando su ciclo de negocio y financiero, por lo tanto se piensa que los clientes que pertenecen a este grupo, son empresas grandes, de productos, por ello manejan mucho inventario y se demoran mucho para rotarlo, además de que venden y compran productos al exterior.
+* Grupo 1: es de los que tiende a manejar mayores montos de dinero y mayor número de transacciones a través de los canales, además de que es uno de los grupos que mayores importaciones y exportaciones realiza, aunque igual el nivel de estas no es tan alto tiene buena cantidad de cuentas por cobrar, además de una gran cantidad de inventarios, que aunque no es la más alta, tiene un nivel promedio. Maneja un valor intermedio ventas fisicas en comparación con los demás grupos, se demora más rotando el inventario y realizando su ciclo de negocio y financiero, por lo tanto se piensa que los clientes que pertenecen a este grupo, son empresas grandes, de productos, por ello manejan mucho inventario y se demoran mucho para rotarlo, además de que venden y compran productos al exterior.
 
-* Grupo 2: es de los que tiende a manejar menores montos de dinero y menor número de transacciones a través de los canales, realizan pocas importaciones y exportaciones, tienen pocas cuentas por pagar y aunque tiene mas cuentas por cobrar, tampoco estas son altas, tiene un inventario de un nivel intermedio, es el grupo que tiene mayor porcentaje de pagos a personas juridicas que a personas naturales, además de menores ventas fisicas  y electronicas, es decir las menores ventas en general, además de ser el grupo que más se demora rotando el inventario y realizando el su ciclo de negocio y financiero, por lo tanto se piensa que los clientes que pertenecen a este grupo, son empresas que quizas no estan tan desarrolladas y estan en un proceso de crecimiento, en donde sus ventas no son las mejores y no tiene tanto contacto a nivel internacional.
+* Grupo 2: es de los que tiende a manejar menores montos de dinero y menor número de transacciones a través de los canales, realizan pocas importaciones y exportaciones, tienen pocas cuentas por pagar y aunque tiene mas cuentas por cobrar, tampoco estas son altas, tiene un inventario de un nivel intermedio, es el grupo que tiene mayor porcentaje de pagos a personas juridicas que a personas naturales, además es uno de los grupos con menores ventas fisicas  y electronicas, es decir las menores ventas en general, además de ser el grupo que más se demora rotando el inventario y realizando el su ciclo de negocio y financiero, por lo tanto se piensa que los clientes que pertenecen a este grupo, son empresas que quizas no estan tan desarrolladas y estan en un proceso de crecimiento, en donde sus ventas no son las mejores y no tiene tanto contacto a nivel internacional.
 
 
-* Grupo 3: es el que tiene mayores montos de dinero y mayor número de transacciones a través de los canales, no tiene un nivel alto de importaciones y exportaciones, tiene relativamente un nivel alto en la cuentas por pagar, cuentas por cobrar e inventario, además el grupo 3 es el que presenta mayor promedio de pagos a personas naturales, mayor número de ventas fisicas y electronicas y mayor número de recaudos a personas juridicas y naturales y en general tiene un nivel promedio en las rotaciones y ciclos, por lo tanto se piensa que los clientes que pertenecen a este grupo, son empresas grandes que se mueven más a nivel nacional, tienen muchas ventas ya sean fisicas o electronicas y sus rotaciones de inventario y de cuentas al igual que si sus ciclos no tienden a ser tan rapidos ni tal lentos (ejemplos: almacenes de cadena)
+* Grupo 3: es el que tiene mayores montos de dinero y mayor número de transacciones a través de los canales en comparación con el resto de los grupos, es uno de los grupos que mayores importaciones y exportaciones realiza, aunque igual el nivel de estas no es tan alto, tiene un nivel alto en la cuentas por pagar, cuentas por cobrar e inventario, además el grupo 3 es el que presenta mayor promedio de pagos a personas naturales, mayor número de ventas fisicas y electronicas y mayor número de recaudos a personas juridicas y naturales y en general tiene un nivel promedio en las rotaciones y ciclos, por lo tanto se piensa que los clientes que pertenecen a este grupo, son empresas grandes muy desarrolladas, que se manejan a nivel nacional e internacional, que parecen ser de productos dado que manejan el mayor nivel de inventario, además de tiener muchas ventas ya sean fisicas o electronicas y sus rotaciones de inventario y de cuentas al igual que sus ciclos no tienden a ser tan rapidos ni tan lentos.
 
-* Grupo 4: es de los que tiende a manejar menores montos de dinero y menor número de transacciones a través de los canales, tiene un nivel medio de importaciones y exportaciones y un nivel muy alto de cuenta por cobrar y pagar, también dispone de un nivel alto de inventario, su nivel de ventas es intermedio al igual que la rotación de inventario y ciclo de negocio y financiero y en comparación con los otros grupos es el que tiene las rotaciones de cuentas por cobrar y pagar más lenta,  por lo tanto se piensa que los clientes que pertenecen a este grupo, son empresas que ofrecen un servicio o producto en donde su forma de pago no es inmediata, como por ejemplo empresas que realizan pedidos o encargos, empresas distribuidores, etc.
+* Grupo 4: es de los que tiende a manejar menores montos de dinero y menor número de transacciones a través de los canales, es uno de los grupos que mayores importaciones y exportaciones realiza, aunque igual el nivel de estas no es tan alto, maneja un nivel muy alto de cuenta por cobrar y pagar, también dispone de un nivel alto de inventario, su nivel de ventas es intermedio al igual que la rotación de inventario y ciclo de negocio y financiero y en comparación con los otros grupos es el que tiene las rotaciones de cuentas por cobrar y pagar más lenta,  por lo tanto se piensa que los clientes que pertenecen a este grupo, son empresas que ofrecen un servicio o producto en donde su forma de pago no es inmediata, como por ejemplo empresas que realizan pedidos o encargos, empresas distribuidores, etc.
 
 * Grupo 5: es de los que tiende a manejar mayores montos de dinero y mayor número de transacciones a través de los canales, tiene un nivel bajo de importaciones y exportaciones y un nivel intermedio de cuentas por cobrar, cuentas por pagar e inventario, también tiene un alto porcentaje de pagos a personas juridicas y naturales, además un buen porcentaje de ventas fisicas y en general tiene rotaciones de inventario, rotaciones de cuentas y ciclos relativamente rápidos, por lo tanto se piensa que los clientes que pertenecen a este grupo, son empresas que se encargan de distribuir productos nacionales, los cuales tienen un proceso de venta rápido, dado que el inventario no es grande ni pequeño pero tienden a realizar rotaciones en poco tiempo y por el hecho de manejar buen monto de dinero nos da idea de que puede ser una empresa grande o muy bien acreditada.
 
 * Grupo 6: es de los que tiende a manejar menores montos de dinero y menor número de transacciones a través de los canales, tiene niveles bajos de importaciones, exportaciones, de cuentas por cobrar y pagar e inventario, tiene porcentajes altos de pagos a personas juridicas y naturales y sus rotaciones de inventario, de cuentas y ciclos son rápidos, por lo tanto se piensa que los clientes que pertenecen a este grupo, son empresas que en general se espera que no sean grandes y tiendan a ofrecer servicios a nivel nacional.
+
+
+<br>
+
+
+Conclusión:
+
+Mediante los grupos obtenidos con este segundo procedimiento de segmentación se puede notar una consistencia o una alta relación con los grupos formados en el anterior procedimiento, dado que cada uno de los grupos sigue teniendo relativamente las mismas caracteristicas a tanto en los canales como en las variables financieras, lo que implica que realizar el procedimiento en un respectivo orden no cambia mucho los grupos formados, dado que estos estan muy bien definidos.
+
+
+Cabe resaltar que los dos subgrupos de los canales hallados a partir de los grupos ya conformados con las variables financieras, tienen la caracteristica de que uno tiende a manejar mayores montos de dinero y número de transacciones que el otro y este fenomeno se percibe en cada una de las subagrupaciones realizadas, lo cual da idea del porque hay consistencia con el procedimiento 1  y procedimiento 2 de segmentación, en el cual el procedimiento 1 realiza primero la segmentación por las variables de los canales y claramente se resaltan dos grupos los cuales se diferencian por los montos de dinero que manejan y número de transacciones, por lo tanto a pesar de que se realice primero la agrupación por las variables financieras y los tres grupos tengan sus diferencias, en todos se conserva el comportamiento descrito en la primera segmentación para las variables de los canales.
+
+
+A pesar de que existe una alta relación entre los dos procedimientos de segmentación realizados, mediante los análisis se concluye que estan mejor definidos los grupos realizados mediante el procedimiento 2 (primero financieras y luego canales), debido a que el orden lógico por el cual se caracterizaría un nuevo usuario (que no tiene información de uso de los canales de la empresa) sería mediante la recolección de la información financiera del nuevo cliente. Además de que los grupos finales que se forman tienen unas características que se acomodan mas a interpretaciones de perfiles de empresas reales y por lo tanto las interpretaciones tienen más coherencia.
+
+Por lo tanto se quiere realizar un procedimiento adicional que sigue la misma estructura del procedimiento 2 donde se realiza primero la segmentación por las variables financieras y luego por las variables de los canales,considerando una simplificación de las variables, ya que se decide realizar una transformación o manipulación de variables las cuales permiten reducir el número de estas teniendo en cuenta la relación que existe entre los montos de dinero y número de transacciones realizados por cada uno de los clientes.
+
+
+## Procedimiento 3
+
+ Para las variables de los canales se tienen 4 tipos de variables, que se definen de la siguiente manera:
+ 
+  - en_vm_canalX: valor del ticket promedio anual de entrada por el canal X
+  - sal_vm_canalX: valor del ticket promedio anual de salida por el canal X
+  - en_tx_canalX: cantidad de transacciones mensuales en promedio por el canal X
+  - sal_tx_canalX: cantidad de transacciones de salida mensuales en promedio por el canal X
+
+Se realiza el proceso de reducción de variables de los canales siguiendo los siguientes criterios:
+
+
+
+
+
+```{r}
+montos_entrada <- df[,1:11] # Variables en_vm_canalX
+transacciones_entrada <- df[,12:22] #  Variables en_tx_canalX
+montos_salida <- df[,23:26] # Variables sal_vm_canalX
+transacciones_salida <- df[,27:30] # Variables sal_tx_canalX
+
+
+monto_promedio_anual_entrada <- montos_entrada*(transacciones_entrada*12)
+monto_promedio_anual_salida <- montos_salida*(transacciones_salida*12)
+
+df <- cbind(monto_promedio_anual_entrada, monto_promedio_anual_salida, finan_no_scaled)
+
+colnames(df)[1:15] <- c("entrada_canal1","entrada_canal2","entrada_canal3","entrada_canal4",
+"entrada_canal5","entrada_canal6","entrada_canal7","entrada_canal8",
+"entrada_canal9","entrada_canal10","entrada_otros", "salida_canal5",
+"salida_canal2","salida_canal8","salida_otros")
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
