@@ -14,14 +14,6 @@ output:
     
 ---
 
-<style>
-
-  p{
-      text-align: justify;
-  }
-
-</style>
-
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
@@ -30,27 +22,24 @@ knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
 
 # Introducción
 
-En la actualidad se observa una tendencia en las empresas de adoptar un enfoque orientado hacia sus clientes, los comportamientos y necesidades de estos. Esto implica que la organización y todas las personas pertenecientes a ella deben responder a las necesidades de los diferentes clientes, logrando que la empresa responda en tiempo y forma oportuna las exigencias del medio.
+En la actualidad se observa una tendencia en las empresas de adoptar un enfoque orientado hacia sus clientes, los comportamientos y necesidades de estos. Esto implica que la organización y todas las personas pertenecientes a ella deben responder a las necesidades de los diferentes clientes, logrando que la empresa responda en tiempo y en forma oportuna las exigencias del medio.
 
 Aquellas empresas con un enfoque orientado hacia los clientes son más rentables, puesto que al conocer y satisfacer mejor las necesidades de los mismos desarrollan relaciones de largo plazo generando mayor lealtad y la posibilidad de futuras negociaciones.
 
-Por ello, surge la necesidad de realizar un proceso de segmentación de clientes que permita a las empresas dividir a sus consumidores en categorías específicas, basadas en características que se extraen de su comportamiento como clientes y la información que pueden obtener de sus interacciones con la empresa; en este estudio en particular se está trabajando con  información de clientes corporativos, es decir, una empresa cuyos clientes también lo son.
+Por ello, surge la necesidad de realizar un proceso de segmentación de clientes que permita a las empresas dividir a sus consumidores en categorías específicas, basadas en características que se extraen de su comportamiento como clientes y la información que pueden obtener de sus interacciones con la empresa; en este estudio en particular se está trabajando con  información de clientes corporativos, es decir, una empresa cuyos clientes también son empresas.
 
 El objetivo es crear grupos de empresas(clientes) para ayudar a la empresa principal, cuyo sector de desarrollo será la banca, con el fin de mejorar el trato a sus clientes además de los servicios y beneficios que les ofrece según sus condiciones, es decir, ayudar a la toma de decisiones para que todo el entorno corporativo funcione de una manera efectiva. Por otro lado, se considera de suma importancia efectuar una segmentación de clientes buscando detectar aquel segmento que genera mayor rentabilidad para el Banco. De este modo, se desarrolla una herramienta que colabore con la nueva percepción de la entidad y que permita migrar con mayor facilidad a un enfoque de gestión orientado hacia los clientes.
 
 ### Objetivo
 
-El objetivo es crear grupos  que tengan sentido es decir interpretables para ser clasificados y caracterizados mediante la identificación de patrones de uso de productos y canales y su relación con los estados financieros y que permitan a la empresa tomar acción sobre esos grupos, como el ofrecimiento de sus servicios y entender más a fondo cómo se comportan en el entorno
-
-Lo ideal es identificar los patrones en los canales y mirar después de ellos cuales son las características en los estados financieros.
-
-Lo ideal es identificar patrones en los estados financieros que caracterizan a cierta empresa y después observar como es el comportamiento de estos en los diferentes canales
+El objetivo es crear grupos  que tengan sentido es decir interpretables para ser clasificados y caracterizados mediante la identificación de patrones de uso de productos y canales y su relación con los estados financieros y que permitan a la empresa tomar acción sobre esos grupos, como el ofrecimiento de sus servicios y entender más a fondo cómo se comportan en el entorno.
 
 ### Resumen
 
-El objetivo es crear grupos que tengan sentido es decir, que tengan características decifrables mediante la identificación de patrones en el uso de productos y canales del banco y su relación con los estados financieros de los diferentes clientes(empresas). Lo anterior con el fin de tomar acción sobre dichos grupos, entendiendo su comportamiento y realizando un perfil para ofrecer servicios.
+El presente trabajo se concentra en una segmentación de clientes, en este caso empresas, de las cuales se tiene información como el uso de canales de entrada y salida que posee el banco y sus características o estados financieros que permiten entender su estructura, es decir si de servicios, de productos, si es grande, pequeña, si se mueve a nivel nacional y/o internacional, como es el comportamiento de sus inventarios, de sus cuentas por cobrar y  pagar y de los diferentes ciclos de negocios y financieros, etc. Esto permite no solo entender como se caracteriza el cliente sino además sus necesidades logrando así ofrecerle servicios que sean beneficiosos, tanto para él como para el banco.
 
-El presente trabajo se concentrará en una segmentación de clientes, en este caso empresas, de las cuales se tiene información como el uso de canales de entrada y salida que posee el banco y sus características o estados financieros que permiten entender su estructura, es decir si de servicios, de productos, si es grande, pequeña, si se mueve a nivel nacional y/o internacional, como es el comportamiento de sus inventarios, de sus cuentas por cobrar y  pagar y de los diferentes ciclos de negocios y financieros, etc. Esto permite no solo entender como se caracteriza el cliente sino además sus necesidades logrando así ofrecerle servicios que sean beneficiosos, tanto para él como para el banco.
+
+Durante el desarrollo de este trabajo se buscaron diferentes caminos para realizar la segmentación de los clientes. En este documento se presentan las que generaron mejores resultados e hicieron que los grupos tuvieran mayor sentido, además de ello se verificó que todos los procesos fueran estadísticamente válidos.
 
 
 ### Retos
@@ -197,6 +186,7 @@ Canal_log_scaled <- scale(log(Canal_no_scaled + 1), center = T, scale = T)
 
 
 <br>
+
 ##### Análisis descriptivo de las variables de canales de entrada y salida que reflejan los montos de dinero en millones de pesos:
 
 ```{r, echo=FALSE}
@@ -208,6 +198,7 @@ kable(summary(Canal_no_scaled[c(1:11, 23:26)]/1000000), align = 'c') %>%
 
 
 <br>
+
 ##### Análisis descriptivo de las variables de canales de entrada y salida que muestran el número de transacciones:
 
 ```{r, echo=FALSE}
@@ -3109,7 +3100,7 @@ En general asi los grupos se parezcan entre si, estos se difieren en algo, ya se
   
   -	Además de tener en cuenta la base de datos completa y decidir realizar una división que agrupara los datos según la naturaleza de las variables (financieras y canales) para obtener mejores resultados.
   
-realmente se pasó por muchas etapas, en este documento se presentan las que generaron mejores resultados e hicieron que los grupos tuvieran mayor sentido, además de ello se verificó que todos los procesos fueran estadísticamente válidos.
+realmente se pasó por muchas etapas, en este documento se presentan las que generaron mejores resultados e hicieron que los grupos tuvieran mayor sentido.
 
 ## Que se puede mejorar
 
@@ -3120,4 +3111,16 @@ realmente se pasó por muchas etapas, en este documento se presentan las que gen
 
 ## Referencias
 
+- Cuentas por cobrar - ¿Qué son las cuentas por cobrar? (n.d.). Debitoor.Es. Retrieved August 3, 2021, from https://debitoor.es/glosario/cuentas-por-cobrar
 
+- Glosario de contabilidad. (n.d.). Debitoor.Es. Retrieved August 3, 2021, from https://debitoor.es/glosario
+
+- Logaritmo natural. (2019, March 13). Economipedia.com. https://economipedia.com/definiciones/logaritmo-natural.html
+
+- Na, S., Xumin, L., & Yong, G. (2010). Research on k-means Clustering Algorithm: An Improved k-means Clustering Algorithm. 2010 Third International Symposium on Intelligent Information Technology and Security Informatics. https://doi.org/10.1109/iitsi.2010.74
+
+- Práctica 8. (n.d.). Ugr.Es. Retrieved August 3, 2021, from http://wpd.ugr.es/~bioestad/guia-spss/practica-8/
+
+- Ripley, B. D. (2001). The R project in statistical computing. MSOR Connections, 1(1).
+
+- Rotación de inventarios. (2020, April 29). Gerencie.com. https://www.gerencie.com/rotacion-de-inventarios.html
