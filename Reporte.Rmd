@@ -1,5 +1,5 @@
 ---
-title: ''
+title: 'Segmentación de clientes'
 author: 
 - "Cristina Mercedes Ortega Benavides"
 - "Miguel Angel Londoño Ciceros"
@@ -14,9 +14,19 @@ output:
     
 ---
 
+<style>
+
+  p{
+      text-align: justify;
+  }
+
+</style>
+
+
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
 ```
+
 
 # Introducción
 
@@ -432,6 +442,8 @@ _ **pagos_pj: **
 
 ##### A continuación se pueden observar las características financieras de un cliente promedio.
 
+<center>
+
 ```{r, fig.align="center", echo=FALSE}
 plot(1:16, colMeans(finan_no_scaled), type = 'b', col = 'cyan4', 
      xaxt = "n", xlab = '', lwd = 2, ylab = 'Media', ylim = c(0, 4.3),main= "Gráfico de las medias de las variables financieras", pch=19)
@@ -440,8 +452,12 @@ text(apply(finan_no_scaled, 2, mean)+0.2, labels = round(apply(finan_no_scaled, 
 grid()
 ```
 
+</center>
+
 
 <h4> <center> Matriz de correlaciones entre las variables financieras </center> </h4>
+
+<center>
 
 ```{r, message=FALSE, warning=FALSE, fig.align="center", echo=FALSE}
 library(corrplot)
@@ -457,6 +473,8 @@ corrplot(cor(finan_no_scaled),
          )
 
 ```
+
+</center>
 
 - Se observa una relación inversamente proporcional entre las variables pagos_pj y pagos_pn, con una correlación de 0.88.
 
@@ -559,6 +577,8 @@ rect.hclust(dendrogram, k=2, border="cyan4")
 
 <h2> <center> Agrupamiento k means con las variables de los canales (usando transformación logaritmo natural): </center> </h2>
 
+<center>
+
 ```{r, fig.align="center"}
 require(cluster)
 
@@ -575,6 +595,8 @@ clusplot(Canal_log_scaled, Agru_canal$cluster, color = TRUE,
           sub = "")
 grid()
 ```
+
+</center>
 
 En el gráfico anterior se puede observar una representación en dos dimensiones de los grupos encontrados por K-means. 
 
@@ -621,6 +643,9 @@ El grupo 1 cuenta con 1281 clientes y el grupo 2 con 952 clientes, en general el
 <h2> <center> Gráficos de boxplot que permitirán sacar caraterísticas de cada uno de los grupos </center> </h2>
 
 * Los gráficos son de las variables de los canales en escala logaritmo natural
+
+<center>
+
 ```{r, fig.align="center", echo=FALSE}
 library(ggplot2)
 for(i in 2:dim(canal_group)[2]){
@@ -636,6 +661,8 @@ for(i in 2:dim(canal_group)[2]){
 }
 
 ```
+
+</center>
 
 - En términos generales, se puede observar que el grupo 1 presenta en promedio un monto y un número mayor de transacciones.
 
@@ -3065,8 +3092,32 @@ En general asi los grupos se parezcan entre si, estos se difieren en algo, ya se
 
 # Conclusiones
 
-Que se puede mejorar
+- En conclusión, todos los procesos de segmentación arrojaron que se deben de considerar 6 grupos   de clientes, estos grupos formados se pueden interpretar y están bien definidas las diferencias entre cada uno ellos, porque a pesar de que hayas cosas similares entre pares de grupos, en algo se diferencias ya sea mediante las variables financieras o el uso de los canales. Cada uno de los grupos tiene sus características particulares en la parte financiera, que es la que indica lo que necesita el cliente de la compañía, de cuáles son las características que hacen identificar cómo se comporta este en su propio entorno y como está estructurada, además que permite definir cada uno de los grupos en como usan los canales que se le ofrecen, con la idea de saber cuál se les puede ofrecer con más certeza y cuales definitivamente no son de su interés.
 
-Referencias
+- Se resalta la utilidad de los algoritmos de aprendizaje no supervisado, en este caso kmeans que permitió encontrar patrones y características de los clientes que para un humano serían imperceptibles a simple vista.
+
+- La transformación logarítmica jugo un gran papel ayudando a controlar los valores extremos para obtener mejores agrupaciones al aplicar kmeans y a la hora de  visualizar los datos.
+
+- Durante el desarrollo del trabajo se tuvieron en cuenta otros caminos para llegar a los grupos:
+  -	El análisis de componentes principales para la reducción de variables antes de realizar el proceso de segmentación.
+  
+  -	Se intentó modificar las variables, como el cálculo del porcentaje de uso para las variables asociadas a los canales.
+  
+  -	Uso del algoritmo de segmentación agrupamiento jerárquico.
+  
+  -	 Segmentar aplicando la transformación logaritmo natural y sin aplicarla.
+  
+  -	Además de tener en cuenta la base de datos completa y decidir realizar una división que agrupara los datos según la naturaleza de las variables (financieras y canales) para obtener mejores resultados.
+  
+realmente se pasó por muchas etapas, en este documento se presentan las que generaron mejores resultados e hicieron que los grupos tuvieran mayor sentido, además de ello se verificó que todos los procesos fueran estadísticamente válidos.
+
+## Que se puede mejorar
+
+- Se sugiere para futuros trabajos variar las técnicas de escalamiento de los datos por ejemplo min-max y probar otros algoritmos de agrupación y contrastar con los grupos encontrados con kmeans.
+
+- Sacar las variables que no aportaron mucho a la segmentación, ya que se comportan de manera similar en todos los grupos (ventas físicas, ventas electrónicas, recaudos personas jurídicas, recaudos personas naturales). Y excluir algunas variables en canales que estén fuertemente correlacionadas, es decir hacer una selección de variables basada en la correlación.
+
+
+## Referencias
 
 
