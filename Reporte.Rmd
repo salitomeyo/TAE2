@@ -9,8 +9,16 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
----
-###Introducción
+### Objetivo
+
+El objetivo es crear grupos  que tengan sentido es decir interpretables para ser clasificados y caracterizados mediante la identificación de patrones de uso de productos y canales y su relación con los estados financieros y que permitan a la empresa tomar acción sobre esos grupos, como el ofrecimiento de sus servicios y entender más a fondo cómo se comportan en el entorno
+
+Lo ideal es identificar los patrones en los canales y mirar después de ellos cuales son las características en los estados financieros.
+
+Lo ideal es identificar patrones en los estados financieros que caracterizan a cierta empresa y después observar como es el comportamiento de estos en los diferentes canales
+
+
+### Introducción
 
 En la actualidad se observa una tendencia en las empresas de adoptar un enfoque orientado hacia sus clientes, los comportamientos y necesidades de estos. Esto implica que la organización y todas las personas pertenecientes a ella deben responder a las necesidades de los diferentes clientes, logrando que la empresa responda en tiempo y forma oportuna las exigencias del medio.
 
@@ -21,24 +29,22 @@ Por ello, surge la necesidad de realizar un proceso de segmentación de clientes
 El objetivo es crear grupos de empresas(clientes) para ayudar a la empresa principal, cuyo sector de desarrollo será la banca, con el fin de mejorar el trato a sus clientes además de los servicios y beneficios que les ofrece según sus condiciones, es decir, ayudar a la toma de decisiones para que todo el entorno corporativo funcione de una manera efectiva. Por otro lado, se considera de suma importancia efectuar una segmentación de clientes buscando detectar aquel segmento que genera mayor rentabilidad para el Banco. De este modo, se desarrolla una herramienta que colabore con la nueva percepción de la entidad y que permita migrar con mayor facilidad a un enfoque de gestión orientado hacia los clientes.
 
 
----
-###Resumen
+
+### Resumen
 
 El objetivo es crear grupos que tengan sentido es decir, que tengan características decifrables mediante la identificación de patrones en el uso de productos y canales del banco y su relación con los estados financieros de los diferentes clientes(empresas). Lo anterior con el fin de tomar acción sobre dichos grupos, entendiendo su comportamiento y realizando un perfil para ofrecer servicios.
 
 El presente trabajo se concentrará en una segmentación de clientes, en este caso empresas, de las cuales se tiene información como el uso de canales de entrada y salida que posee el banco y sus características o estados financieros que permiten entender su estructura, es decir si de servicios, de productos, si es grande, pequeña, si se mueve a nivel nacional y/o internacional, como es el comportamiento de sus inventarios, de sus cuentas por cobrar y  pagar y de los diferentes ciclos de negocios y financieros, etc. Esto permite no solo entender como se caracteriza el cliente sino además sus necesidades logrando así ofrecerle servicios que sean beneficiosos, tanto para él como para el banco. 
 
 
+### Introducción Kmeans
+
+Dado que en nuestra base de datos no existe una variable respuesta específica que se desee predecir, una forma relativamente rápida de detectar patrones y determinar características similares entre los clientes es la clasificación no supervisada o análisis de agrupamiento (clustering).
+
+En este caso se utiliza el algoritmo  de agrupación K-means, el cual consiste en que para un conjunto de datos de variables numéricas se repiten una serie de pasos hasta asignar cada observación a uno de k grupos donde la distancia a la media del grupo sea la más corta.
 
 
-
-#Parte que va a hacer Migue
-
-El proceso de segmentación está basado en un algoritmo llamado k-means, 
-K-means es un algoritmo de clasificación no supervisado (clusterización) que agrupa objetos en k grupos basándose en sus características. El agrupamiento se realiza minimizando la suma de distancias entre cada objeto y el centroide de su grupo o cluster.
-
----
-###Retos
+### Retos
 
 * Entender el entorno donde se desarrolla el trabajo, cual es su objetivo y saber que debido a que es un problema de aprendizaje no supervisado se debe intentar llegar a los resultados que intuitivamente sean más adecuados y coherentes.
 
@@ -60,7 +66,7 @@ K-means es un algoritmo de clasificación no supervisado (clusterización) que a
 
 * Dar conclusiones sobre el estudio.
 
----
+
 ### Contextualización
 
 El estudio se quiere contextualizar en un entorno o sector bancario, este tiene como clientes a empresas que utilizan sus diferentes servicios por medio de canales de entrada y de salida que tienen fines específicos para cada cliente, es decir, cada cliente puede utilizar diversos canales, con montos y número de transacciones diferente.
@@ -69,11 +75,16 @@ Por lo tanto, el objetivo de la entidad bancaria es comprender cómo pueden agru
 
 Es por esto que la entidad bancaria busca obtener un proceso de segmentación muy bien elaborado, que le permita tomar decisiones frente a sus clientes y contribuya al crecimiento de la organización. Así mismo, es importante entender a los clientes actuales, buscando entender a los nuevos clientes que puedan llegar ya que se les ofrecería los servicios que mejor se adapten a sus características.
 
-------------------------------------------------------------------------------------------------------------
+<div id="porque-logaritmo"></div>
+#### ¿Por qué realizar la transformación de logaritmo natural?
 
-(describir a las diferentes empresas con diferentes necesidades-especificar más sobre los canales que ofrece el banco-decir más decisiones que podría tomar el banco a partir de la segmentación-poner una ejemplificación del proceso cliente/empresa que puede presentarse-hablar más sobre cómo funciona el sector bancario).
+Para las variables asociadas a los canales se realiza la transformación logaritmo natural para trabajar con escalas que permitan una mejor visualización y comprensión del comportamiento de estas, esta transformación es de mucha utilidad cuando se cuenta con valores extremos, que en este caso particular se presentan y han hecho menos viable la compresión de las diferentes variables, además de que esta transformación solo cambia la escala y permite que muchas interpretaciones se puedan seguir realizando como cuáles canales son los que manejan mayores o menores montos de dinero o mayor o menor número de transacciones, por lo tanto esta transformación da habilidad para acotar el rango de la variable en una cantidad más pequeña que la original. Este efecto reduce la sensibilidad de las estimaciones a las observaciones extremas, lo cual en este estudio ha sido de mucha utilidad y ha permitido realizar unas mejores agrupaciones.
 
-------------------------------------------------------------------------------------------------------------
+<div id="porque-escalar"></div>
+#### ¿Por qué escalar las variables para realizar las agrupaciones?
+
+Dado que se está trabajando con el algoritmo k-means el cual está basado en distancias, la escala de las diferencias variables influyen mucho en los resultados que se obtienen, lo que lleva a dar más peso a variables cuyos rangos son más grandes, por lo tanto se acudió a un procedimiento que se llama escalamiento o estandarización de variables, el cual permite trabajar sobre un mismo rango de valores en las diferentes variables ya que permite quitar las unidades de medidas de cada uno de las variables, permitiendo que estas se puedan comparar entre sí sin problema.
+
 
 #### Contextualización de variables
 
@@ -119,7 +130,7 @@ Es por esto que la entidad bancaria busca obtener un proceso de segmentación mu
 
 * sal_tx_canalX: cantidad de transacciones de salida mensuales en promedio por el canal X
 
----
+
 ### Análisis Descriptivo 
 
 * Lectura de la base de datos
@@ -234,7 +245,7 @@ grid()
 ```
 
 
-<center> <h2> Boxplots del logaritmo natural de las variables de los canales</h2> </center>
+<center> <h2> Boxplots del logaritmo natural de las variables de los canales</center> </h2>
 
 ```{r, echo = FALSE, fig.align="center"}
 par(mfrow=c(1,2))
@@ -283,7 +294,7 @@ _Análisis de los canales de salida:_
 
 En general en los canales de salida, el canal2 es el que maneja un mayor monto promedio de dinero, además un mayor número de transacciones; por otro lado el canal8 y canalOtros son los que manejan los menores montos promedio de dinero y menor números de transacciones.
 
-<center> <h2>  Matriz de correlación asociada a las variables de los canales: </h2> </center>
+<center> <h2>  Matriz de correlación asociada a las variables de los canales: </center> </h2>
 
 ```{r, message=FALSE, warning=FALSE, eval = FALSE, fig.align="center"}
 library(corrplot)
@@ -305,7 +316,24 @@ corrplot(cor(Canal_no_scaled),
 
 </center>
 
-(falta Interpretar matriz de correlación)
+* El canal de entrada 3 parece estar positivamente correlacionado con el canal de entrada 9 y con el número de transacciones por el canal 3 y 9.
+
+* El canal de entrada 4 parece estar positivamente correlacionado con los canales de entrada 5 y 7, con el número de transacciones por el canal 4 y con el canal de salida 5.
+
+* Existe una fuerte correlación lineal positiva entre el canal de entrada 5 y el número de transacciones en el canal 4 y el canal 2 de salida. Además de una correlación de 1 con el canal 5 de salida.
+
+* Parece que el canal de entrada 6 no se encuentra linealmente correlacionado con los demás canales.
+
+* Existe una fuerte correlación lineal positiva entre el número de transacciones del canal 4 y el canal 2 de salida.
+
+* El canal de entrada 8 parece estar positivamente correlacionado con el canal 8 de salida.
+
+* El canal de entrada otros parece estar positivamente correlacionado con el número de transacciones del canal 1.
+
+* Existe una fuerte correlación lineal positiva entre el número de transacciones del canal 5 y el número de transacciones por el canal 2 de salida.
+
+* El canal 2 de salida parece estar positivamente correlacionado con el canal 2 de salida.
+
 
 Las variables de los canales que presentan mayor correlación son:
 
@@ -327,9 +355,10 @@ unique(nombres)
 
 **Análisis descriptivo de las variables financieras:**
 
-<center> <h2> Gráficos descriptivos de cada una de las variables financieras </center> </h2>
+<center> <h2> Gráficos descriptivos de cada una de las variables financieras </center> </h2> 
 
 * Gráficos de frecuencias relativas para las varibales categoricas
+
 * Gráficos de histograma para las variables continuas
 
 ```{r, message=FALSE, warning=FALSE, , fig.align="center"}
@@ -407,8 +436,7 @@ grid()
 ```
 
 
-
-<h2> <center> Matriz de correlaciones entre las variables financieras </h2> </center>
+<h2> <center> Matriz de correlaciones entre las variables financieras </center> </h2>
 
 ```{r, message=FALSE, warning=FALSE, fig.align="center"}
 library(corrplot)
@@ -446,7 +474,6 @@ corrplot(cor(finan_no_scaled),
 
 ### Debemos hablar del algoritmo de segmentación que vamos a utilizar (hablar de Kmeans, citarlo para las referencias, poner link de documento)
 
-----
 
 # Segmentación
 
@@ -459,13 +486,12 @@ En este caso, se decide realizar una segmentación mediante las variables asocia
 Las variables de los canales son variables cuantitativas que en general tienen valores extremos,al ser utilizados en la segmentación pueden crear un gran impacto en los grupos resultantes, dado que el algoritmo que se usa "K-means" es muy sensible a observaciones extremas, por lo tanto para solucionar este problema se decide realizar una transformación logaritmo natural sobre las variables asociadas a los canales.
 
 
-**(¿Por qué realizar la transformación de logaritmo natural?)** recuerden poner un link de desplazamiento................
+<a href="#porque-logaritmo">**(¿Por qué realizar la transformación de logaritmo natural?)**</a>
 
 Además de ello el algoritmo de segmentación K-means es muy sensible a las unidades de las diferentes variables dado que está basado en distancias, por lo tanto, así se aplique una transformación logaritmo natural, se deben escalar las variables para que todas puedan ser comparadas entre sí y los resultados sean estadísticamente válidos.
 
 
-**¿Por qué escalar las variables para realizar las agrupaciones?** recuerden poner un link de desplazamiento................
-
+<a href="#porque-escalar">**¿Por qué escalar las variables para realizar las agrupaciones?**</a>
 
 
 ```{r, echo =FALSE}
@@ -522,7 +548,7 @@ rect.hclust(dendrogram, k=2, border="cyan4")
 
 
 
-<h2> <center> Agrupamiento k means con las variables de los canales (usando transformación logaritmo natural): <7h2> </center>
+<h2> <center> Agrupamiento k means con las variables de los canales (usando transformación logaritmo natural): </center> </h2>
 
 ```{r, fig.align="center"}
 require(cluster)
@@ -582,7 +608,7 @@ kable(table(Agru_canal$cluster), align = 'c', col.names = c('Grupo', 'Número de
 El grupo 1 cuenta con 1281 clientes y el grupo 2 con 952 clientes, en general el grupo 1 tiene a los clientes que tienden a manejar montos más altos de dinero y mayor número de transacciones por todos los canales en comparación con los del grupo 2.
 
 
-<h2> <center> Gráficos de boxplot que permitirán sacar caraterísticas de cada uno de los grupos </h2> </center>
+<h2> <center> Gráficos de boxplot que permitirán sacar caraterísticas de cada uno de los grupos </center> </h2>
 
 * Los gráficos son de las variables de los canales en escala logaritmo natural
 ```{r, fig.align="center"}
@@ -631,7 +657,7 @@ media_df_grupcanal <-  aggregate(.~grupos,data=df_group_log, FUN=mean)
 
 
 
-<h2> <center>  Análisis del valor medio de los grupos en cada variable </h2> </center>
+<h2> <center>  Análisis del valor medio de los grupos en cada variable </center> </h2>
 
 **Gráfico de los grupos en las variables de los canales**
 
@@ -687,7 +713,7 @@ grid()
 
 El grupo 1 maneja montos de dinero y número de transacciones promedio más grandes en los canales, a su vez, se pueden observar valores promedios más grandes en las cuentas por pagar, cuentas por cobrar y en el total de inventario y aunque el número de importaciones y exportaciones promedio es mayor que la del grupo 2, la diferencia es muy pequeña, además el grupo 1 tiende a tener una mayor proporción de tiendas físicas. En las demás variables el comportamiento promedio es bastante similar.
 
----
+
 
 ## Se crean subgrupos mediante las variables financieras para cada grupo creado con canales
 
@@ -712,7 +738,7 @@ rect.hclust(dendrogram, k=3, border="cyan4")
 Del dendograma anterior se concluye considerar 3 subgrupos.
 
 
-<h2> <center>Subagrupamientos mediante las variables de estados financieros usando k-means :</h2> </center>
+<h2> <center>Subagrupamientos mediante las variables de estados financieros usando k-means :</center> </h2>
 
 
 ```{r, fig.align="center"}
@@ -783,7 +809,7 @@ media_canal1_finan <-  aggregate(.~sub_grupos,data=canal1_finan_log, FUN=mean)
 
 
 
-<h2> <center> Análisis del valor medio de los grupos en cada variable </h2> </center>
+<h2> <center> Análisis del valor medio de los grupos en cada variable </center> </h2>
 
 
 ```{r, fig.align="center"}
@@ -825,7 +851,7 @@ grid()
 
 * El sub-grupo 3 del grupo 1 es el que en general tiende a tener menores niveles promedios en todas las variables financieras, es decir es el que realiza menos importaciones, exportaciones, tiene menor número de  cuentas por cobrar y por pagar, menores inventarios, le toma menos tiempo realizar las rotaciones de inventarios, rotaciones de cuenta por cobrar y pagar y realizar los ciclos de negocio y financieros. En los pagos y recaudos a personas jurídicas y naturales tiende a tener porcentajes bajos.
 
-###############################################
+<br>
 
 * Agrupamiento por variables financieras para el grupo 2 de canales:
 
@@ -922,7 +948,7 @@ media_canal2_finan <-  aggregate(.~sub_grupos,data=canal2_finan_log, FUN=mean)
 
 
 
-<h2> <center> Análisis del valor medio de los grupos en cada variable </h2> </center>
+<h2> <center> Análisis del valor medio de los grupos en cada variable </center> </h2>
 
 
 ```{r, fig.align="center"}
@@ -1038,7 +1064,7 @@ kable(aggregate(.~Grupos,data=Datos_finales_2, FUN=median), align = 'c') %>%
 
 <br>
 
-<h2> <center> Análisis del valor medio de los grupos en cada variable </h2> </center>
+<h2> <center> Análisis del valor medio de los grupos en cada variable </center> </h2>
 
 **Variables de los canales**
 
@@ -1136,7 +1162,7 @@ Los cuales pertenecen al grupo:
 
 "5, 3, 3, 1, 3" respectivamente lo cual significa que todos quedan en los grupos que más dinero mueven y más tranzan por los canales, por lo tanto la segmentación es confiable.
 
-################################################################################
+<br>
 
 Conclusión:
 
@@ -1246,14 +1272,9 @@ kable(table(Agru_finan$cluster), align = 'c', col.names = c('Grupo', 'Número de
 ```
 
 
-
-
-
 El grupo 1 cuenta con 809 clientes y el grupo 2 con 659 clientes  y el grupo 3 con 765 clientes.
 
-
-
-<h2> <center> Gráficos que permitirán sacar caraterísticas de cada uno de los grupos </h2> </center>
+<h2> <center> Gráficos que permitirán sacar caraterísticas de cada uno de los grupos </center> </h2>
 
 * Gráficos de barras para las variables categoricas y boxplots para las variables continuas
 
@@ -1457,7 +1478,7 @@ centroid1 <- apply(Agru_finan$centers, 1, function(x) x * attr(df_scaled,'scaled
 ```
 
 
-<h2> <center>  Análisis del valor medio de los grupos en cada variable </h2> </center>
+<h2> <center>  Análisis del valor medio de los grupos en cada variable </center> </h2>
 
 <h3> <center>  Gráfico de los grupos en las variables financieras </h3> </center>
 
@@ -1631,7 +1652,7 @@ kable(media_finan1_canal, align = 'c') %>%
 
 <br>
 
-<h2> <center>  Análisis del valor medio de los grupos en cada variable </h2> </center>
+<h2> <center>  Análisis del valor medio de los grupos en cada variable </center> </h2>
 
 ```{r, fig.align="center"}
 plot(1:30, media_finan1_canal[1, 3:32], type = 'b', col = get_color_grupo1(1), 
@@ -1662,8 +1683,7 @@ legend("topleft", legend=c("Sub-grupo 1", "Sub-grupo 2"),  col=c(get_color_grupo
 
 * Ambos grupos tienen comportamientos y valores muy similares, dado que ambos provienen del grupo 1 formado por las variables financieras, por lo tanto estos dos grupos se diferencian en las variables de los canales, incluso, las pocas diferencias que se perciben en estas variables financieras, puede deberse a que el grupo 1 es el que tiende a tener mayores montos de dinero y hacer mayor número de transacciones a través de todos los canales, por lo que se percibe la relación que entre más dinero, mayores niveles de importaciones, exportaciones, cuentas por cobrar, pagar e inventario se van a realizar.
 
-
-#########################################
+<br>
 
 * Agrupamiento por variables de canales para el grupo 2 de financieras:
 
@@ -1754,7 +1774,7 @@ kable(media_finan2_canal, align = 'c') %>%
 
 <br>
 
-<h2> <center>  Análisis del valor medio de los grupos en cada variable </h2> </center>
+<h2> <center>  Análisis del valor medio de los grupos en cada variable </center> </h2>
 
 ```{r, fig.align="center"}
 plot(1:30, media_finan2_canal[1, 3:32], type = 'b', col = get_color_grupo2(1), 
@@ -1784,8 +1804,7 @@ legend("top", legend=c("Sub-grupo 1","Sub-grupo 2"),  col=c(get_color_grupo2(1),
 
 * Ambos grupos tienen comportamientos y valores muy similares, dado que ambos provienen del grupo 2 formado por las variables financieras, por lo tanto estos dos grupos se diferencian en las variables de los canales, incluso, las pocas diferencias que se perciben en estas variables financieras, puede deberse a que el grupo 1 es el que tiende a tener mayores montos de dinero y hacer mayor número de transacciones a través de todos los canales, por lo que se percibe la relación que entre más dinero, mayor nivel de inventario se tiene, más tiendas fisicas y más rápidas las rotaciones de cuentas por cobrar y pagar.
 
-
-#########################################
+<br>
 
 * Agrupamiento por variables de canales para el grupo 3 de financieras:
 
@@ -1807,8 +1826,6 @@ plot(dendrogram, xlab="", sub="", cex=0.9)
 </center>
 
 * Del gráfico se concluye adecuado considerar dos grupos.
-
-
 
 
 Subagrupamientos mediante las variables asociadas a los canales usando k-means :
@@ -1884,7 +1901,7 @@ kable(media_finan3_canal, align = 'c') %>%
 
 <br>
 
-<h2> <center> Análisis del valor medio de los grupos en cada variable </h2> </center>
+<h2> <center> Análisis del valor medio de los grupos en cada variable </center> </h2>
 
 ```{r, fig.align="center"}
 plot(1:30, media_finan3_canal[1, 3:32], type = 'b', col = get_color_grupo3(1), 
@@ -1972,7 +1989,7 @@ kable(media_finan_canal, align = 'c') %>%
 
 <br>
 
-<h2> <center>  Análisis del valor medio de los grupos en cada variable </h2> </center>
+<h2> <center>  Análisis del valor medio de los grupos en cada variable </center> </h2>
 
 
 **Variables de los canales**
@@ -2070,7 +2087,7 @@ En general asi los grupos se parezcan entre si, estos se difieren en algo, ya se
 
 <br>
 
-
+<div id="conclusiones-prod2"> </div>
 Conclusión:
 
 Mediante los grupos obtenidos con este segundo procedimiento de segmentación se puede notar una consistencia o una alta relación con los grupos formados en el anterior procedimiento, dado que cada uno de los grupos sigue teniendo relativamente las mismas caracteristicas a tanto en los canales como en las variables financieras, lo que implica que realizar el procedimiento en un respectivo orden no cambia mucho los grupos formados, dado que estos estan muy bien definidos.
@@ -2261,7 +2278,7 @@ legend("bottomright", legend=c("Grupo1","Grupo2", "Grupo3"),
        col=c("red", "purple", "blue"), lty=1, bty = 'n')
 ```
 
-De la gráfica anterior se muestra los grupos obtenidos con la segmentación en las variables financieras, gráficada solo en las variables financieras. Su análisis se puede observar en el procedimiento 2 (boton atajis devuelvis de las conclusiones)
+De la gráfica anterior se muestra los grupos obtenidos con la segmentación en las variables financieras, gráficada solo en las variables financieras. Su análisis se puede observar en el procedimiento 2 <a href="#conclusiones-prod2">conclusiones</a>
 
 
 ## Se crean subgrupos mediante las variables de los canales nuevas para cada grupo creado con las variables financieras
@@ -2274,7 +2291,7 @@ De la gráfica anterior se muestra los grupos obtenidos con la segmentación en 
 
 
 
-```{r, eval=FALSe}
+```{r, eval=FALSE}
 dendrogram <- hclust(dist(grupo1_scaled[2:16], method = 'euclidean'), method = 'ward.D')
 
 plot(dendrogram, xlab="", sub="", cex=0.9)
@@ -2287,9 +2304,6 @@ plot(dendrogram, xlab="", sub="", cex=0.9)
 
 
 * En un inicio, del gráfico anterior se concluyó considerar 3 grupos. Sin embargo, después de realizar los agrupamientos mediante K-means se observó que dos de los grupos presentaban un comportamiento medio muy similar que hacia difícil su diferenciación. Por este motivo se decidió considerar únicamente 2 agrupaciones.
-
-
-
 
 Subagrupamientos mediante las variables asociadas a los canales usando k-means :
 
@@ -2345,8 +2359,6 @@ kable(head(finan1_canal), align = 'c') %>%
     kable_paper('striped', full_width = F) %>%
     scroll_box(width = "100%", height = "250px")
 ```
-
-
 
 * Media de los grupos en la escala original de los canales
 
@@ -2416,8 +2428,7 @@ legend("topleft", legend=c("Sub-grupo 1","Sub-grupo 2"),  col=c(get_color_grupo1
 
 * Ambos grupos tienen comportamientos y valores muy similares, dado que ambos provienen del grupo 1 formado por las variables financieras, por lo tanto estos dos grupos se diferencian en las variables de los canales, incluso, las pocas diferencias que se perciben en estas variables financieras, puede deberse a que el grupo 1 es el que tiende a manejar mayores montos de dinero a través de todos los canales, por lo que se percibe la relación que entre más dinero, mayores niveles de importaciones, exportaciones, cuentas por cobrar, pagar e inventario se van a realizar.
 
-
-#########################################
+<br>
 
 * Agrupamiento por variables de canales para el grupo 2 de financieras:
 
@@ -2533,7 +2544,7 @@ kable(media_finan2_canal, align = 'c') %>%
 
 <br>
 
-<h2> <center>  Análisis del valor medio de los grupos en cada variable </h2> </center>
+<h2> <center>  Análisis del valor medio de los grupos en cada variable </center> </h2>
 
 ```{r, fig.align="center"}
 plot(1:15, media_finan2_canal[1, 3:17], type = 'b', col = get_color_grupo2(1), 
@@ -2564,8 +2575,7 @@ legend("top", legend=c("Sub-grupo 1","Sub-grupo 2"),  col=c(get_color_grupo2(1),
 
 * Ambos grupos tienen comportamientos y valores muy similares, dado que ambos provienen del grupo 2 formado por las variables financieras, por lo tanto estos dos grupos se diferencian en las variables de los canales, incluso, las pocas diferencias que se perciben en estas variables financieras, puede deberse a que el grupo 1 es el que tiende a tener mayores montos de dinero a través de todos los canales, por lo que se percibe la relación que entre más dinero, mayores importaciones, mayor nivel de inventario se tiene, más tiendas fisicas y más lentas las rotaciones de inventario pero más rápidas las rotaciones de cuentas por cobrar y pagar.
 
-
-#########################################
+<br>
 
 * Agrupamiento por variables de canales para el grupo 3 de financieras:
 
@@ -2676,7 +2686,7 @@ kable(media_finan3_canal, align = 'c') %>%
 
 <br>
 
-<h2> <center> Análisis del valor medio de los grupos en cada variable </h2> </center>
+<h2> <center> Análisis del valor medio de los grupos en cada variable </center> </h2>
 
 ```{r, fig.align="center"}
 plot(1:15, media_finan3_canal[1, 3:17], type = 'b', col = get_color_grupo3(1), 
@@ -2776,7 +2786,7 @@ kable(media_finan_canal, align = 'c') %>%
 
 <br>
 
-<h2> <center> Análisis del valor medio de los grupos en cada variable </h2> </center>
+<h2> <center> Análisis del valor medio de los grupos en cada variable </center> </h2>
 
 **Variables de los canales**
 
@@ -2871,21 +2881,13 @@ En general asi los grupos se parezcan entre si, estos se difieren en algo, ya se
 
 * Grupo 6: es de los que tiende a manejar menores montos de dinero y menor número de transacciones a través de los canales, tiene niveles bajos de importaciones, exportaciones, de cuentas por cobrar y pagar e inventario, tiene porcentajes altos de pagos a personas juridicas y naturales y sus rotaciones de inventario, de cuentas y ciclos son rápidos, por lo tanto se piensa que los clientes que pertenecen a este grupo, son empresas que en general se espera que no sean grandes y tiendan a ofrecer servicios a nivel nacional.
 
+## Conclusiones
 
 
-
-
-
-
----
-
-Conclusiones
-
----
 
 Que se puede mejorar
 
----
+
 
 Referencias
 
