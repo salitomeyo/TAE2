@@ -82,11 +82,20 @@ El estudio se quiere realizar o contextualizar en un entorno o sector bancario e
 ```{r}
 df <- read.csv("base_trabajo_segmentacion.csv", sep = ";", dec = '.', header = T)
 df <- df[, -1]
-head(df)
 ```
 
-```{r}
-dim(df)
+
+```{r, echo = FALSE}
+require(kableExtra)
+kable(head(df), align = 'c') %>%
+  kable_paper('striped', full_width = F) %>%
+  scroll_box(width = "100%", height = "250px")
+```
+
+```{r, echo=FALSE}
+kable(t(dim(df)), align = 'c', col.names = c('Filas', 'Columnas')) %>%
+  kable_paper('striped', full_width = F) %>%
+  row_spec(row = 1, background = '#E7E8E8')
 ```
 
 * El conjunto de datos cuenta con 2233 registros es decir 2233 empresas que son clientes de la compañia a realizar el estudio.
@@ -122,16 +131,22 @@ Análisis descriptivo de las variables de los montos en los canales de entrada y
 
 En millones de pesos
 
-```{r}
-summary(Canal_no_scaled[c(1:11, 23:26)]/1000000)
+```{r, echo=FALSE}
+require(kableExtra)
+kable(summary(Canal_no_scaled[c(1:11, 23:26)]/1000000), align = 'c') %>%
+  kable_paper('striped', full_width = F) %>%
+  scroll_box(width = "100%", height = "330px")
 ```
 
 Análisis descriptivo de las variables de número de transacciones por canal de entrada y salida:
 
 En número de transacciones
 
-```{r}
-summary(Canal_no_scaled[c(12:22, 27:30)])
+```{r, echo=FALSE}
+require(kableExtra)
+kable(summary(Canal_no_scaled[c(12:22, 27:30)]), align = 'c') %>%
+  kable_paper('striped', full_width = F) %>%
+  scroll_box(width = "100%", height = "330px")
 ```
 
 - Dado que se cuenta con unas cifras numericas muy grandes, se decide realizar el análisis gráfico de estas variables mediante el logaritmo, ya que este permite una mejor visualización y compresión de cuales canales tienen mayor uso, cual manejan mayor dinero y cuales mayor número de transacciones y asi comprender mejor el funcionamiento de los distintos canales.
@@ -481,19 +496,31 @@ grupos <- as.factor(Agru_canal$cluster) # Se extraen los grupos
 
 # Se agrega a los canales la variable grupo
 canal_group <- data.frame(grupos, Canal_no_scaled)
-head(canal_group)
+```
+
+
+```{r, echo=F}
+require(kableExtra)
+kable(head(canal_group), align = 'c') %>%
+  kable_paper('striped', full_width = F) %>%
+  scroll_box(width = "100%", height = "250px")
 ```
 
 - Valor medio de cada variable en canal discriminada por grupo
 
-```{r}
-aggregate(.~grupos, data=canal_group, FUN = mean)
+```{r, echo=FALSE}
+require(kableExtra)
+kable(aggregate(.~grupos, data=canal_group, FUN = mean), align = 'c') %>%
+  kable_paper('striped', full_width = F) %>%
+  scroll_box(width = "100%", height = "125px")
 ```
 
 - Número de clientes en cada uno de los grupos
 
-```{r}
-table(Agru_canal$cluster)
+```{r, echo=F}
+require(kableExtra)
+kable(table(Agru_canal$cluster), align = 'c', col.names = c('Grupo', 'Número de clientes')) %>%
+  kable_paper('striped', full_width = F) 
 ```
 
 
@@ -656,9 +683,10 @@ grid()
 
 ```
 
-```{r}
-table(kc1$cluster)
-
+```{r, echo=F}
+require(kableExtra)
+kable(table(kc1$cluster), align = 'c', col.names = c('Grupo', 'Número de clientes')) %>%
+  kable_paper('striped', full_width = F) 
 ```
 
 Nuevamente se le agrega al conjunto de datos la variable que indica el sub-grupo a partir de la segmentación con K-means en las variables financieras
@@ -667,7 +695,14 @@ Nuevamente se le agrega al conjunto de datos la variable que indica el sub-grupo
 ```{r}
 canal1_finan <- data.frame(sub_grupos=kc1$cluster, grupo1_no_scaled)
 canal1_finan$sub_grupos <- as.factor(canal1_finan$sub_grupos)
-head(canal1_finan)
+```
+
+
+```{r, echo=FALSE}
+require(kableExtra)
+kable(head(canal1_finan), align = 'c') %>%
+  kable_paper('striped', full_width = F) %>%
+  scroll_box(width = "100%", height = "250px")
 ```
 
 
@@ -782,8 +817,9 @@ grid()
 ```
 
 
-```{r}
-table(kc2$cluster)
+```{r, echo=FALSE}
+kable(table(kc2$cluster), align = 'c', col.names = c('Grupo', 'Número de clientes')) %>%
+    kable_paper('striped', full_width = F)
 ```
 
 
@@ -793,7 +829,13 @@ Nuevamente se le agrega al conjunto de datos la variable que indica el sub-grupo
 ```{r}
 canal2_finan <- data.frame(sub_grupos=kc2$cluster, grupo2_no_scaled)
 canal2_finan$sub_grupos <- as.factor(canal2_finan$sub_grupos)
-head(canal2_finan)
+```
+
+
+```{r, echo=F}
+kable(head(canal2_finan), align = 'c') %>%
+    kable_paper('striped', full_width = F) %>%
+    scroll_box(width = "100%", height = "250px")
 ```
 
 
@@ -882,7 +924,13 @@ Datos_finales_2 <- rbind(Grupo1, Grupo2, Grupo3, Grupo4, Grupo5, Grupo6)
 
 # Grupo7, Grupo8, Grupo9
 Datos_finales_2 <- data.frame(Grupos, Datos_finales_2)
-Datos_finales_2
+```
+
+
+```{r, echo=FALSE}
+kable(head(Datos_finales_2), align = 'c') %>%
+    kable_paper('striped', full_width = F) %>%
+    scroll_box(width = "100%", height = "250px")
 ```
 
 
@@ -898,14 +946,22 @@ Datos_finales_2_log[4:33] <- log(Datos_finales_2_log[4:33] + 1)
 
 ```{r}
 media_canal_finan <- aggregate(.~Grupos,data=Datos_finales_2_log, FUN=mean)
-media_canal_finan 
+```
+
+
+```{r, echo=FALSE}
+kable(media_canal_finan, align = 'c') %>%
+    kable_paper('striped', full_width = F) %>%
+    scroll_box(width = "100%", height = "250px")
 ```
 
 
 * Mediana de los grupos
 
-```{r}
-aggregate(.~Grupos,data=Datos_finales_2, FUN=median)
+```{r, echo=FALSE}
+kable(aggregate(.~Grupos,data=Datos_finales_2, FUN=median), align = 'c') %>%
+    kable_paper('striped', full_width = F) %>%
+    scroll_box(width = "100%", height = "250px")
 ```
 
 
@@ -1078,21 +1134,30 @@ En el gráfico anterior se puede observar una representación en dos dimensiones
 grupos <- as.factor(Agru_finan$cluster)
 
 fina_group <- data.frame(grupos, finan_no_scaled)
-head(fina_group)
+```
+
+
+```{r, echo=FALSE}
+kable(head(fina_group), align = 'c') %>%
+    kable_paper('striped', full_width = F) %>%
+    scroll_box(width = "100%", height = "250px")
 ```
 
 - Valor medio de cada variable financiera discriminada por grupo
 
 
-```{r}
-aggregate(.~grupos, data=fina_group, FUN = mean)
+```{r, echo=FALSE}
+kable(aggregate(.~grupos, data=fina_group, FUN = mean), align = 'c') %>%
+    kable_paper('striped', full_width = F) %>%
+    scroll_box(width = "100%", height = "150px")
 ```
 
 
 - Número de clientes en cada uno de los grupos
 
 ```{r}
-table(Agru_finan$cluster)
+kable(table(Agru_finan$cluster), align = 'c', col.names = c('Grupo', 'Número de clientes')) %>%
+    kable_paper('striped', full_width = F) 
 ```
 
 
@@ -1287,8 +1352,13 @@ grupo3_no_scaled <- df_group[df_group$grupos==3,]
 
 
 media_df_grupfin <- aggregate(.~grupos,data=df_group, FUN=mean)
-media_df_grupfin
+```
 
+
+```{r, echo=FALSE}
+kable(media_df_grupfin, align = 'c') %>%
+    kable_paper('striped', full_width = F) %>%
+    scroll_box(width = "100%", height = "150px")
 ```
 
 
@@ -1432,7 +1502,8 @@ grid()
 ```
 
 ```{r}
-table(kc1$cluster)
+kable(table(kc1$cluster), align = 'c', col.names = c('Grupo', 'Número de clientes')) %>%
+    kable_paper('striped', full_width = F)
 ```
 
 
@@ -1442,7 +1513,13 @@ Nuevamente se le agrega al conjunto de datos la variable que indica el sub-grupo
 ```{r}
 finan1_canal <- data.frame(sub_grupos=kc1$cluster, grupo1_no_scaled)
 finan1_canal$sub_grupos <- as.factor(finan1_canal$sub_grupos)
-head(finan1_canal)
+```
+
+
+```{r, echo=FALSE}
+kable(head(finan1_canal), align = 'c') %>%
+    kable_paper('striped', full_width = F) %>%
+    scroll_box(width = "100%", height = "250px")
 ```
 
 
@@ -1451,8 +1528,13 @@ head(finan1_canal)
 
 ```{r}
 media_finan1_canal <- aggregate(.~sub_grupos,data=finan1_canal, FUN=mean)
+```
 
-media_finan1_canal
+
+```{r, echo=FALSE}
+kable(media_finan1_canal, align = 'c') %>%
+    kable_paper('striped', full_width = F) %>%
+    scroll_box(width = "100%", height = "125px")
 ```
 
 <br>
@@ -1542,8 +1624,9 @@ grid()
 
 
 
-```{r}
-table(kc2$cluster)
+```{r, echo=FALSE}
+kable(table(kc2$cluster), align = 'c', col.names = c('Grupo', 'Número de clientes')) %>%
+    kable_paper('striped', full_width = F)
 ```
 
 
@@ -1562,7 +1645,13 @@ head(finan2_canal)
 
 ```{r}
 media_finan2_canal <-  aggregate(.~sub_grupos,data=finan2_canal, FUN=mean)
-media_finan2_canal
+```
+
+
+```{r, echo=FALSE}
+kable(media_finan2_canal, align = 'c') %>%
+    kable_paper('striped', full_width = F) %>%
+    scroll_box(width = "100%", height = "125px")
 ```
 
 <br>
@@ -1649,8 +1738,9 @@ clusplot(grupo3_scaled[,2:31], kc3$cluster, color = TRUE,
 grid()
 ```
 
-```{r}
-table(kc3$cluster)
+```{r, echo=FALSE}
+kable(table(kc3$cluster), align = 'c', col.names = c('Grupo', 'Número de clientes')) %>%
+    kable_paper('striped', full_width = F)
 ```
 
 
@@ -1660,7 +1750,14 @@ Nuevamente se le agrega al conjunto de datos la variable que indica el sub-grupo
 ```{r}
 finan3_canal <- data.frame(sub_grupos=kc3$cluster, grupo3_no_scaled)
 finan3_canal$sub_grupos <- as.factor(finan3_canal$sub_grupos)
-head(finan3_canal)
+```
+
+
+```{r}
+
+kable(head(finan3_canal), align = 'c') %>%
+    kable_paper('striped', full_width = F) %>%
+    scroll_box(width = "100%", height = "250px")
 ```
 
 
@@ -1669,7 +1766,13 @@ head(finan3_canal)
 
 ```{r}
 media_finan3_canal <- aggregate(.~sub_grupos,data=finan3_canal, FUN=mean)
-media_finan3_canal
+```
+
+
+```{r, echo=FALSE}
+kable(media_finan3_canal, align = 'c') %>%
+    kable_paper('striped', full_width = F) %>%
+    scroll_box(width = "100%", height = "125px")
 ```
 
 <br>
@@ -1736,14 +1839,26 @@ Grupos <- c(rep(1, dim(Grupo1)[1]), rep(2, dim(Grupo2)[1]), rep(3, dim(Grupo3)[1
 Datos_finales_3 <- rbind(Grupo1, Grupo2, Grupo3, Grupo4, Grupo5, Grupo6)
 
 Datos_finales_3 <- data.frame(Grupos, Datos_finales_3)
-Datos_finales_3
+```
+
+
+```{r, echo=FALSE}
+kable(head(Datos_finales_3), align = 'c') %>%
+    kable_paper('striped', full_width = F) %>%
+    scroll_box(width = "100%", height = "250px")
 ```
 
 * Media de los grupos
 
 ```{r}
 media_finan_canal <- aggregate(.~Grupos,data=Datos_finales_3, FUN=mean)
-media_finan_canal
+```
+
+
+```{r, echo=FALSE}
+kable(media_finan_canal, align = 'c') %>%
+    kable_paper('striped', full_width = F) %>%
+    scroll_box(width = "100%", height = "250px")
 ```
 
 
@@ -1896,8 +2011,13 @@ colnames(df)[1:15] <- c("entrada_canal1","entrada_canal2","entrada_canal3","entr
 "entrada_canal5","entrada_canal6","entrada_canal7","entrada_canal8",
 "entrada_canal9","entrada_canal10","entrada_otros", "salida_canal5",
 "salida_canal2","salida_canal8","salida_otros")
+```
 
-head(df)
+
+```{r, echo=FALSE}
+kable(head(df), align = 'c') %>%
+    kable_paper('striped', full_width = F) %>%
+    scroll_box(width = "100%", height = "250px")
 ```
 
 
@@ -2085,8 +2205,9 @@ clusplot(grupo1_scaled[,2:16], kc1$cluster, color = TRUE,
 grid()
 ```
 
-```{r}
-table(kc1$cluster)
+```{r, echo=F}
+kable(table(kc1$cluster), align = 'c', col.names = c('Grupo', 'Número de clientes')) %>%
+    kable_paper('striped', full_width = F)
 ```
 
 
@@ -2096,7 +2217,13 @@ Nuevamente se le agrega al conjunto de datos la variable que indica el sub-grupo
 ```{r}
 finan1_canal <- data.frame(sub_grupos=kc1$cluster, grupo1_no_scaled)
 finan1_canal$sub_grupos <- as.factor(finan1_canal$sub_grupos)
-head(finan1_canal)
+```
+
+
+```{r, echo=FALSE}
+kable(head(finan1_canal), align = 'c') %>%
+    kable_paper('striped', full_width = F) %>%
+    scroll_box(width = "100%", height = "250px")
 ```
 
 
@@ -2105,8 +2232,13 @@ head(finan1_canal)
 
 ```{r}
 media_finan1_canal <- aggregate(.~sub_grupos,data=finan1_canal, FUN=mean)
+```
 
-media_finan1_canal
+
+```{r, echo=FALSE}
+kable(media_finan1_canal, align = 'c') %>%
+    kable_paper('striped', full_width = F) %>%
+    scroll_box(width = "100%", height = "125px")
 ```
 
 
@@ -2119,8 +2251,13 @@ finan1_canal_log[3:17] <- log(finan1_canal_log[3:17] + 1)
 
 
 media_finan1_canal <- aggregate(.~sub_grupos,data= finan1_canal_log, FUN=mean)
+```
 
-media_finan1_canal
+
+```{r, echo=FALSE}
+kable(media_finan1_canal, align = 'c') %>%
+    kable_paper('striped', full_width = F) %>%
+    scroll_box(width = "100%", height = "125px")
 ```
 
 
@@ -2213,8 +2350,9 @@ grid()
 
 
 
-```{r}
-table(kc2$cluster)
+```{r, echo=FALSE}
+kable(table(kc2$cluster), align = 'c', col.names = c('Grupo', 'Número de clientes')) %>%
+    kable_paper('striped', full_width = F)
 ```
 
 
@@ -2224,7 +2362,13 @@ Nuevamente se le agrega al conjunto de datos la variable que indica el sub-grupo
 ```{r}
 finan2_canal <- data.frame(sub_grupos=kc2$cluster, grupo2_no_scaled)
 finan2_canal$sub_grupos <- as.factor(finan2_canal$sub_grupos)
-head(finan2_canal)
+```
+
+
+```{r, echo=FALSE}
+kable(head(finan2_canal), align = 'c') %>%
+    kable_paper('striped', full_width = F) %>%
+    scroll_box(width = "100%", height = "250px")
 ```
 
 
@@ -2233,7 +2377,13 @@ head(finan2_canal)
 
 ```{r}
 media_finan2_canal <-  aggregate(.~sub_grupos,data=finan2_canal, FUN=mean)
-media_finan2_canal
+```
+
+
+```{r, echo=FALSE}
+kable(media_finan2_canal, align = 'c') %>%
+    kable_paper('striped', full_width = F) %>%
+    scroll_box(width = "100%", height = "125px")
 ```
 
 * Media de los grupos en la escala de logaritmo natural de los canales
@@ -2244,7 +2394,13 @@ finan2_canal_log <- finan2_canal
 finan2_canal_log[3:17] <- log(finan2_canal_log[3:17] + 1)
 
 media_finan2_canal <- aggregate(.~sub_grupos,data=finan2_canal_log, FUN=mean)
-media_finan2_canal
+```
+
+
+```{r, echo=FALSE}
+kable(media_finan2_canal, align = 'c') %>%
+    kable_paper('striped', full_width = F) %>%
+    scroll_box(width = "100%", height = "125px")
 ```
 
 
@@ -2332,8 +2488,9 @@ clusplot(grupo3_scaled[,2:16], kc3$cluster, color = TRUE,
 grid()
 ```
 
-```{r}
-table(kc3$cluster)
+```{r, echo=FALSE}
+kable(table(kc3$cluster), align = 'c', col.names = c('Grupo', 'Número de clientes')) %>%
+    kable_paper('striped', full_width = F)
 ```
 
 
@@ -2343,7 +2500,13 @@ Nuevamente se le agrega al conjunto de datos la variable que indica el sub-grupo
 ```{r}
 finan3_canal <- data.frame(sub_grupos=kc3$cluster, grupo3_no_scaled)
 finan3_canal$sub_grupos <- as.factor(finan3_canal$sub_grupos)
-head(finan3_canal)
+```
+
+
+```{r, echo=FALSE}
+kable(head(finan3_canal), align = 'c') %>%
+    kable_paper('striped', full_width = F) %>%
+    scroll_box(width = "100%", height = "250px")
 ```
 
 
@@ -2352,7 +2515,13 @@ head(finan3_canal)
 
 ```{r}
 media_finan3_canal <- aggregate(.~sub_grupos,data=finan3_canal, FUN=mean)
-media_finan3_canal
+```
+
+
+```{r, echo=FALSE}
+kable(media_finan3_canal, align = 'c') %>%
+    kable_paper('striped', full_width = F) %>%
+    scroll_box(width = "100%", height = "125px")
 ```
 
 * Media de los grupos en escala logaritmo natural de los canales
@@ -2363,7 +2532,13 @@ finan3_canal_log <- finan3_canal
 finan3_canal_log[3:17] <- log(finan3_canal[3:17] + 1)
 
 media_finan3_canal <- aggregate(.~sub_grupos,data=finan3_canal_log, FUN=mean)
-media_finan3_canal
+```
+
+
+```{r, echo=FALSE}
+kable(media_finan3_canal, align = 'c') %>%
+    kable_paper('striped', full_width = F) %>%
+    scroll_box(width = "100%", height = "125px")
 ```
 
 <br>
@@ -2432,7 +2607,13 @@ Grupos <- c(rep(1, dim(Grupo1)[1]), rep(2, dim(Grupo2)[1]), rep(3, dim(Grupo3)[1
 Datos_finales <- rbind(Grupo1, Grupo2, Grupo3, Grupo4, Grupo5, Grupo6)
 
 Datos_finales <- data.frame(Grupos, Datos_finales)
-Datos_finales
+```
+
+
+```{r, echo=FALSE}
+kable(head(Datos_finales), align = 'c') %>%
+    kable_paper('striped', full_width = F) %>%
+    scroll_box(width = "100%", height = "250px")
 ```
 
 
@@ -2447,7 +2628,13 @@ Datos_finales_log[, 4:18] <- log(Datos_finales_log[, 4:18]+1)
 
 ```{r}
 media_finan_canal <- aggregate(.~Grupos,data=Datos_finales_log, FUN=mean)
-media_finan_canal
+```
+
+
+```{r, echo=FALSE}
+kable(media_finan_canal, align = 'c') %>%
+    kable_paper('striped', full_width = F) %>%
+    scroll_box(width = "100%", height = "125px")
 ```
 
 
