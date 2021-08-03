@@ -14,6 +14,31 @@ output:
     
 ---
 
+<style>
+
+p{
+    text-align: justify;
+}
+
+.author{
+  font-size: 12px !important;
+}
+
+.btn-info {
+  color: white !important;
+  background: #06AC9C;
+}
+
+.btn-info:hover {
+  background: #057F73 !important;
+}
+
+.figure {
+    margin: 1em 2.5em 1em 2.5em !important;
+}
+</style>
+
+<script language="JavaScript" src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"></script>
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
@@ -261,7 +286,6 @@ Canal_porcentaje[, 27:30] <- t(apply(Canal_no_scaled[, 27:30], 1, fila_porcentaj
 
 ```
 
-<center>
 
 ```{r, fig.align="center"}
 
@@ -271,13 +295,9 @@ axis(1, 1:30, names(df)[1:30], las = 2, cex.axis = 0.7)
 grid()
 ```
 
-</center>
-
 
 <h4> <center>Boxplots del logaritmo natural de las variables de los canales</center> </h4>
 
-
-<center>
 
 ```{r, echo = FALSE, fig.align="center"}
 par(mfrow=c(1,2),pty="s")
@@ -287,9 +307,6 @@ boxplot(log(df[,12:22]+1), las=2, col="cyan4", main = "transacciones de entrada 
 grid()
 ```
 
-</center>
-
-<center>
 
 ```{r, echo = FALSE, fig.align="center"}
 par(mfrow=c(1,2),pty="s")
@@ -299,7 +316,6 @@ boxplot(log(df[,27:30]+1), las=2, col="cyan4", main = "transacciones de salida m
 grid()
 ```
 
-</center>
 
 ### Mediante los gráficos se puede analizar que:
 
@@ -375,13 +391,20 @@ corrplot(cor(Canal_no_scaled),
 
 **Análisis descriptivo de las variables financieras:**
 
-<h4> <center> Gráficos descriptivos de cada una de las variables financieras </center> </h4> 
+<center>
+<div class="accordion" id="accordionExample">
+<div class="accordion-item">
+<h5 class="accordion-header" id="headingOne">
+<button class="accordion-button collapsed btn btn-info" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+        Gráficos descriptivos de cada una de las variables financieras 
+</button>
+</h5>
+<div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+<div class="accordion-body">
 
 * Gráficos de frecuencias relativas para las variables categoricas
 
 * Gráficos de histograma para las variables continuas
-
-<center>
 
 ```{r, message=FALSE, warning=FALSE, , fig.align="center", echo=FALSE}
 library(ggplot2)
@@ -401,6 +424,11 @@ for(i in 1:dim(finan_no_scaled)[2]){
   print(p_final)
 }
 ```
+
+</div>
+</div>
+</div>
+</div>
 
 </center>
 
@@ -444,14 +472,13 @@ for(i in 1:dim(finan_no_scaled)[2]){
 
 - **rotacion_cxp: ** Aproximadamente el 65% de los clientes tiene una velocidad alta (nivel 1 y 2) para pagar sus cuentas.
 
-- **cliclo_negocio: ** El 45% de los clientes tiene un ciclo de negocio lento, es decir en los niveles más altos (5 y 6). Aproximadamente el 23% de los clientes tiene un ciclo de negocio nivel 4, es decir medio-lento.
+- **ciclo_negocio: ** El 45% de los clientes tiene un ciclo de negocio lento, es decir en los niveles más altos (5 y 6). Aproximadamente el 23% de los clientes tiene un ciclo de negocio nivel 4, es decir medio-lento.
 
-- **cliclo_financiero: ** El 45% de los clientes tiene un ciclo de financiero lento, es decir en los niveles más altos (5 y 6).
+- **ciclo_financiero: ** El 45% de los clientes tiene un ciclo de financiero lento, es decir en los niveles más altos (5 y 6).
 
 
 ### A continuación se pueden observar las características financieras de un cliente promedio.
 
-<center>
 
 ```{r, fig.align="center", echo=FALSE}
 plot(1:16, colMeans(finan_no_scaled), type = 'b', col = 'cyan4', 
@@ -461,12 +488,9 @@ text(apply(finan_no_scaled, 2, mean)+0.2, labels = round(apply(finan_no_scaled, 
 grid()
 ```
 
-</center>
-
 
 <h4> <center> Matriz de correlaciones entre las variables financieras </center> </h4>
 
-<center>
 
 ```{r, message=FALSE, warning=FALSE, fig.align="center", echo=FALSE}
 library(corrplot)
@@ -482,8 +506,6 @@ corrplot(cor(finan_no_scaled),
          )
 
 ```
-
-</center>
 
 - Se observa una relación inversamente proporcional entre las variables pagos_pj y pagos_pn, con una correlación de 0.88.
 
@@ -515,11 +537,11 @@ Ya que se tuvo una exploración de las diferentes variables de canales y financi
 Las variables de los canales son variables cuantitativas que en general tienen valores extremos, al ser utilizados en la segmentación pueden crear un gran impacto en los grupos resultantes, dado que el algoritmo que se usa "K-means" es muy sensible a observaciones extremas, por lo tanto para solucionar este problema se decide realizar una transformación logaritmo natural sobre las variables asociadas a los canales.
 
 
-<a href="#porque-logaritmo">**(¿Por qué realizar la transformación de logaritmo natural?)**</a>
+<a href="#análisis-descriptivo">**(¿Por qué realizar la transformación de logaritmo natural?)**</a>
 
 Además de ello el algoritmo de segmentación K-means es muy sensible a las unidades de las diferentes variables dado que está basado en distancias, por lo tanto, así se aplique una transformación logaritmo natural, se deben escalar las variables para que todas puedan ser comparadas entre sí y los resultados sean estadísticamente válidos.
 
-<li class="withripple" data-target="#porque-escalar"><a href="#porque-escalar">**¿Por qué escalar las variables para realizar las agrupaciones?**</a><div class="ripple-container"></div></li>
+<a href="#análisis-descriptivo">**¿Por qué escalar las variables para realizar las agrupaciones?**</a>
 
 
 ## Introducción Kmeans
@@ -582,7 +604,6 @@ rect.hclust(dendrogram, k=2, border="cyan4")
 
 <h2> <center> Agrupamiento k means con las variables de los canales (usando transformación logaritmo natural): </center> </h2>
 
-<center>
 
 ```{r, fig.align="center"}
 require(cluster)
@@ -601,7 +622,6 @@ clusplot(Canal_log_scaled, Agru_canal$cluster, color = TRUE,
 grid()
 ```
 
-</center>
 
 En el gráfico anterior se puede observar una representación en dos dimensiones de los grupos encontrados por K-means. 
 
@@ -650,12 +670,17 @@ kable(table(Agru_canal$cluster), align = 'c', col.names = c('Grupo', 'Número de
 
 El grupo 1 cuenta con 1281 clientes y el grupo 2 con 952 clientes, en general el grupo 1 tiene a los clientes que tienden a manejar montos más altos de dinero y mayor número de transacciones por todos los canales en comparación con los del grupo 2.
 
-
-<h2> <center> Gráficos de boxplot que permitirán sacar caraterísticas de cada uno de los grupos </center> </h2>
-
-* Los gráficos son de las variables de los canales en escala logaritmo natural
-
 <center>
+<div class="accordion" id="accordionExampl">
+<div class="accordion-item">
+<h5 class="accordion-header" id="headingTwo">
+<button class="accordion-button collapsed btn btn-info" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+        Gráficos de boxplot que permitirán sacar caraterísticas de cada uno de los grupos
+</button>
+</h5>
+<div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#accordionExampl">
+<div class="accordion-body">
+* Los gráficos son de las variables de los canales en escala logaritmo natural
 
 ```{r, fig.align="center", echo=FALSE}
 library(ggplot2)
@@ -672,6 +697,11 @@ for(i in 2:dim(canal_group)[2]){
 }
 
 ```
+
+</div>
+</div>
+</div>
+</div>
 
 </center>
 
@@ -719,7 +749,6 @@ media_df_grupcanal <-  aggregate(.~grupos,data=df_group_log, FUN=mean)
 
 **Gráfico de los grupos en las variables de los canales**
 
-<center>
 
 ```{r, fig.align="center", echo=FALSE}
 plot(1:30, media_df_grupcanal[1, 2:31], type = 'b', col = 'darkgreen', 
@@ -733,7 +762,6 @@ legend(25, 23, legend=c("Grupo1","Grupo2"),
 grid()
 ```
 
-</center>
 
 De la gráfica anterior, se puede ver que en general hay un comportamiento similar entre ambos grupos, sin embargo, el grupo 1 presenta un monto y un número mayor de transacciones promedio. Siendo la diferencia más amplia en los canales de entrada 3, 5, 6, 8, 9 y en los canales de salida 5 y 2.
 
@@ -742,8 +770,6 @@ De la gráfica anterior, se puede ver que en general hay un comportamiento simil
 <h4> <center> media de los grupos mediante las variables financieras </h4> </center>
 
 <br>
-
-<center>
 
 ```{r, fig.align="center", echo=FALSE}
 par(mfrow=c(1,3))
@@ -775,8 +801,6 @@ legend("bottomright", legend=c("Grupo1","Grupo2"),
        col=c("darkgreen", "darkblue"), lty=1, bty = 'n')
 grid()
 ```
-
-</center>
 
 
 El grupo 1 maneja montos de dinero y número de transacciones promedio más grandes en los canales, a su vez, se pueden observar valores promedios más grandes en las cuentas por pagar, cuentas por cobrar y en el total de inventario y aunque el número de importaciones y exportaciones promedio es mayor que la del grupo 2, la diferencia es muy pequeña, además el grupo 1 tiende a tener una mayor proporción de tiendas físicas. En las demás variables el comportamiento promedio es bastante similar.
@@ -827,7 +851,6 @@ get_color_grupo1 <- function(valor){
 }
 ```
 
-<center>
 
 ```{r, fig.align="center"}
 
@@ -847,7 +870,6 @@ grid()
 
 ```
 
-</center>
 
 ```{r, echo=F}
 require(kableExtra)
@@ -873,7 +895,6 @@ kable(head(canal1_finan), align = 'c') %>%
 ```
 
 
-
 ```{r}
 
 canal1_finan_log <- canal1_finan
@@ -889,8 +910,6 @@ media_canal1_finan <-  aggregate(.~sub_grupos,data=canal1_finan_log, FUN=mean)
 
 <br>
 
-<center>
-
 ```{r, fig.align="center", echo=FALSE}
 plot(1:30, media_canal1_finan[1, 3:32], type = 'b', col = get_color_grupo1(1), 
      xaxt = "n", xlab = '', lwd = 2, ylab = 'media escala log natural', ylim  = c(0, 22), main="Subgrupos con financieras del grupo 1 de canales")
@@ -904,11 +923,9 @@ legend("topright", legend=c("Sub-grupo 1","Sub-grupo 2", "Sub-grupo 3"),
 grid()
 ```
 
-</center>
 
 De la grafica presentada previamente se espera que los tres grupos tengan un comportamiento y valores promedios muy similares, dado que está siendo graficada en las variables asociados a los canales y estos sub grupos fueron hallados a partir del grupo 1 de las variables de los canales, por lo tanto se espera que estos tres grupos tengan sus diferencias en las variables financieras pero sean muy similares en los canales.  
 
-<center>
 
 ```{r, fig.align="center", echo=FALSE}
 plot(1:16, media_canal1_finan[1, 33:48], type = 'b', col = get_color_grupo1(1), 
@@ -922,7 +939,6 @@ legend("bottomright", legend=c("Sub-grupo 1","Sub-grupo 2", "Sub-grupo 3"),
 grid()
 ```
 
-</center>
 
 * Los tres grupos toman valores promedios diferentes en las distintas variables financieras, lo que indica la diferencia esperada ellas.
 
@@ -976,7 +992,6 @@ get_color_grupo2 <- function(valor){
 }
 ```
 
-<center>
 
 ```{r, fig.align="center"}
 
@@ -996,7 +1011,6 @@ grid()
 
 ```
 
-</center>
 
 ```{r, echo=FALSE}
 kable(table(kc2$cluster), align = 'c', col.names = c('Grupo', 'Número de clientes')) %>%
@@ -1036,7 +1050,6 @@ media_canal2_finan <-  aggregate(.~sub_grupos,data=canal2_finan_log, FUN=mean)
 
 <br>
 
-<center>
 
 ```{r, fig.align="center", echo=FALSE}
 plot(1:30, media_canal2_finan[1, 3:32], type = 'b', col = get_color_grupo2(1), 
@@ -1051,12 +1064,9 @@ legend("topright", legend=c("Sub-grupo 1","Sub-grupo 2", "Sub-grupo 3"),
 grid()
 ```
 
-</center>
 
 De la gráfica presentada previamente se espera que los tres grupos tengan un comportamiento y valores promedios muy similares, dado que esta siendo graficada en las variables asociados a los canales y estos sub grupos fueron hallados a partir del grupo 2 de las variables de los canales, por lo tanto se espera que estos tres grupos tengan sus diferencias en las variables financieras pero muy similares en los canales.  
 
-
-<center>
 
 ```{r, fig.align="center", echo=FALSE}
 plot(1:16, media_canal2_finan[1, 33:48], type = 'b', col = get_color_grupo2(1), 
@@ -1070,7 +1080,6 @@ legend("bottomright", legend=c("Sub-grupo 1","Sub-grupo 2", "Sub-grupo 3"),
 grid()
 ```
 
-</center>
 
 * Los tres grupos toman valores diferentes en las distintas variables financieras, lo que indica la diferencia esperada en estas variables.
 
@@ -1163,8 +1172,6 @@ kable(media_canal_finan, align = 'c') %>%
 
 **Variables de los canales**
 
-<center>
-
 ```{r, fig.align="center", echo=FALSE}
 plot(1:30, media_canal_finan [1, 4:33], type = 'b', col = '#E80EB8', 
      xaxt = "n", xlab = '', lwd = 2, ylab = 'Media escala log natural', main = 'Grupos finales', ylim = c(0, 22))
@@ -1178,15 +1185,12 @@ grid()
 legend("top", legend=c(paste("Grupo", 1:6, sep = '')),  col=c("#E80EB8", "#0F1EF2", "#19DBAD", "#92F20F", "#EBA81A", "#8C7AF5"), lty=1, lwd = 2,  bty = 'n')
 ```
 
-</center>
 
 * En general los grupos 1, 3 y 5 son los que manejan en promedio mayores montos de dinero y mayor número de transacciones, por lo tanto los grupos 2, 4 y 6 son los que manejan en promedio menores montos de dinero y menor número de transacciones.
 
 * El grupo 3 a pesar de tener un comportamiento de manejar mayores montos en promedio de dinero al igual que el grupo 1 y 5, este se destaca particularmente en el canal de entrada de otros, dado que toma valores muy altos, más que cualquiera de los otros grupos.
 
 **Variables financieras**
-
-<center>
 
 ```{r, fig.align="center", echo=FALSE}
 par(mfrow=c(1,3), mar=c(8,3,6,3))
@@ -1226,8 +1230,6 @@ lines(1:5, media_canal_finan [6, 45:49], col = '#8C7AF5', type = "b", lwd = 2)
 grid()
 legend("bottom", legend=c(paste("Grupo", 1:6, sep = '')),  col = c("#E80EB8", "#0F1EF2", "#19DBAD", "#92F20F", "#EBA81A", "#8C7AF5"), lty=1, lwd = 2,  bty = 'n')
 ```
-
-</center>
 
 * Los grupos 1, 3 y 4 son los que realizan mayor número promedio de importaciones y exportaciones, tiene mayor número promedio de cuentas por pagar y cobrar y mayor inventario, por otro lado los grupos 2, 5 y 6 son los que realizan menor número promedio de importaciones y exportaciones, tienen menor número promedio de cuentas por pagar y cobrar y menor inventario, pero respecto al inventario el grupo 2 es el que tiene más en comparación con los grupos 5 y 6 a pesar de que es el que tiene menor número promedio de cuentas por pagar.
 
@@ -1324,7 +1326,6 @@ get_color <- function(valor){
 }
 ```
 
-<center>
 
 ```{r, fig.align="center"}
 set.seed(93284)
@@ -1340,7 +1341,6 @@ clusplot(finan_scaled, Agru_finan$cluster, color = TRUE,
           sub = "")
 ```
 
-</center>
 
 En el gráfico anterior se puede observar una representación en dos dimensiones de los grupos encontrados por K-means. 
 
@@ -1385,13 +1385,20 @@ kable(table(Agru_finan$cluster), align = 'c', col.names = c('Grupo', 'Número de
 
 El grupo 1 cuenta con 809 clientes y el grupo 2 con 659 clientes  y el grupo 3 con 765 clientes.
 
-<h4> <center> Gráficos que permitirán sacar caraterísticas de cada uno de los grupos </center> </h4>
 
 <br>
 
-* Gráficos de barras para las variables categoricas y boxplots para las variables continuas
-
 <center>
+<div class="accordion" id="accordionExamp">
+<div class="accordion-item">
+<h5 class="accordion-header" id="headingThree">
+<button class="accordion-button collapsed btn btn-info" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+        Gráficos que permitirán sacar caraterísticas de cada uno de los grupos
+</button>
+</h5>
+<div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#accordionExamp">
+<div class="accordion-body">
+* Gráficos de barras para las variables categoricas y boxplots para las variables continuas
 
 ```{r, fig.align="center", echo=FALSE}
 library(ggplot2)
@@ -1412,6 +1419,11 @@ for(i in 2:dim(fina_group)[2]){
 }
 
 ```
+
+</div>
+</div>
+</div>
+</div>
 
 </center>
 
@@ -1605,7 +1617,6 @@ centroid1 <- apply(Agru_finan$centers, 1, function(x) x * attr(df_scaled,'scaled
 
 <h4> <center>  Gráfico de los grupos en las variables financieras </h4> </center>
 
-<center>
 
 ```{r, fig.align="center", echo=FALSE}
 par(mfrow=c(1,3))
@@ -1641,7 +1652,6 @@ legend("bottomright", legend=c("Grupo1","Grupo2", "Grupo3"),
        col=c("red", "purple", "blue"), lty=1, bty = 'n')
 ```
 
-</center>
 
 * Generalmente se observan comportamientos o valores promedios distintos entre los tres grupos conformados con las variables financieras, lo cual era de esperarse dado que la segmentación fue realizada solo con estas variables.
 
@@ -1666,8 +1676,6 @@ legend("bottomright", legend=c("Grupo1","Grupo2", "Grupo3"),
 
 **Gráfico de los grupos en las variables de los canales**
 
-<center>
-
 ```{r, fig.align="center", echo=FALSE}
 plot(1:30, media_df_grupfin[1, 2:31], type = 'b', col = 'red', 
      xaxt = "n", xlab = '', lwd = 2, ylab = 'Media en escala log natural', ylim  = c(0, 22), main= "Media de los grupos mediante las variables de canales")
@@ -1679,7 +1687,6 @@ legend(25, 23, legend=c("Grupo1","Grupo2", "Grupo3"),
        col=c("red", "purple", "blue"), lty=c(1, 1, 1, 3), lwd = 2, cex = 0.8, bty = 'n')
 ```
 
-</center>
 
 * En general los tres grupos tienen comportamientos muy similares en las variables asociadas a los canales, pero el grupo 2 es el que tiende a tener montos y número de transacciones promedio un poco mayores a los otros grupos en los diferentes canales.
 
@@ -1727,7 +1734,6 @@ get_color_grupo1 <- function(valor){
 }
 ```
 
-<center>
 
 ```{r, fig.align="center"}
 set.seed(932840)
@@ -1744,7 +1750,6 @@ clusplot(grupo1_scaled[,2:31], kc1$cluster, color = TRUE,
 grid()
 ```
 
-</center>
 
 ```{r, echo=FALSE}
 kable(table(kc1$cluster), align = 'c', col.names = c('Grupo', 'Número de clientes')) %>%
@@ -1790,7 +1795,6 @@ kable(media_finan1_canal, align = 'c') %>%
 
 <br>
 
-<center>
 
 ```{r, fig.align="center", echo=FALSE}
 plot(1:30, media_finan1_canal[1, 3:32], type = 'b', col = get_color_grupo1(1), 
@@ -1803,12 +1807,9 @@ grid()
 legend("top", legend=c("Sub-grupo 1","Sub-grupo 2"),  col=c(get_color_grupo1(1), get_color_grupo1(2)), lty=c(1, 1, 3), lwd = 2, bty = 'n')
 ```
 
-</center>
 
 * De la gráfica anterior, se puede ver en general un comportamiento similar entre ambos grupos, sin embargo, el grupo 1 presenta un monto y un número de transacciones promedio mayor al del grupo 2. Siendo la diferencia más amplia en los canales de entrada 3, 6, 8, 9 y en los canales de salida 5 y 2.
 
-
-<center>
 
 ```{r, fig.align="center", echo=FALSE}
 plot(1:16, media_finan1_canal[1, 33:48], type = 'b', col = get_color_grupo1(1), 
@@ -1820,7 +1821,6 @@ grid()
 legend("topleft", legend=c("Sub-grupo 1", "Sub-grupo 2"),  col=c(get_color_grupo1(1), get_color_grupo1(2)), lty=c(1, 1, 3), lwd = 2, bty = 'n')
 ```
 
-</center>
 
 * Ambos grupos tienen comportamientos y valores muy similares, dado que ambos provienen del grupo 1 formado por las variables financieras, por lo tanto estos dos grupos se diferencian en las variables de los canales, incluso, las pocas diferencias que se perciben en estas variables financieras, puede deberse a que el grupo 1 es el que tiende a tener mayores montos de dinero y hacer mayor número de transacciones a través de todos los canales, por lo que se percibe la relación que entre más dinero, mayores niveles de importaciones, exportaciones, cuentas por cobrar, pagar e inventario se van a realizar.
 
@@ -1866,7 +1866,6 @@ get_color_grupo2 <- function(valor){
 }
 ```
 
-<center>
 
 ```{r, fig.align="center"}
 set.seed(93284)
@@ -1883,7 +1882,6 @@ clusplot(grupo2_scaled[,2:31], kc2$cluster, color = TRUE,
 grid()
 ```
 
-</center>
 
 ```{r, echo=FALSE}
 kable(table(kc2$cluster), align = 'c', col.names = c('Grupo', 'Número de clientes')) %>%
@@ -1928,8 +1926,6 @@ kable(media_finan2_canal, align = 'c') %>%
 
 <br>
 
-<center>
-
 ```{r, fig.align="center", echo=FALSE}
 plot(1:30, media_finan2_canal[1, 3:32], type = 'b', col = get_color_grupo2(1), 
      xaxt = "n", xlab = '', lwd = 2, ylab = 'Media', main="Subgrupos con canales del grupo 2 de financieras")
@@ -1940,11 +1936,9 @@ grid()
 legend("top", legend=c("Sub-grupo 1", "Sub-grupo 2"),  col=c(get_color_grupo2(1), get_color_grupo2(2)), lty=c(1, 1, 3), lwd = 2, bty = 'n')
 ```
 
-</center>
 
 * De la gráfica anterior, se puede ver en general un comportamiento similar entre ambos grupos, sin embargo, el grupo 1 presenta un monto y un número de transacciones promedio mayor al del grupo 2. Siendo la diferencia más amplia en los canales de entrada 3, 4 5, 8, 9 y otros, además en el canal de salida 5.
 
-<center>
 
 ```{r, fig.align="center", echo=FALSE}
 plot(1:16, media_finan2_canal[1, 33:48], type = 'b', col = get_color_grupo2(1), 
@@ -1957,7 +1951,6 @@ grid()
 legend("top", legend=c("Sub-grupo 1","Sub-grupo 2"),  col=c(get_color_grupo2(1), get_color_grupo2(2)), lty=c(1, 1, 3), lwd = 2, bty = 'n')
 ```
 
-</center>
 
 * Ambos grupos tienen comportamientos y valores muy similares, dado que ambos provienen del grupo 2 formado por las variables financieras, por lo tanto estos dos grupos se diferencian en las variables de los canales, incluso, las pocas diferencias que se perciben en estas variables financieras, puede deberse a que el grupo 1 es el que tiende a tener mayores montos de dinero y hacer mayor número de transacciones a través de todos los canales, por lo que se percibe la relación que entre más dinero, mayor nivel de inventario se tiene, más tiendas fisicas y más rápidas las rotaciones de cuentas por cobrar y pagar.
 
@@ -2004,7 +1997,6 @@ get_color_grupo3 <- function(valor){
 }
 ```
 
-<center>
 
 ```{r, fig.align="center"}
 set.seed(932840)
@@ -2021,7 +2013,6 @@ clusplot(grupo3_scaled[,2:31], kc3$cluster, color = TRUE,
 grid()
 ```
 
-</center>
 
 ```{r, echo=FALSE}
 kable(table(kc3$cluster), align = 'c', col.names = c('Grupo', 'Número de clientes')) %>%
@@ -2067,7 +2058,6 @@ kable(media_finan3_canal, align = 'c') %>%
 
 <br>
 
-<center>
 
 ```{r, fig.align="center", echo=FALSE}
 plot(1:30, media_finan3_canal[1, 3:32], type = 'b', col = get_color_grupo3(1), 
@@ -2079,11 +2069,9 @@ grid()
 legend("top", legend=c("Sub-grupo 1","Sub-grupo 2"),  col=c(get_color_grupo3(1), get_color_grupo3(2)), lty=c(1, 1, 3), lwd = 2, bty = 'n')
 ```
 
-</center>
 
 * De la gráfica anterior, se puede ver en general un comportamiento similar entre ambos grupos, sin embargo, el grupo 1 presenta un monto y un número de transacciones promedio mayor al del grupo 2. Siendo la diferencia más amplia en los canales de entrada 3, 5 6, 8, 9 y en los canales de salida 5 y 2.
 
-<center>
 
 ```{r, fig.align="center", echo=FALSE}
 plot(1:16, media_finan3_canal[1, 33:48], type = 'b', col = get_color_grupo3(1), 
@@ -2096,7 +2084,6 @@ grid()
 legend("top", legend=c("Sub-grupo 1","Sub-grupo 2"),  col=c(get_color_grupo3(1), get_color_grupo3(2)), lty=c(1, 1, 3), lwd = 2, bty = 'n')
 ```
 
-</center>
 
 * Ambos grupos tienen comportamientos y valores muy similares, dado que ambos provienen del grupo 3 formado por las variables financieras, por lo tanto estos dos grupos se diferencian en las variables de los canales, incluso, las pocas diferencias que se perciben en estas variables financieras, puede deberse a que el grupo 1 es el que tiende a tener mayores montos de dinero y hacer mayor número de transacciones a través de todos los canales, por lo que se percibe la relación que entre más dinero, mayores nivel en las cuentas por cobrar e inventarios se tiene, además de más tiendas fisicas.
 
@@ -2167,7 +2154,6 @@ kable(media_finan_canal, align = 'c') %>%
 
 **Variables de los canales**
 
-<center>
 
 ```{r, fig.align="center", echo=FALSE}
 plot(1:30, media_finan_canal[1, 4:33], type = 'b', col = '#E80EB8', 
@@ -2183,7 +2169,6 @@ grid()
 legend("top", legend=c(paste("Grupo", 1:6, sep = '')),  col=c("#E80EB8", "#0F1EF2", "#19DBAD", "#92F20F", "#EBA81A", "#8C7AF5"), lty=1, lwd = 2,  bty = 'n')
 ```
 
-</center>
 
 * En general el grupo 1, 3 y 5 son los que manejan en promedio mayores montos de dinero y mayor número de transacciones, por lo tanto el grupo 2, 4 y 6 son los que manejan en promedio menores montos de dinero y menor número de transacciones.
 
@@ -2192,7 +2177,6 @@ legend("top", legend=c(paste("Grupo", 1:6, sep = '')),  col=c("#E80EB8", "#0F1EF
 
 **Variables de los canales**
 
-<center>
 
 ```{r, fig.align="center", echo=FALSE}
 par(mfrow=c(1,3))
@@ -2232,8 +2216,6 @@ lines(1:5, media_finan_canal [6, 45:49], col = '#8C7AF5', type = "b", lwd = 2)
 grid()
 legend("bottom", legend=c(paste("Grupo", 1:6, sep = '')),  col = c("#E80EB8", "#0F1EF2", "#19DBAD", "#92F20F", "#EBA81A", "#8C7AF5"), lty=1, lwd = 2,  bty = 'n')
 ```
-
-</center>
 
 
 * El grupo 1, 3 y 4 es el que tiene mayor nivel promedio de importaciones y exportaciones, mientras que el grupo 5 y 6 son los que menos realizan importaciones y exportaciones; el grupo 3 y 4 tienen mayor nivel promedio de cuentas por pagar y cobrar y mayor inventario, el grupo 1 y 2 tienen un nivel promedio de cuentas por pagar y cobrar e inventario intermedio mientras que el grupo 5 y 6 tienen un nivel promedio de cuentas por pagar y cobrar e inventario bajos.
@@ -2400,7 +2382,6 @@ grupo3_no_scaled <- df_group[df_group$grupos==3,]
 
 ### Análisis descriptivo de las nuevas variables asociadas a los canales:
 
-<center>
 
 ```{r, fig.align="center", echo=FALSE}
 plot(1:15, colMeans(Canal_log), type = 'b', col = '#038EC3', 
@@ -2408,8 +2389,6 @@ plot(1:15, colMeans(Canal_log), type = 'b', col = '#038EC3',
 axis(1, 1:15, names(df)[1:15], las = 2)
 grid()
 ```
-
-</center>
 
 
 Del gráfico anterior se observa que:
@@ -2434,7 +2413,6 @@ Ya que el procedimiento 3 es una modificación del procedimiento 2 en la parte d
 
 Mediante la siguiente gráfica se presenta los resultados de la segmentación mediante las variables financieras.
 
-<center>
 
 ```{r, fig.align="center", echo=FALSE}
 clusplot(finan_scaled, Agru_finan$cluster, color = TRUE, 
@@ -2447,15 +2425,12 @@ clusplot(finan_scaled, Agru_finan$cluster, color = TRUE,
           sub = "")
 ```
 
-</center>
 
 <br>
 
 <center> <h3>  Gráfico de los grupos en las variables financieras </h3> </center>
 
 <br>
-
-<center>
 
 ```{r, fig.align="center", echo=FALSE}
 par(mfrow=c(1,3))
@@ -2491,7 +2466,6 @@ legend("bottomright", legend=c("Grupo1","Grupo2", "Grupo3"),
        col=c("red", "purple", "blue"), lty=1, bty = 'n')
 ```
 
-</center>
 
 De la gráfica anterior se muestra los grupos obtenidos con la segmentación en las variables financieras, gráficada solo en las variables financieras. Su análisis se puede observar en el procedimiento 2 <a href="#conclusiones-prod2">conclusiones</a>
 
@@ -2539,8 +2513,6 @@ get_color_grupo1 <- function(valor){
 }
 ```
 
-<center>
-
 ```{r, fig.align="center"}
 set.seed(932840)
 kc1 <- kmeans(grupo1_scaled[2:16], 2 , nstart = 5, iter.max = 100)
@@ -2556,7 +2528,6 @@ clusplot(grupo1_scaled[,2:16], kc1$cluster, color = TRUE,
 grid()
 ```
 
-</center>
 
 ```{r, echo=F}
 kable(table(kc1$cluster), align = 'c', col.names = c('Grupo', 'Número de clientes')) %>%
@@ -2624,7 +2595,6 @@ kable(media_finan1_canal, align = 'c') %>%
 
 <br>
 
-<center>
 
 ```{r, fig.align="center", echo=FALSE}
 plot(1:15, media_finan1_canal[1, 3:17], type = 'b', col = get_color_grupo1(1), 
@@ -2638,11 +2608,9 @@ legend("top", legend=c("Sub-grupo 1","Sub-grupo 2"),  col=c(get_color_grupo1(1),
 
 ```
 
-</center>
 
 * De la gráfica anterior, en general el grupo 1 presenta en promedio mayores entradas y salidas de dinero que el grupo 2, exceptuando en el canal 7 de entrada. Siendo la diferencia más amplia en los canales de entrada 1, 2, 3, 4, 5, 6, 8, 9 y en el canal de salida 2.
 
-<center>
 
 ```{r, fig.align="center", echo=FALSE}
 plot(1:16, media_finan1_canal[1, 18:33], type = 'b', col = get_color_grupo1(1), 
@@ -2655,7 +2623,6 @@ grid()
 legend("topleft", legend=c("Sub-grupo 1","Sub-grupo 2"),  col=c(get_color_grupo1(1), get_color_grupo1(2)), lty=c(1, 1, 3), lwd = 2, bty = 'n')
 ```
 
-</center>
 
 * Ambos grupos tienen comportamientos y valores muy similares, dado que ambos provienen del grupo 1 formado por las variables financieras, por lo tanto estos dos grupos se diferencian en las variables de los canales, incluso, las pocas diferencias que se perciben en estas variables financieras, puede deberse a que el grupo 1 es el que tiende a manejar mayores montos de dinero a través de todos los canales, por lo que se percibe la relación que entre más dinero, mayores niveles de importaciones, exportaciones, cuentas por cobrar, pagar e inventario se van a realizar.
 
@@ -2701,7 +2668,6 @@ get_color_grupo2 <- function(valor){
 }
 ```
 
-<center>
 
 ```{r, fig.align="center"}
 set.seed(93284)
@@ -2718,7 +2684,6 @@ clusplot(grupo2_scaled[,2:16], kc2$cluster, color = TRUE,
 grid()
 ```
 
-</center>
 
 ```{r, echo=FALSE}
 kable(table(kc2$cluster), align = 'c', col.names = c('Grupo', 'Número de clientes')) %>%
@@ -2784,7 +2749,6 @@ kable(media_finan2_canal, align = 'c') %>%
 
 <br>
 
-<center>
 
 ```{r, fig.align="center", echo=FALSE}
 plot(1:15, media_finan2_canal[1, 3:17], type = 'b', col = get_color_grupo2(1), 
@@ -2797,12 +2761,9 @@ grid()
 legend("top", legend=c("Grupo1","Grupo2"),  col=c(get_color_grupo2(1), get_color_grupo2(2)), lty=c(1, 1, 3), lwd = 2, bty = 'n')
 ```
 
-</center>
-
 
 * De la gráfica anterior, en general el grupo 1 presenta en promedio mayores entradas y salidas de dinero que el grupo 2. Siendo las diferencias más amplia en los canales de entrada 1, 2, 3, 4, 5, 6, 8, 9 y en los canales de salida 5 y 2.
 
-<center>
 
 ```{r, fig.align="center", echo=FALSE}
 plot(1:16, media_finan2_canal[1, 18:33], type = 'b', col = get_color_grupo2(1), 
@@ -2815,7 +2776,6 @@ grid()
 legend("top", legend=c("Sub-grupo 1","Sub-grupo 2"),  col=c(get_color_grupo2(1), get_color_grupo2(2)), lty=c(1, 1, 3), lwd = 2, bty = 'n')
 ```
 
-</center>
 
 * Ambos grupos tienen comportamientos y valores muy similares, dado que ambos provienen del grupo 2 formado por las variables financieras, por lo tanto estos dos grupos se diferencian en las variables de los canales, incluso, las pocas diferencias que se perciben en estas variables financieras, puede deberse a que el grupo 1 es el que tiende a tener mayores montos de dinero a través de todos los canales, por lo que se percibe la relación que entre más dinero, mayores importaciones, mayor nivel de inventario se tiene, más tiendas fisicas y más lentas las rotaciones de inventario pero más rápidas las rotaciones de cuentas por cobrar y pagar.
 
@@ -2860,7 +2820,6 @@ get_color_grupo3 <- function(valor){
 }
 ```
 
-<center>
 
 ```{r, fig.align="center"}
 set.seed(932840)
@@ -2877,7 +2836,6 @@ clusplot(grupo3_scaled[,2:16], kc3$cluster, color = TRUE,
 grid()
 ```
 
-</center>
 
 ```{r, echo=FALSE}
 kable(table(kc3$cluster), align = 'c', col.names = c('Grupo', 'Número de clientes')) %>%
@@ -2941,8 +2899,6 @@ kable(media_finan3_canal, align = 'c') %>%
 
 <br>
 
-<center>
-
 ```{r, fig.align="center", echo=FALSE}
 plot(1:15, media_finan3_canal[1, 3:17], type = 'b', col = get_color_grupo3(1), 
      xaxt = "n", xlab = '', lwd = 2, ylab = 'Media en escala de log natural', main =  "Subgrupos con canales del grupo 3 de financieras")
@@ -2955,11 +2911,9 @@ legend("top", legend=c("Sub-grupo 1","Sub-grupo 2"),  col=c(get_color_grupo3(1),
 
 ```
 
-</center>
 
 * De la gráfica anterior, en general el grupo 1 presenta en promedio mayores entradas y salidas de dinero que el grupo 2. Siendo las diferencias más amplia en los canales de entrada 1, 2, 3, 4, 5, 6, 8, 9 y en los canales de salida 5 y 2. 
 
-<center>
 
 ```{r, fig.align="center", echo=FALSE}
 plot(1:16, media_finan3_canal[1, 18:33], type = 'b', col = get_color_grupo3(1), 
@@ -2973,7 +2927,6 @@ legend("top", legend=c("Grupo1","Grupo2"),  col=c(get_color_grupo3(1), get_color
 
 ```
 
-</center>
 
 * Ambos grupos tienen comportamientos y valores muy similares, dado que ambos provienen del grupo 3 formado por las variables financieras, por lo tanto estos dos grupos se diferencian en las variables de los canales, incluso, las pocas diferencias que se perciben en estas variables financieras, puede deberse a que el grupo 1 es el que tiende a tener mayores montos de dinero a través de todos los canales, por lo que se percibe la relación que entre más dinero, mayores nivel en las cuentas por cobrar e inventarios se tiene, además de más tiendas fisicas, sus rotaciones de inventario y ciclos de negocios y financieros son más lentos.
 
@@ -3054,7 +3007,6 @@ kable(media_finan_canal, align = 'c') %>%
 
 **Variables de los canales**
 
-<center>
 
 ```{r, fig.align="center", echo=FALSE}
 plot(1:15, media_finan_canal[1, 4:18], type = 'b', col = '#E80EB8', 
@@ -3070,7 +3022,6 @@ grid()
 legend("top", legend=c(paste("Grupo", 1:6, sep = '')),  col=c("#E80EB8", "#0F1EF2", "#19DBAD", "#92F20F", "#EBA81A", "#8C7AF5"), lty=1, lwd = 2,  bty = 'n', cex=0.7)
 ```
 
-</center>
 
 * En general el grupo 1, 3 y 5 son los que manejan en promedio mayores montos de dinero en promedio anualmente, por otro lado el grupo 2, 4 y 6 son los que manejan menores montos de dinero  en promedio anualmente.
 
@@ -3079,7 +3030,6 @@ En comparación con las segmentaciones hechas por los anteriores procedimientos 
 
 **Variables financieras**
 
-<center>
 
 ```{r, fig.align="center", echo=FALSE}
 par(mfrow=c(1,3))
@@ -3120,8 +3070,6 @@ lines(1:5, media_finan_canal [6, 30:34], col = '#8C7AF5', type = "b", lwd = 2)
 grid()
 legend("bottom", legend=c(paste("Grupo", 1:6, sep = '')),  col = c("#E80EB8", "#0F1EF2", "#19DBAD", "#92F20F", "#EBA81A", "#8C7AF5"), lty=1, lwd = 2,  bty = 'n')
 ```
-
-</center>
 
 
 * El grupo 1, 3 y 4 es el que tiene mayor nivel promedio de importaciones y exportaciones, mientras que el grupo 5 y 6 son los que menos realizan importaciones y exportaciones; el grupo 3 y 4 tienen mayor nivel promedio de cuentas por pagar y cobrar y mayor inventario, el grupo 1 y 2 tienen un nivel promedio de cuentas por pagar y cobrar e inventario intermedio mientras que el grupo 5 y 6 tienen un nivel promedio de cuentas por pagar y cobrar e inventario bajos.
