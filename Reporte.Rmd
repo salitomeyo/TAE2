@@ -136,9 +136,11 @@ summary(Canal_no_scaled[c(12:22, 27:30)])
 
 - Dado que se cuenta con unas cifras numericas muy grandes, se decide realizar el análisis gráfico de estas variables mediante el logaritmo, ya que este permite una mejor visualización y compresión de cuales canales tienen mayor uso, cual manejan mayor dinero y cuales mayor número de transacciones y asi comprender mejor el funcionamiento de los distintos canales.
 
-* Gráfico de la media del logaritmo de cada variable asociadas a los canales
+<br>
 
-```{r}
+**Gráfico de la media en logartimo natural de cada variable asociadas a los canales**
+
+```{r, echo=FALSE, eval=FALSE}
 fila_porcentaje <- function(fila){
   
   fila_suma <- sum(fila)
@@ -167,30 +169,32 @@ Canal_porcentaje[, 27:30] <- t(apply(Canal_no_scaled[, 27:30], 1, fila_porcentaj
 ```
 
 
-```{r}
-#layout(rbind(c(1,1,1),c(2,2,2)))
-par(mfcol = c(2, 1), mar = numeric(4), oma = c(4, 4, .5, .5), 
-   mgp = c(2, .6, 0))
-plot(1:30, colMeans(Canal_log), type = 'b', xaxt = "n", xlab = '', 
-     lwd = 2, ylab = 'Media', col="cyan4")
-#axis(1, 1:30, names(df)[1:30], las = 2)
-grid()
+```{r, fig.align="center"}
 
-plot(1:30, colMeans(Canal_porcentaje), type = 'b', col = 'cyan4', 
-     xaxt = "n", xlab = '', lwd = 2, ylab = 'Media')
+plot(1:30, colMeans(Canal_log), type = 'b', xaxt = "n", xlab = '', 
+     lwd = 2, ylab = 'Media', col="cyan4", main="Gráfico de la medias de los canales en logaritmo natural", pch=19)
 axis(1, 1:30, names(df)[1:30], las = 2)
 grid()
-mtext("Media", side = 2, outer = TRUE, line = 1.7, adj = 0.75)
-mtext("Porcentaje", side = 2, outer = F, line = 1.7)
 ```
 
 
-```{r}
-layout(rbind(c(1,1,2,2),c(3,3,4,4)))
-boxplot(log(df[,1:11]+1), las=2, col="cyan4")
-boxplot(log(df[,12:22]+1), las=2, col="cyan4")
-boxplot(log(df[,23:26]+1), las=2, col="cyan4")
-boxplot(log(df[,27:30]+1), las=2, col="cyan4")
+<center> <h2> Boxplots del logaritmo natural de las variables de los canales</h2> </center>
+
+```{r, echo = FALSE, fig.align="center"}
+par(mfrow=c(1,2))
+boxplot(log(df[,1:11]+1), las=2, col="cyan4", main = "montos de entrada anual")
+grid()
+boxplot(log(df[,12:22]+1), las=2, col="cyan4", main = "transacciones de entrada mensual")
+grid()
+```
+
+
+```{r, echo = FALSE, fig.align="center"}
+par(mfrow=c(1,2))
+boxplot(log(df[,23:26]+1), las=2, col="cyan4", main="montos de salida anual")
+grid()
+boxplot(log(df[,27:30]+1), las=2, col="cyan4", main = "transacciones de salida mensual")
+grid()
 ```
 
 #### Mediante el gráfico se puede analizar que:
@@ -223,9 +227,9 @@ _Análisis de los canales de salida:_
 
 En general en los canales de salida, el canal2 es el que maneja un mayor monto promedio de dinero, además un mayor número de transacciones; por otro lado los canales8 y canalOtros son los que manejan los menores montos promedios de dinero y menores números de transacciones.
 
-* Matriz de correlació asociada a las variables de los canales:
+<center> <h2>  Matriz de correlación asociada a las variables de los canales: </h2> </center>
 
-```{r, message=FALSE, warning=FALSE}
+```{r, message=FALSE, warning=FALSE, eval = FALSE, fig.align="center"}
 library(corrplot)
 corrplot(cor(Canal_no_scaled), 
          method="color",  
@@ -239,8 +243,13 @@ corrplot(cor(Canal_no_scaled),
          )
 ```
 
-(Pegar esa matriz como img)
-(Interpretar)
+
+<center>
+![](Dendogramas/cor_canales.png)
+
+</center>
+
+(falta Interpretar matriz de correlación)
 
 Las variables asociadas a los canales más correlacionadas son:
 
@@ -260,9 +269,14 @@ unique(nombres)
 
 <hr>
 
-Análisis descriptivo de las variables financieras:
+**Análisis descriptivo de las variables financieras:**
 
-```{r, message=FALSE, warning=FALSE}
+<center> <h2> Gráficos descriptivos de cada una de las variables financieras </center> </h2>
+
+* Gráficos de frecuencias relativas para las varibales categoricas
+* Gráficos de histograma para las variables continuas
+
+```{r, message=FALSE, warning=FALSE, , fig.align="center"}
 library(ggplot2)
 for(i in 1:dim(finan_no_scaled)[2]){
   
@@ -329,21 +343,19 @@ _ **pagos_pj: **
 
 * A continuación se pueden observar las características financieras de un cliente promedio.
 
-```{r}
+```{r, fig.align="center"}
 plot(1:16, colMeans(finan_no_scaled), type = 'b', col = 'cyan4', 
-     xaxt = "n", xlab = '', lwd = 2, ylab = 'Media', ylim = c(0, 4.3))
+     xaxt = "n", xlab = '', lwd = 2, ylab = 'Media', ylim = c(0, 4.3),main= "Gráfico de las medias de las variables financieras", pch=19)
 axis(1, 1:16, names(df)[31:46], las = 2)
 text(apply(finan_no_scaled, 2, mean)+0.2, labels = round(apply(finan_no_scaled, 2, mean), 1))
 grid()
 ```
 
 
-* Matriz de correlaciones
 
+<h2> <center> Matriz de correlaciones entre las variables financieras </h2> </center>
 
-Correlaciones entre las variables financieras
-
-```{r, message=FALSE, warning=FALSE}
+```{r, message=FALSE, warning=FALSE, fig.align="center"}
 library(corrplot)
 corrplot(cor(finan_no_scaled), 
          method="color",  
@@ -431,7 +443,7 @@ A continuación se presenta el  procedimiento desarrollado realizando una segmen
 
 * Se utiliza agrupamiento jerarquico con la idea de conocer la cantidad de grupos que se deben considerar 
 
-```{r, echo =FALSE, message=FALSE, warning=FALSE}
+```{r, echo =FALSE, message=FALSE, warning=FALSE, eval = FALSE}
 library(ggdendro)
 library(ggplot2)
 require(factoextra)
@@ -448,13 +460,18 @@ rect.hclust(dendrogram, k=2, border="cyan4")
 #   labs(title = "Dendograma")
 ```
 
+<center>
+![](Dendogramas/Intento3-Scaled-Agrupamiento-jerarquico.png)
+
+</center>
+
 * Del gráfico se concluye adecuado considerar dos grupos.
 
 
 
-* Agrupamiento k means con las variables de los canales (usando transformación logaritmo natural):
+<h2> <center> Agrupamiento k means con las variables de los canales (usando transformación logaritmo natural): <7h2> </center>
 
-```{r}
+```{r, fig.align="center"}
 require(cluster)
 
 set.seed(93285)
@@ -464,7 +481,7 @@ clusplot(Canal_log_scaled, Agru_canal$cluster, color = TRUE,
           shade = FALSE, labels = 4, lines = 1, 
           col.clus = c("darkgreen", "darkblue"),
           col.p = ifelse(Agru_canal$cluster == 2, "darkblue","darkgreen"), 
-          main = "Grupos seleccionados por Kmeans", 
+          main = "Grupos seleccionados de canales mediante K-means", 
           xlab = "Componente principal 1 canales",
           ylab = "Componente principal 2 canales",
           sub = "")
@@ -500,9 +517,10 @@ table(Agru_canal$cluster)
 El grupo 1 cuenta con 1281 clientes y el grupo 2 con 952 clientes de los cuales en general el grupo 1 tiene a los clientes que tienden a manejar montos más altos de dinero y mayor número de transacciones por todos los canales en comparación con los del grupo 2.
 
 
-* Gráficos de boxplot que permitirán sacar caraterísticas de cada uno de los grupos
+<h2> <center> Gráficos de boxplot que permitirán sacar caraterísticas de cada uno de los grupos </h2> </center>
 
-```{r}
+* Los gráficos son de las variables de los canales en escala logaritmo natural
+```{r, fig.align="center"}
 library(ggplot2)
 for(i in 2:dim(canal_group)[2]){
  
@@ -547,12 +565,13 @@ media_df_grupcanal <-  aggregate(.~grupos,data=df_group_log, FUN=mean)
 
 
 
-* Análisis del valor medio de los grupos en cada variable
+<h2> <center>  Análisis del valor medio de los grupos en cada variable </h2> </center>
 
+**Gráfico de los grupos en las variables de los canales**
 
-```{r}
+```{r, fig.align="center"}
 plot(1:30, media_df_grupcanal[1, 2:31], type = 'b', col = 'darkgreen', 
-     xaxt = "n", xlab = '', lwd = 2, ylab = 'centroide', ylim  = c(0, 22))
+     xaxt = "n", xlab = '', lwd = 2, ylab = 'media escala log natural', ylim  = c(0, 22), main= "Media de los grupos mediante las variables de canales")
 axis(1, 1:30, names(media_df_grupcanal)[2:31], las = 2)
 lines(1:30, media_df_grupcanal[2, 2:31], col = 'darkblue', type = "b", lwd = 2)
 
@@ -567,7 +586,9 @@ De la gráfica anterior, se puede ver en general un comportamiento similar entre
 
 
 
-```{r}
+<h3> <center> media de los grupos mediante las variables financieras </h3> </center>
+
+```{r, fig.align="center"}
 par(mfrow=c(1,3))
 plot(1:5, media_df_grupcanal[1, 32:36], type = 'b', col = 'darkgreen', 
      xaxt = "n", xlab = '', lwd = 2, ylab = 'centroide', ylim=c(0, 5.5))
@@ -610,20 +631,25 @@ Dado que el grupo 1 maneja montos de dinero y número de transacciones promedio 
 
 - Se utiliza agrupamiento jerárquico con la idea de conocer la cantidad de grupos que se deben considerar 
 
-```{r}
+```{r, eval=FALSE}
 dendrogram <- hclust(dist(grupo1_scaled[,32:47], method = 'euclidean'), method = 'ward.D')
 
 plot(dendrogram, xlab="", sub="", cex=0.9)
 rect.hclust(dendrogram, k=3, border="cyan4")
 ```
 
+<center>
+![](Dendogramas/Intento3-Scaled-Agrupamiento-financiera-1.png)
+
+</center>
+
 Del dendograma anterior se concluye considerar 3 subgrupos.
 
 
-Subagrupamientos mediante las variables de estados financieros usando k-means :
+<h2> <center>Subagrupamientos mediante las variables de estados financieros usando k-means :</h2> </center>
 
 
-```{r}
+```{r, fig.align="center"}
 require(cluster)
 
 get_color_grupo1 <- function(valor){
@@ -647,7 +673,7 @@ clusplot(grupo1_scaled[,32:47], kc1$cluster, color = TRUE,
           shade = FALSE, labels = 4, lines = 1,
           col.clus = c("#46EB65", "#206B2E", "#B2F768"),
           col.p = sapply(kc1$cluster, get_color_grupo1), 
-          main = "Subgrupos seleccionados por Kmeans", 
+          main = "Subgrupos del grupo 1 de canales mediante K-means", 
           xlab = "Componente principal 1 canales",
           ylab = "Componente principal 2 canales",
           sub = "")
@@ -683,18 +709,18 @@ media_canal1_finan <-  aggregate(.~sub_grupos,data=canal1_finan_log, FUN=mean)
 
 
 
-* Análisis del valor medio de los grupos en cada variable
+<h2> <center> Análisis del valor medio de los grupos en cada variable </h2> </center>
 
 
-```{r}
+```{r, fig.align="center"}
 plot(1:30, media_canal1_finan[1, 3:32], type = 'b', col = get_color_grupo1(1), 
-     xaxt = "n", xlab = '', lwd = 2, ylab = 'centroide', ylim  = c(0, 22))
+     xaxt = "n", xlab = '', lwd = 2, ylab = 'media escala log natural', ylim  = c(0, 22), main="Subgrupos con financieras del grupo 1 de canales")
 axis(1, 1:30, names(media_canal1_finan)[3:32], las = 2)
 lines(1:30, media_canal1_finan[2, 3:32], col = get_color_grupo1(2), type = "b", lwd = 2)
 lines(1:30, media_canal1_finan[3, 3:32], col = get_color_grupo1(3), type = "b", lwd = 2)
 
 
-legend(25, 23, legend=c("Grupo1","Grupo2", "Grupo3"),
+legend("topright", legend=c("Sub-grupo 1","Sub-grupo 2", "Sub-grupo 3"),
        col=c(get_color_grupo1(1), get_color_grupo1(2), get_color_grupo1(3)), lty=c(1, 1, 1, 3), lwd = 2, cex = 0.8, bty = 'n')
 grid()
 ```
@@ -704,14 +730,14 @@ De la grafica presentada previamente se espera que los tres grupos tengan un com
 
 
 
-```{r}
+```{r, fig.align="center"}
 plot(1:16, media_canal1_finan[1, 33:48], type = 'b', col = get_color_grupo1(1), 
-     xaxt = "n", xlab = '', lwd = 2, ylab = 'centroide')
+     xaxt = "n", xlab = '', lwd = 2, ylab = 'media', main="Subgrupos con financieras del grupo 1 de canales")
 axis(1, 1:16, names(media_canal1_finan)[33:48], las = 2)
 lines(1:16, media_canal1_finan[2, 33:48], col = get_color_grupo1(2), type = "b", lwd = 2)
 lines(1:16, media_canal1_finan[3, 33:48], col = get_color_grupo1(3), type = "b", lwd = 2)
 
-legend("bottomright", legend=c("Grupo1","Grupo2", "Grupo3"),
+legend("bottomright", legend=c("Sub-grupo 1","Sub-grupo 2", "Sub-grupo 3"),
        col=c(get_color_grupo1(1), get_color_grupo1(2), get_color_grupo1(3)), lty=1, bty = 'n')
 grid()
 ```
@@ -733,11 +759,18 @@ grid()
 - Se utiliza agrupamiento jerárquico con la idea de conocer la cantidad de grupos que se deben considerar 
 
 
-```{r}
+```{r, eval = FALSE}
 dendrogram <- hclust(dist(grupo2_scaled[, 32:47], method = 'euclidean'), method = 'ward.D')
 
 plot(dendrogram, xlab="", sub="", cex=0.9)
 ```
+
+
+<center>
+![](Dendogramas/Intento3-Scaled-Agrupamiento-financiera-2.png)
+
+</center>
+
 
 Del dendograma anterior se concluye considerar 3 subgrupos.
 
@@ -745,7 +778,7 @@ Del dendograma anterior se concluye considerar 3 subgrupos.
 Subagrupamientos mediante las variables de estados financieros usando k-means :
 
 
-```{r}
+```{r, fig.align="center"}
 require(cluster)
 
 get_color_grupo2 <- function(valor){
@@ -772,7 +805,7 @@ clusplot(grupo2_scaled[,32:47], kc2$cluster, color = TRUE,
           shade = FALSE, labels = 4, lines = 1,
           col.clus = c("#0688AC", "#0669AC", "#000080"),
           col.p = sapply(kc2$cluster, get_color_grupo2), 
-          main = "Subgrupos seleccionados por Kmeans", 
+          main = "Subgrupos del grupo 2 de canales mediante K-means", 
           xlab = "Componente principal 1 canales",
           ylab = "Componente principal 2 canales",
           sub = "")
@@ -808,18 +841,18 @@ media_canal2_finan <-  aggregate(.~sub_grupos,data=canal2_finan_log, FUN=mean)
 
 
 
-* Análisis del valor medio de los grupos en cada variable
+<h2> <center> Análisis del valor medio de los grupos en cada variable </h2> </center>
 
 
-```{r}
+```{r, fig.align="center"}
 plot(1:30, media_canal2_finan[1, 3:32], type = 'b', col = get_color_grupo2(1), 
-     xaxt = "n", xlab = '', lwd = 2, ylab = 'centroide', ylim  = c(0, 22))
+     xaxt = "n", xlab = '', lwd = 2, ylab = 'Media escala log natural', ylim  = c(0, 22), main="Subgrupos de financieras del grupo 2 de canales")
 axis(1, 1:30, names(media_canal2_finan)[3:32], las = 2)
 lines(1:30, media_canal2_finan[2, 3:32], col = get_color_grupo2(2), type = "b", lwd = 2)
 lines(1:30, media_canal2_finan[3, 3:32], col = get_color_grupo2(3), type = "b", lwd = 2)
 
 
-legend(25, 23, legend=c("Grupo1","Grupo2", "Grupo3"),
+legend("topright", legend=c("Sub-grupo 1","Sub-grupo 2", "Sub-grupo 3"),
        col=c(get_color_grupo2(1), get_color_grupo2(2), get_color_grupo2(3)), lty=c(1, 1, 1, 3), lwd = 2, cex = 0.8, bty = 'n')
 grid()
 ```
@@ -829,14 +862,14 @@ De la grafica presentada previamente se espera que los tres grupos tengan un com
 
 
 
-```{r}
+```{r, fig.align="center"}
 plot(1:16, media_canal2_finan[1, 33:48], type = 'b', col = get_color_grupo2(1), 
-     xaxt = "n", xlab = '', lwd = 2, ylab = 'centroide')
+     xaxt = "n", xlab = '', lwd = 2, ylab = 'Media', main="Subgrupos con financieras del grupo 2 de canales")
 axis(1, 1:16, names(media_canal2_finan)[33:48], las = 2)
 lines(1:16, media_canal2_finan[2, 33:48], col = get_color_grupo2(2), type = "b", lwd = 2)
 lines(1:16, media_canal2_finan[3, 33:48], col = get_color_grupo2(3), type = "b", lwd = 2)
 
-legend("bottomright", legend=c("Grupo1","Grupo2", "Grupo3"),
+legend("bottomright", legend=c("Sub-grupo 1","Sub-grupo 2", "Sub-grupo 3"),
        col=c(get_color_grupo2(1), get_color_grupo2(2), get_color_grupo2(3)), lty=1, bty = 'n')
 grid()
 ```
@@ -908,19 +941,22 @@ media_canal_finan
 aggregate(.~Grupos,data=Datos_finales_2, FUN=median)
 ```
 
+<br>
 
-* Análisis del valor medio de los grupos en cada variable
+<h2> <center> Análisis del valor medio de los grupos en cada variable </h2> </center>
 
-```{r}
+**Variables de los canales**
+
+```{r, fig.align="center"}
 plot(1:30, media_canal_finan [1, 4:33], type = 'b', col = '#E80EB8', 
-     xaxt = "n", xlab = '', lwd = 2, ylab = 'centroide', main = 'Grupos finales', ylim = c(0, 22))
+     xaxt = "n", xlab = '', lwd = 2, ylab = 'Media escala log natural', main = 'Grupos finales', ylim = c(0, 22))
 axis(1, 1:30, names(media_canal_finan )[4:33], las = 2)
 lines(1:30, media_canal_finan [2, 4:33], col = '#0F1EF2', type = "b", lwd = 2)
 lines(1:30, media_canal_finan [3, 4:33], col = '#19DBAD', type = "b", lwd = 2)
 lines(1:30, media_canal_finan [4, 4:33], col = '#92F20F', type = "b", lwd = 2)
 lines(1:30, media_canal_finan [5, 4:33], col = '#EBA81A', type = "b", lwd = 2)
 lines(1:30, media_canal_finan [6, 4:33], col = '#8C7AF5', type = "b", lwd = 2)
-
+grid()
 legend("top", legend=c(paste("Grupo", 1:6, sep = '')),  col=c("#E80EB8", "#0F1EF2", "#19DBAD", "#92F20F", "#EBA81A", "#8C7AF5"), lty=1, lwd = 2,  bty = 'n')
 ```
 
@@ -928,7 +964,9 @@ legend("top", legend=c(paste("Grupo", 1:6, sep = '')),  col=c("#E80EB8", "#0F1EF
 
 * El grupo 3 a pesar de tener un comportamiento de manejar mayores montos en promedio de dinero al igual que el grupo 1 y 5, este se destaca particularmente en el canal de entrada de otros, dado que toma valores muy altos, más que cualquiera de los otros grupos.
 
-```{r}
+**Variables financieras**
+
+```{r, fig.align="center"}
 par(mfrow=c(1,3))
 plot(1:5, media_canal_finan [1, 34:38], type = 'b', col = "#E80EB8", 
      xaxt = "n", xlab = '', lwd = 2, ylab = 'centroide', main = 'Grupos finales', ylim = c(0,5.5))
@@ -944,7 +982,7 @@ legend("bottom", legend=c(paste("Grupo", 1:6, sep = '')),  col = c("#E80EB8", "#
 
 
 plot(1:6, media_canal_finan [1, 39:44], type = 'b', col = "#E80EB8", 
-     xaxt = "n", xlab = '', lwd = 2, ylab = 'centroide', main = 'Grupos finales', ylim = c(0,1))
+     xaxt = "n", xlab = '', lwd = 2, ylab = 'Media', main = 'Grupos finales', ylim = c(0,1))
 axis(1, 1:6, names(media_canal_finan )[39:44], las = 2)
 lines(1:6, media_canal_finan [2, 39:44], col = '#0F1EF2', type = "b", lwd = 2)
 lines(1:6, media_canal_finan [3, 39:44], col = '#19DBAD', type = "b", lwd = 2)
@@ -956,7 +994,7 @@ legend("topright", legend=c(paste("Grupo", 1:6, sep = '')),  col = c("#E80EB8", 
 
 
 plot(1:5, media_canal_finan [1, 45:49], type = 'b', col = "#E80EB8", 
-     xaxt = "n", xlab = '', lwd = 2, ylab = 'centroide', main = 'Grupos finales', ylim = c(0,5.5))
+     xaxt = "n", xlab = '', lwd = 2, ylab = 'Media', main = 'Grupos finales', ylim = c(0,5.5))
 axis(1, 1:5, names(media_canal_finan )[45:49], las = 2)
 lines(1:5, media_canal_finan [2, 45:49], col = '#0F1EF2', type = "b", lwd = 2)
 lines(1:5, media_canal_finan [3, 45:49], col = '#19DBAD', type = "b", lwd = 2)
@@ -1010,6 +1048,7 @@ conclusión:
 En la segmentación (primero canales luego financieras) anterior se obtuvieron muy buenos resultados dado que se puedo interpretar de manera acertada cada uno de los grupos formados, ahora se intenta realizar el proceso de segmentación con un procedimiento contrario (primero financieras luego canales) con el fin de observar si se obtienen grupos similares a los obtenidos hasta ahora, para mirar si hay consistencia con los análisis realizados y mirar si hay influencia alta de hacer los procedimientos en un orden especifico.
 
 <br>
+<hr>
 
 
 ## Procedimiento de segmentación 2
@@ -1019,7 +1058,7 @@ A continuación se presenta el  procedimiento desarrollado realizando una segmen
 * Se utiliza agrupamiento jerarquico con la idea de conocer la cantidad de grupos que se deben considerar 
 
 
-```{r}
+```{r, eval =FALSE}
 library(ggdendro)
 library(ggplot2)
 require(factoextra)
@@ -1031,13 +1070,20 @@ plot(dendrogram, xlab="", sub="", cex=0.9)
 rect.hclust(dendrogram, k=3, border="cyan4")
 ```
 
+
+
+<center>
+![](Dendogramas/Intento2-Scaled-Agrupamiento-jerarquico.png)
+
+</center>
+
 * Del gráfico se concluye adecuado considerar tres grupos.
 
 <br>
 
 * Agrupamiento k means con las variables financieras:
 
-```{r}
+```{r, fig.align="center"}
 require(cluster)
 
 get_color <- function(valor){
@@ -1062,7 +1108,7 @@ clusplot(finan_scaled, Agru_finan$cluster, color = TRUE,
           shade = FALSE, labels = 4, lines = 1,
           col.clus = c("purple", "red", "blue"),
           col.p = sapply(Agru_finan$cluster, get_color),
-          main = "Grupos seleccionados por Kmeans", 
+          main = "Grupos seleccionados de financieras mediante K-means", 
           xlab = "Componente principal 1 canales",
           ylab = "Componente principal 2 canales",
           sub = "")
@@ -1103,16 +1149,18 @@ El grupo 1 cuenta con 809 clientes y el grupo 2 con 659 clientes  y el grupo 3 c
 
 
 
-* Gráficos que permitirán sacar caraterísticas de cada uno de los grupos
+<h2> <center> Gráficos que permitirán sacar caraterísticas de cada uno de los grupos </h2> </center>
 
-```{r}
+* Gráficos de barras para las variables categoricas y boxplots para las variables continuas
+
+```{r, fig.align="center"}
 library(ggplot2)
 for(i in 2:dim(fina_group)[2]){
   
   if(class(fina_group[, i])=="integer"){
-    p <- ggplot(fina_group, aes(x = fina_group[, i], y = ..prop..))+ geom_bar(fill = "#0c4c8a")+facet_grid(vars(), vars(grupos))
+    p <- ggplot(fina_group, aes(x = fina_group[, i], y = ..prop..))+ geom_bar(fill = "#0c4c8a")+facet_grid(vars(), vars(grupos))+labs(y="Frecuencia relativa")
   }else{
-    p <- ggplot(fina_group, aes(x = factor(grupos), y=fina_group[, i])) +  geom_boxplot()
+    p <- ggplot(fina_group, aes(x = factor(grupos), y=fina_group[, i])) +  geom_boxplot() + labs(y="Proporción")
   }
   
   p_final <- p +
@@ -1263,11 +1311,7 @@ El grupo 1 tiene un ciclo financiero muy lento, luego le sigue el grupo 2 con un
 
 **Conclusión final:**
 
-*El grupo 2 parece ser de productos y el grupo 3 parece ser de servicios y el grupo 1 tiene características similares  a los otros dos grupos
-
-
-
-
+* El grupo 2 parece ser de productos y el grupo 3 parece ser de servicios y el grupo 1 tiene características similares  a los otros dos grupos
 
 
 * Grupos de las variables escaladas 
@@ -1293,8 +1337,6 @@ media_df_grupfin
 
 
 
-* Análisis del valor medio de los grupos en cada variable
-
 ```{r, echo=FALSE}
 
 media_fin <- attr(df_scaled,"scaled:center")[31:46]
@@ -1305,35 +1347,41 @@ centroid1 <- apply(Agru_finan$centers, 1, function(x) x * attr(df_scaled,'scaled
 
 ```
 
-```{r}
+
+<h2> <center>  Análisis del valor medio de los grupos en cada variable </h2> </center>
+
+<h3> <center>  Gráfico de los grupos en las variables financieras </h3> </center>
+
+
+```{r, fig.align="center"}
 par(mfrow=c(1,3))
 plot(centroid1[1:5, 1], type = 'b', col = 'red', 
-     xaxt = "n", xlab = '', lwd = 2, ylab = 'centroide', ylim=c(0, 5.5))
+     xaxt = "n", xlab = '', lwd = 2, ylab = 'Media', ylim=c(0, 5.5))
 axis(1, 1:5, row.names(centroid1)[1:5], las = 2)
 lines(centroid1[1:5, 2], col = 'purple', type = "b", lwd = 2)
 lines(centroid1[1:5, 3], col = "blue", type = "b", lwd = 2)
-
+grid()
 
 legend("bottomright", legend=c("Grupo1","Grupo2", "Grupo3"),
        col=c("red", "purple", "blue"), lty=1, bty = 'n')
 
 
 plot(centroid1[6:11, 1], type = 'b', col = 'red', 
-     xaxt = "n", xlab = '', lwd = 2, ylab = 'centroide', ylim=c(0,1))
+     xaxt = "n", xlab = '', lwd = 2, ylab = 'Media', ylim=c(0,1))
 axis(1, 1:6, row.names(centroid1)[6:11], las = 2)
 lines(centroid1[6:11, 2], col = 'purple', type = "b", lwd = 2)
 lines(centroid1[6:11, 3], col = "blue", type = "b", lwd = 2)
-
+grid()
 
 legend("topright", legend=c("Grupo1","Grupo2", "Grupo3"),
        col=c("red", "purple", "blue"), lty=1, bty = 'n')
 
 plot(centroid1[12:16, 1], type = 'b', col = 'red', 
-     xaxt = "n", xlab = '', lwd = 2, ylab = 'centroide', ylim=c(0, 5.5))
+     xaxt = "n", xlab = '', lwd = 2, ylab = 'Media', ylim=c(0, 5.5))
 axis(1, 1:5, row.names(centroid1)[12:16], las = 2)
 lines(centroid1[12:16, 2], col = 'purple', type = "b", lwd = 2)
 lines(centroid1[12:16, 3], col = "blue", type = "b", lwd = 2)
-
+grid()
 
 legend("bottomright", legend=c("Grupo1","Grupo2", "Grupo3"),
        col=c("red", "purple", "blue"), lty=1, bty = 'n')
@@ -1361,13 +1409,16 @@ legend("bottomright", legend=c("Grupo1","Grupo2", "Grupo3"),
 * El ciclo de negocio y financiero promedio es más rápido para el grupo 3, luego para el grupo 2 y por último el más lento para el grupo 1.
 
 
-```{r}
+**Gráfico de los grupos en las variables de los canales**
+
+
+```{r, fig.align="center"}
 plot(1:30, media_df_grupfin[1, 2:31], type = 'b', col = 'red', 
-     xaxt = "n", xlab = '', lwd = 2, ylab = 'centroide', ylim  = c(0, 22))
+     xaxt = "n", xlab = '', lwd = 2, ylab = 'Media en escala log natural', ylim  = c(0, 22), main= "Media de los grupos mediante las variables de canales")
 axis(1, 1:30, names(media_df_grupfin)[2:31], las = 2)
 lines(1:30, media_df_grupfin[2, 2:31], col = 'purple', type = "b", lwd = 2)
 lines(1:30, media_df_grupfin[3, 2:31], col = "blue", type = "b", lwd = 2)
-
+grid()
 legend(25, 23, legend=c("Grupo1","Grupo2", "Grupo3"),
        col=c("red", "purple", "blue"), lty=c(1, 1, 1, 3), lwd = 2, cex = 0.8, bty = 'n')
 ```
@@ -1387,21 +1438,23 @@ legend(25, 23, legend=c("Grupo1","Grupo2", "Grupo3"),
 
 
 
-```{r}
+```{r, eval = FALSE}
 dendrogram <- hclust(dist(grupo1_scaled[,2:31], method = 'euclidean'), method = 'ward.D')
 
 plot(dendrogram, xlab="", sub="", cex=0.9)
 ```
+<center>
+![](Dendogramas/Intento2-Scaled-Agrupamiento-canales-1.png)
 
+</center>
 
 * Del gráfico se concluye adecuado considerar dos grupos.
-
 
 
 Subagrupamientos mediante las variables asociadas a los canales usando k-means :
 
 
-```{r}
+```{r, fig.align="center"}
 require(cluster)
 
 
@@ -1424,7 +1477,7 @@ clusplot(grupo1_scaled[,2:31], kc1$cluster, color = TRUE,
          shade = FALSE, labels = 4, lines = 1,
          col.clus = c("#F54830", "#C23927"),
          col.p = sapply(kc1$cluster, get_color_grupo1),
-         main = "Subgrupos seleccionados por Kmeans", 
+         main = "Subgrupos del grupo 1 de financieras mediante K-means", 
          xlab = "Componente principal 1 canales",
          ylab = "Componente principal 2 canales",
          sub = "" )
@@ -1457,16 +1510,17 @@ media_finan1_canal
 
 <br>
 
-* Análisis del valor medio de los grupos en cada variable
+<h2> <center>  Análisis del valor medio de los grupos en cada variable </h2> </center>
 
-```{r}
+```{r, fig.align="center"}
 plot(1:30, media_finan1_canal[1, 3:32], type = 'b', col = get_color_grupo1(1), 
-     xaxt = "n", xlab = '', lwd = 2, ylab = 'centroide')
+     xaxt = "n", xlab = '', lwd = 2, ylab = 'Media en escala log natural', main="Subgrupos con canales del grupo 1 de financieras")
 axis(1, 1:30, names(media_finan1_canal)[3:32], las = 2)
 lines(1:30, media_finan1_canal[2, 3:32], col = get_color_grupo1(2), type = "b", lwd = 2)
+grid()
 
 
-legend("top", legend=c("Grupo1","Grupo2"),  col=c(get_color_grupo1(1), get_color_grupo1(2)), lty=c(1, 1, 3), lwd = 2, bty = 'n')
+legend("top", legend=c("Sub-grupo 1","Sub-grupo 2"),  col=c(get_color_grupo1(1), get_color_grupo1(2)), lty=c(1, 1, 3), lwd = 2, bty = 'n')
 ```
 
 
@@ -1474,13 +1528,14 @@ legend("top", legend=c("Grupo1","Grupo2"),  col=c(get_color_grupo1(1), get_color
 
 
 
-```{r}
+```{r, fig.align="center"}
 plot(1:16, media_finan1_canal[1, 33:48], type = 'b', col = get_color_grupo1(1), 
-     xaxt = "n", xlab = '', lwd = 2, ylab = 'centroide')
+     xaxt = "n", xlab = '', lwd = 2, ylab = 'Media', main="Subgrupos con canales del grupo 1 de financieras")
 axis(1, 1:16, names(media_finan1_canal)[33:48], las = 2)
 lines(1:16, media_finan1_canal[2, 33:48], col = get_color_grupo1(2), type = "b", lwd = 2)
+grid()
 
-legend("topleft", legend=c("Grupo1","Grupo2"),  col=c(get_color_grupo1(1), get_color_grupo1(2)), lty=c(1, 1, 3), lwd = 2, bty = 'n')
+legend("topleft", legend=c("Sub-grupo 1", "Sub-grupo 2"),  col=c(get_color_grupo1(1), get_color_grupo1(2)), lty=c(1, 1, 3), lwd = 2, bty = 'n')
 ```
 
 
@@ -1495,12 +1550,16 @@ legend("topleft", legend=c("Grupo1","Grupo2"),  col=c(get_color_grupo1(1), get_c
 - Se utiliza agrupamiento jerárquico con la idea de conocer la cantidad de grupos que se deben considerar 
 
 
-```{r}
+```{r, eval = FALSE}
 dendrogram <- hclust(dist(grupo2_scaled[,2:31], method = 'euclidean'), method = 'ward.D')
 
 plot(dendrogram, xlab="", sub="", cex=0.9)
 ```
 
+<center>
+![](Dendogramas/Intento2-Scaled-Agrupamiento-canales-2.png)
+
+</center>
 
 * En un inicio, del gráfico anterior se concluyó considerar 3 grupos. Sin embargo, después de realizar los agrupamientos mediante K-means se observó que dos de los grupos presentaban un comportamiento medio muy similar que hacia difícil su diferenciación. Por este motivo se decidió considerar únicamente 2 agrupaciones.
 
@@ -1509,7 +1568,7 @@ plot(dendrogram, xlab="", sub="", cex=0.9)
 Subagrupamientos mediante las variables asociadas a los canales usando k-means :
 
 
-```{r}
+```{r, fig.align="center"}
 require(cluster)
 
 
@@ -1533,7 +1592,7 @@ clusplot(grupo2_scaled[,2:31], kc2$cluster, color = TRUE,
          shade = FALSE, labels = 4, lines = 1,
          col.clus = c("#FF5CFF", "#800080"),
          col.p = sapply(kc2$cluster, get_color_grupo2),
-         main = "Subgrupos seleccionados por Kmeans", 
+         main = "Subgrupos del grupo 2 de financieras mediante K-means", 
          xlab = "Componente principal 1 canales",
          ylab = "Componente principal 2 canales",
          sub = "" )
@@ -1567,29 +1626,31 @@ media_finan2_canal
 
 <br>
 
-* Análisis del valor medio de los grupos en cada variable
+<h2> <center>  Análisis del valor medio de los grupos en cada variable </h2> </center>
 
-```{r}
+```{r, fig.align="center"}
 plot(1:30, media_finan2_canal[1, 3:32], type = 'b', col = get_color_grupo2(1), 
-     xaxt = "n", xlab = '', lwd = 2, ylab = 'centroide')
+     xaxt = "n", xlab = '', lwd = 2, ylab = 'Media', main="Subgrupos con canales del grupo 2 de financieras")
 axis(1, 1:30, names(media_finan2_canal)[3:32], las = 2)
 lines(1:30, media_finan2_canal[2, 3:32], col = get_color_grupo2(2), type = "b", lwd = 2)
+grid()
 
-legend("top", legend=c("Grupo1","Grupo2"),  col=c(get_color_grupo2(1), get_color_grupo2(2)), lty=c(1, 1, 3), lwd = 2, bty = 'n')
+legend("top", legend=c("Sub-grupo 1", "Sub-grupo 2"),  col=c(get_color_grupo2(1), get_color_grupo2(2)), lty=c(1, 1, 3), lwd = 2, bty = 'n')
 ```
 
 
 * De la gráfica anterior, se puede ver en general un comportamiento similar entre ambos grupos, sin embargo, el grupo 1 presenta un monto y un número de transacciones promedio mayor al del grupo 2. Siendo la diferencia más amplia en los canales de entrada 3, 4 5, 8, 9 y otros, además en el canal de salida 5.
 
 
-```{r}
+```{r, fig.align="center"}
 plot(1:16, media_finan2_canal[1, 33:48], type = 'b', col = get_color_grupo2(1), 
-     xaxt = "n", xlab = '', lwd = 2, ylab = 'centroide')
+     xaxt = "n", xlab = '', lwd = 2, ylab = 'Media', main="Subgrupos con canales del grupo 2 de financieras")
 axis(1, 1:16, names(media_finan2_canal)[33:48], las = 2)
 lines(1:16, media_finan2_canal[2, 33:48], col = get_color_grupo2(2), type = "b", lwd = 2)
+grid()
 
 
-legend("topleft", legend=c("Grupo1","Grupo2"),  col=c(get_color_grupo1(1), get_color_grupo1(2)), lty=c(1, 1, 3), lwd = 2, bty = 'n')
+legend("top", legend=c("Sub-grupo 1","Sub-grupo 2"),  col=c(get_color_grupo2(1), get_color_grupo2(2)), lty=c(1, 1, 3), lwd = 2, bty = 'n')
 ```
 
 
@@ -1604,11 +1665,18 @@ legend("topleft", legend=c("Grupo1","Grupo2"),  col=c(get_color_grupo1(1), get_c
 - Se utiliza agrupamiento jerárquico con la idea de conocer la cantidad de grupos que se deben considerar 
 
 
-```{r}
+```{r, eval = FALSE}
 dendrogram <- hclust(dist(grupo3_scaled[,2:31], method = 'euclidean'), method = 'ward.D')
 
 plot(dendrogram, xlab="", sub="", cex=0.9)
 ```
+
+
+
+<center>
+![](Dendogramas/Intento2-Scaled-Agrupamiento-canales-3.png)
+
+</center>
 
 * Del gráfico se concluye adecuado considerar dos grupos.
 
@@ -1618,7 +1686,7 @@ plot(dendrogram, xlab="", sub="", cex=0.9)
 Subagrupamientos mediante las variables asociadas a los canales usando k-means :
 
 
-```{r}
+```{r, fig.align="center"}
 require(cluster)
 
 
@@ -1642,7 +1710,7 @@ clusplot(grupo3_scaled[,2:31], kc3$cluster, color = TRUE,
          shade = FALSE, labels = 4, lines = 1,
          col.clus = c("#7070FF", "#00007A"),
          col.p = sapply(kc3$cluster, get_color_grupo3),
-         main = "Subgrupos seleccionados por Kmeans", 
+         main = "Subgrupos del grupo 3 de financieras mediante K-means", 
          xlab = "Componente principal 1 canales",
          ylab = "Componente principal 2 canales",
          sub = "" )
@@ -1674,30 +1742,31 @@ media_finan3_canal
 
 <br>
 
-* Análisis del valor medio de los grupos en cada variable
+<h2> <center> Análisis del valor medio de los grupos en cada variable </h2> </center>
 
-```{r}
+```{r, fig.align="center"}
 plot(1:30, media_finan3_canal[1, 3:32], type = 'b', col = get_color_grupo3(1), 
-     xaxt = "n", xlab = '', lwd = 2, ylab = 'centroide')
+     xaxt = "n", xlab = '', lwd = 2, ylab = 'Media en escala log natural', main="Subgrupos con canales del grupo 3 de financieras")
 axis(1, 1:30, names(media_finan3_canal)[3:32], las = 2)
 lines(1:30, media_finan3_canal[2, 3:32], col = get_color_grupo3(2), type = "b", lwd = 2)
+grid()
 
-
-legend("top", legend=c("Grupo1","Grupo2"),  col=c(get_color_grupo3(1), get_color_grupo3(2)), lty=c(1, 1, 3), lwd = 2, bty = 'n')
+legend("top", legend=c("Sub-grupo 1","Sub-grupo 2"),  col=c(get_color_grupo3(1), get_color_grupo3(2)), lty=c(1, 1, 3), lwd = 2, bty = 'n')
 ```
 
 * De la gráfica anterior, se puede ver en general un comportamiento similar entre ambos grupos, sin embargo, el grupo 1 presenta un monto y un número de transacciones promedio mayor al del grupo 2. Siendo la diferencia más amplia en los canales de entrada 3, 5 6, 8, 9 y en los canales de salida 5 y 2.
 
 
 
-```{r}
+```{r, fig.align="center"}
 plot(1:16, media_finan3_canal[1, 33:48], type = 'b', col = get_color_grupo3(1), 
-     xaxt = "n", xlab = '', lwd = 2, ylab = 'centroide')
+     xaxt = "n", xlab = '', lwd = 2, ylab = 'Media', main="Subgrupos con canales del grupo 3 de financieras")
 axis(1, 1:16, names(media_finan3_canal)[33:48], las = 2)
 lines(1:16, media_finan3_canal[2, 33:48], col = get_color_grupo3(2), type = "b", lwd = 2)
+grid()
 
 
-legend("topleft", legend=c("Grupo1","Grupo2"),  col=c(get_color_grupo1(1), get_color_grupo1(2)), lty=c(1, 1, 3), lwd = 2, bty = 'n')
+legend("top", legend=c("Sub-grupo 1","Sub-grupo 2"),  col=c(get_color_grupo3(1), get_color_grupo3(2)), lty=c(1, 1, 3), lwd = 2, bty = 'n')
 ```
 
 
@@ -1749,17 +1818,21 @@ media_finan_canal
 
 <br>
 
-* Análisis del valor medio de los grupos en cada variable
+<h2> <center>  Análisis del valor medio de los grupos en cada variable </h2> </center>
 
-```{r}
+
+**Variables de los canales**
+
+```{r, fig.align="center"}
 plot(1:30, media_finan_canal[1, 4:33], type = 'b', col = '#E80EB8', 
-     xaxt = "n", xlab = '', lwd = 2, ylab = 'centroide', main = 'Grupos finales', ylim = c(0, 22))
+     xaxt = "n", xlab = '', lwd = 2, ylab = 'Media', main = 'Grupos finales', ylim = c(0, 22))
 axis(1, 1:30, names(media_finan_canal)[4:33], las = 2)
 lines(1:30, media_finan_canal[2, 4:33], col = '#0F1EF2', type = "b", lwd = 2)
 lines(1:30, media_finan_canal[3, 4:33], col = '#19DBAD', type = "b", lwd = 2)
 lines(1:30, media_finan_canal[4, 4:33], col = '#92F20F', type = "b", lwd = 2)
 lines(1:30, media_finan_canal[5, 4:33], col = '#EBA81A', type = "b", lwd = 2)
 lines(1:30, media_finan_canal[6, 4:33], col = '#8C7AF5', type = "b", lwd = 2)
+grid()
 
 legend("top", legend=c(paste("Grupo", 1:6, sep = '')),  col=c("#E80EB8", "#0F1EF2", "#19DBAD", "#92F20F", "#EBA81A", "#8C7AF5"), lty=1, lwd = 2,  bty = 'n')
 ```
@@ -1770,10 +1843,12 @@ legend("top", legend=c(paste("Grupo", 1:6, sep = '')),  col=c("#E80EB8", "#0F1EF
 * El grupo 3 a pesar de tener un comportamiento de manejar mayores montos en promedio de dinero al igual que el grupo 1 y 5, es el que toma mayores valores entre estos, además este se destaca particularmente en el canal de entrada de otros, dado que toma valores muy altos, más que cualquiera de los otros grupos.
 
 
-```{r}
+**Variables de los canales**
+
+```{r, fig.align="center"}
 par(mfrow=c(1,3))
 plot(1:5, media_finan_canal [1, 34:38], type = 'b', col = "#E80EB8", 
-     xaxt = "n", xlab = '', lwd = 2, ylab = 'centroide', main = 'Grupos finales', ylim = c(0,5.5))
+     xaxt = "n", xlab = '', lwd = 2, ylab = 'Media', main = 'Grupos finales', ylim = c(0,5.5))
 axis(1, 1:5, names(media_finan_canal )[34:38], las = 2)
 lines(1:5, media_finan_canal [2, 34:38], col = '#0F1EF2', type = "b", lwd = 2)
 lines(1:5, media_finan_canal [3, 34:38], col = '#19DBAD', type = "b", lwd = 2)
@@ -1786,7 +1861,7 @@ legend("bottom", legend=c(paste("Grupo", 1:6, sep = '')),  col = c("#E80EB8", "#
 
 
 plot(1:6, media_finan_canal [1, 39:44], type = 'b', col = "#E80EB8", 
-     xaxt = "n", xlab = '', lwd = 2, ylab = 'centroide', main = 'Grupos finales', ylim = c(0,1))
+     xaxt = "n", xlab = '', lwd = 2, ylab = 'Media', main = 'Grupos finales', ylim = c(0,1))
 axis(1, 1:6, names(media_finan_canal )[39:44], las = 2)
 lines(1:6, media_finan_canal [2, 39:44], col = '#0F1EF2', type = "b", lwd = 2)
 lines(1:6, media_finan_canal [3, 39:44], col = '#19DBAD', type = "b", lwd = 2)
@@ -1798,7 +1873,7 @@ legend("topright", legend=c(paste("Grupo", 1:6, sep = '')),  col = c("#E80EB8", 
 
 
 plot(1:5, media_finan_canal [1, 45:49], type = 'b', col = "#E80EB8", 
-     xaxt = "n", xlab = '', lwd = 2, ylab = 'centroide', main = 'Grupos finales', ylim = c(0,5.5))
+     xaxt = "n", xlab = '', lwd = 2, ylab = 'Media', main = 'Grupos finales', ylim = c(0,5.5))
 axis(1, 1:5, names(media_finan_canal )[45:49], las = 2)
 lines(1:5, media_finan_canal [2, 45:49], col = '#0F1EF2', type = "b", lwd = 2)
 lines(1:5, media_finan_canal [3, 45:49], col = '#19DBAD', type = "b", lwd = 2)
@@ -1948,9 +2023,9 @@ grupo3_no_scaled <- df_group[df_group$grupos==3,]
 Análisis descriptivo de las nuevas variables asociadas a los canales:
 
 
-```{r}
+```{r, fig.align="center"}
 plot(1:15, colMeans(Canal_log), type = 'b', col = '#038EC3', 
-     xaxt = "n", xlab = '', lwd = 2, ylab = 'Media', main = 'Logaritmo del dinero que se maneja anualmente por cada canal')
+     xaxt = "n", xlab = '', lwd = 2, ylab = 'Media en escala log natural', main = 'Dinero que se maneja anualmente por cada canal', pch=19)
 axis(1, 1:15, names(df)[1:15], las = 2)
 grid()
 ```
@@ -1979,47 +2054,49 @@ Ya que el procedimiento 3 es una modificación del procedimiento 2 en la parte d
 
 Mediante la siguiente gráfica se presenta los resultados de la segmentación mediante las variables financieras.
 
-```{r}
+```{r, fig.align="center"}
 clusplot(finan_scaled, Agru_finan$cluster, color = TRUE, 
           shade = FALSE, labels = 4, lines = 1,
           col.clus = c("purple", "red", "blue"),
           col.p = sapply(Agru_finan$cluster, get_color),
-          main = "Grupos seleccionados por Kmeans", 
+          main = "Grupos seleccionados de financieras mediante K-means", 
           xlab = "Componente principal 1 canales",
           ylab = "Componente principal 2 canales",
           sub = "")
 ```
 
 
-```{r}
+<h3> <center>  Gráfico de los grupos en las variables financieras </h3> </center>
+
+```{r, fig.align="center"}
 par(mfrow=c(1,3))
 plot(centroid1[1:5, 1], type = 'b', col = 'red', 
-     xaxt = "n", xlab = '', lwd = 2, ylab = 'centroide', ylim=c(0, 5.5))
+     xaxt = "n", xlab = '', lwd = 2, ylab = 'Media', ylim=c(0, 5.5))
 axis(1, 1:5, row.names(centroid1)[1:5], las = 2)
 lines(centroid1[1:5, 2], col = 'purple', type = "b", lwd = 2)
 lines(centroid1[1:5, 3], col = "blue", type = "b", lwd = 2)
-
+grid()
 
 legend("bottomright", legend=c("Grupo1","Grupo2", "Grupo3"),
        col=c("red", "purple", "blue"), lty=1, bty = 'n')
 
 
 plot(centroid1[6:11, 1], type = 'b', col = 'red', 
-     xaxt = "n", xlab = '', lwd = 2, ylab = 'centroide', ylim=c(0,1))
+     xaxt = "n", xlab = '', lwd = 2, ylab = 'Media', ylim=c(0,1))
 axis(1, 1:6, row.names(centroid1)[6:11], las = 2)
 lines(centroid1[6:11, 2], col = 'purple', type = "b", lwd = 2)
 lines(centroid1[6:11, 3], col = "blue", type = "b", lwd = 2)
-
+grid()
 
 legend("topright", legend=c("Grupo1","Grupo2", "Grupo3"),
        col=c("red", "purple", "blue"), lty=1, bty = 'n')
 
 plot(centroid1[12:16, 1], type = 'b', col = 'red', 
-     xaxt = "n", xlab = '', lwd = 2, ylab = 'centroide', ylim=c(0, 5.5))
+     xaxt = "n", xlab = '', lwd = 2, ylab = 'Media', ylim=c(0, 5.5))
 axis(1, 1:5, row.names(centroid1)[12:16], las = 2)
 lines(centroid1[12:16, 2], col = 'purple', type = "b", lwd = 2)
 lines(centroid1[12:16, 3], col = "blue", type = "b", lwd = 2)
-
+grid()
 
 legend("bottomright", legend=c("Grupo1","Grupo2", "Grupo3"),
        col=c("red", "purple", "blue"), lty=1, bty = 'n')
@@ -2038,12 +2115,16 @@ De la gráfica anterior se muestra los grupos obtenidos con la segmentación en 
 
 
 
-```{r}
+```{r, eval=FALSe}
 dendrogram <- hclust(dist(grupo1_scaled[2:16], method = 'euclidean'), method = 'ward.D')
 
 plot(dendrogram, xlab="", sub="", cex=0.9)
 ```
 
+<center>
+![](Dendogramas/MontoAnuales-Scaled-Agrupamiento-financiera-1.png)
+
+</center>
 
 
 * En un inicio, del gráfico anterior se concluyó considerar 3 grupos. Sin embargo, después de realizar los agrupamientos mediante K-means se observó que dos de los grupos presentaban un comportamiento medio muy similar que hacia difícil su diferenciación. Por este motivo se decidió considerar únicamente 2 agrupaciones.
@@ -2054,7 +2135,7 @@ plot(dendrogram, xlab="", sub="", cex=0.9)
 Subagrupamientos mediante las variables asociadas a los canales usando k-means :
 
 
-```{r}
+```{r, fig.align="center"}
 require(cluster)
 
 
@@ -2078,7 +2159,7 @@ clusplot(grupo1_scaled[,2:16], kc1$cluster, color = TRUE,
          shade = FALSE, labels = 4, lines = 1,
          col.clus = c("#F54830", "#C23927"),
          col.p = sapply(kc1$cluster, get_color_grupo1),
-         main = "Subgrupos seleccionados por Kmeans", 
+         main = "Subgrupos del grupo 1 de financieras mediante K-means", 
          xlab = "Componente principal 1 canales",
          ylab = "Componente principal 2 canales",
          sub = "" )
@@ -2126,15 +2207,16 @@ media_finan1_canal
 
 <br>
 
-* Análisis del valor medio de los grupos en cada variable
+<h2> <center> Análisis del valor medio de los grupos en cada variable </center> </h2>
 
-```{r}
+```{r, fig.align="center"}
 plot(1:15, media_finan1_canal[1, 3:17], type = 'b', col = get_color_grupo1(1), 
-     xaxt = "n", xlab = '', lwd = 2, ylab = 'centroide')
+     xaxt = "n", xlab = '', lwd = 2, ylab = 'Media en escala log natural', main =  "Subgrupos con canales del grupo 1 de financieras")
 axis(1, 1:15, names(media_finan1_canal)[3:17], las = 2)
 lines(1:15, media_finan1_canal[2, 3:17], col = get_color_grupo1(2), type = "b", lwd = 2)
+grid()
 
-legend("top", legend=c("Grupo1","Grupo2"),  col=c(get_color_grupo1(1), get_color_grupo1(2)), lty=c(1, 1, 3), lwd = 2, bty = 'n')
+legend("top", legend=c("Sub-grupo 1","Sub-grupo 2"),  col=c(get_color_grupo1(1), get_color_grupo1(2)), lty=c(1, 1, 3), lwd = 2, bty = 'n')
 
 
 ```
@@ -2144,14 +2226,15 @@ legend("top", legend=c("Grupo1","Grupo2"),  col=c(get_color_grupo1(1), get_color
 
 
 
-```{r}
+```{r, fig.align="center"}
 plot(1:16, media_finan1_canal[1, 18:33], type = 'b', col = get_color_grupo1(1), 
-     xaxt = "n", xlab = '', lwd = 2, ylab = 'centroide')
+     xaxt = "n", xlab = '', lwd = 2, ylab = 'Media', main =  "Subgrupos con canales del grupo 1 de financieras")
 axis(1, 1:16, names(media_finan1_canal)[18:33], las = 2)
 lines(1:16, media_finan1_canal[2, 18:33], col = get_color_grupo1(2), type = "b", lwd = 2)
+grid()
 
 
-legend("topleft", legend=c("Grupo1","Grupo2"),  col=c(get_color_grupo1(1), get_color_grupo1(2)), lty=c(1, 1, 3), lwd = 2, bty = 'n')
+legend("topleft", legend=c("Sub-grupo 1","Sub-grupo 2"),  col=c(get_color_grupo1(1), get_color_grupo1(2)), lty=c(1, 1, 3), lwd = 2, bty = 'n')
 ```
 
 
@@ -2166,12 +2249,16 @@ legend("topleft", legend=c("Grupo1","Grupo2"),  col=c(get_color_grupo1(1), get_c
 - Se utiliza agrupamiento jerárquico con la idea de conocer la cantidad de grupos que se deben considerar 
 
 
-```{r}
+```{r, eval=FALSE}
 dendrogram <- hclust(dist(grupo2_scaled[2:16], method = 'euclidean'), method = 'ward.D')
 
 plot(dendrogram, xlab="", sub="", cex=0.9)
 ```
 
+<center>
+![](Dendogramas/MontoAnuales-Scaled-Agrupamiento-financiera-2.png)
+
+</center>
 
 * En un inicio, del gráfico anterior se concluyó considerar 3 grupos. Sin embargo, después de realizar los agrupamientos mediante K-means se observó que dos de los grupos presentaban un comportamiento medio muy similar que hacia difícil su diferenciación. Por este motivo se decidió considerar únicamente 2 agrupaciones.
 
@@ -2180,7 +2267,7 @@ plot(dendrogram, xlab="", sub="", cex=0.9)
 Subagrupamientos mediante las variables asociadas a los canales usando k-means :
 
 
-```{r}
+```{r, fig.align="center"}
 require(cluster)
 
 
@@ -2204,7 +2291,7 @@ clusplot(grupo2_scaled[,2:16], kc2$cluster, color = TRUE,
          shade = FALSE, labels = 4, lines = 1,
          col.clus = c("#800080", "#FF5CFF"),
          col.p = sapply(kc2$cluster, get_color_grupo2),
-         main = "Subgrupos seleccionados por Kmeans", 
+         main = "Subgrupos del grupo 2 de financieras mediante K-means", 
          xlab = "Componente principal 1 canales",
          ylab = "Componente principal 2 canales",
          sub = "" )
@@ -2251,13 +2338,14 @@ media_finan2_canal
 
 <br>
 
-* Análisis del valor medio de los grupos en cada variable
+<h2> <center>  Análisis del valor medio de los grupos en cada variable </h2> </center>
 
-```{r}
+```{r, fig.align="center"}
 plot(1:15, media_finan2_canal[1, 3:17], type = 'b', col = get_color_grupo2(1), 
-     xaxt = "n", xlab = '', lwd = 2, ylab = 'centroide')
+     xaxt = "n", xlab = '', lwd = 2, ylab = 'Media en escala log natural',  main =  "Subgrupos con canales del grupo 2 de financieras")
 axis(1, 1:15, names(media_finan2_canal)[3:17], las = 2)
 lines(1:15, media_finan2_canal[2, 3:17], col = get_color_grupo2(2), type = "b", lwd = 2)
+grid()
 
 
 legend("top", legend=c("Grupo1","Grupo2"),  col=c(get_color_grupo2(1), get_color_grupo2(2)), lty=c(1, 1, 3), lwd = 2, bty = 'n')
@@ -2267,14 +2355,15 @@ legend("top", legend=c("Grupo1","Grupo2"),  col=c(get_color_grupo2(1), get_color
 * De la gráfica anterior, en general el grupo 1 presenta en promedio mayores entradas y salidas de dinero que el grupo 2. Siendo las diferencias más amplia en los canales de entrada 1, 2, 3, 4, 5, 6, 8, 9 y en los canales de salida 5 y 2.
 
 
-```{r}
+```{r, fig.align="center"}
 plot(1:16, media_finan2_canal[1, 18:33], type = 'b', col = get_color_grupo2(1), 
-     xaxt = "n", xlab = '', lwd = 2, ylab = 'centroide')
+     xaxt = "n", xlab = '', lwd = 2, ylab = 'Media',  main =  "Subgrupos con canales del grupo 2 de financieras", ylim=c(0,6))
 axis(1, 1:16, names(media_finan2_canal)[18:33], las = 2)
 lines(1:16, media_finan2_canal[2, 18:33], col = get_color_grupo2(2), type = "b", lwd = 2)
+grid()
 
 
-legend("topleft", legend=c("Grupo1","Grupo2"),  col=c(get_color_grupo1(1), get_color_grupo1(2)), lty=c(1, 1, 3), lwd = 2, bty = 'n')
+legend("top", legend=c("Sub-grupo 1","Sub-grupo 2"),  col=c(get_color_grupo2(1), get_color_grupo2(2)), lty=c(1, 1, 3), lwd = 2, bty = 'n')
 ```
 
 
@@ -2295,6 +2384,11 @@ dendrogram <- hclust(dist(grupo3_scaled[2:16], method = 'euclidean'), method = '
 plot(dendrogram, xlab="", sub="", cex=0.9)
 ```
 
+<center>
+![](Dendogramas/MontoAnuales-Scaled-Agrupamiento-financiera-3.png)
+
+</center>
+
 * Del gráfico se concluye adecuado considerar dos grupos.
 
 
@@ -2303,7 +2397,7 @@ plot(dendrogram, xlab="", sub="", cex=0.9)
 Subagrupamientos mediante las variables asociadas a los canales usando k-means :
 
 
-```{r}
+```{r, fig.align="center"}
 require(cluster)
 
 
@@ -2312,7 +2406,7 @@ get_color_grupo3 <- function(valor){
   if(valor == 1){
     return("#7070FF") 
   }
-  else if (valor == 2){
+  else if (valor == 2){ 
     return("#00007A")
   }
   
@@ -2325,7 +2419,7 @@ clusplot(grupo3_scaled[,2:16], kc3$cluster, color = TRUE,
          shade = FALSE, labels = 4, lines = 1,
          col.clus = c("#7070FF", "#00007A"),
          col.p = sapply(kc3$cluster, get_color_grupo3),
-         main = "Subgrupos seleccionados por Kmeans", 
+         main = "Subgrupos del grupo 3 de financieras mediante K-means", 
          xlab = "Componente principal 1 canales",
          ylab = "Componente principal 2 canales",
          sub = "" )
@@ -2368,16 +2462,17 @@ media_finan3_canal
 
 <br>
 
-* Análisis del valor medio de los grupos en cada variable
+<h2> <center> Análisis del valor medio de los grupos en cada variable </h2> </center>
 
-```{r}
+```{r, fig.align="center"}
 plot(1:15, media_finan3_canal[1, 3:17], type = 'b', col = get_color_grupo3(1), 
-     xaxt = "n", xlab = '', lwd = 2, ylab = 'centroide')
+     xaxt = "n", xlab = '', lwd = 2, ylab = 'Media en escala de log natural', main =  "Subgrupos con canales del grupo 3 de financieras")
 axis(1, 1:15, names(media_finan3_canal)[3:17], las = 2)
 lines(1:15, media_finan3_canal[2, 3:17], col = get_color_grupo3(2), type = "b", lwd = 2)
+grid()
       
       
-legend("top", legend=c("Grupo1","Grupo2"),  col=c(get_color_grupo3(1), get_color_grupo3(2)), lty=c(1, 1, 3), lwd = 2, bty = 'n')
+legend("top", legend=c("Sub-grupo 1","Sub-grupo 2"),  col=c(get_color_grupo3(1), get_color_grupo3(2)), lty=c(1, 1, 3), lwd = 2, bty = 'n')
 
 ```
 
@@ -2385,14 +2480,15 @@ legend("top", legend=c("Grupo1","Grupo2"),  col=c(get_color_grupo3(1), get_color
 
 
 
-```{r}
+```{r, fig.align="center"}
 plot(1:16, media_finan3_canal[1, 18:33], type = 'b', col = get_color_grupo3(1), 
-     xaxt = "n", xlab = '', lwd = 2, ylab = 'centroide')
+     xaxt = "n", xlab = '', lwd = 2, ylab = 'Media', main =  "Subgrupos con canales del grupo 3 de financieras")
 axis(1, 1:16, names(media_finan3_canal)[18:33], las = 2)
 lines(1:16, media_finan3_canal[2, 18:33], col = get_color_grupo3(2), type = "b", lwd = 2)
+grid()
 
 
-legend("topleft", legend=c("Grupo1","Grupo2"),  col=c(get_color_grupo3(1), get_color_grupo3(2)), lty=c(1, 1, 3), lwd = 2, bty = 'n')
+legend("top", legend=c("Grupo1","Grupo2"),  col=c(get_color_grupo3(1), get_color_grupo3(2)), lty=c(1, 1, 3), lwd = 2, bty = 'n')
 
 ```
 
@@ -2454,17 +2550,20 @@ media_finan_canal
 
 <br>
 
-* Análisis del valor medio de los grupos en cada variable
+<h2> <center> Análisis del valor medio de los grupos en cada variable </h2> </center>
 
-```{r}
+**Variables de los canales**
+
+```{r, fig.align="center"}
 plot(1:15, media_finan_canal[1, 4:18], type = 'b', col = '#E80EB8', 
-     xaxt = "n", xlab = '', lwd = 2, ylab = 'centroide', main = 'Grupos finales', ylim = c(0, 30))
+     xaxt = "n", xlab = '', lwd = 2, ylab = 'Media en escala log natural', main = 'Grupos finales', ylim = c(0, 30))
 axis(1, 1:15, names(media_finan_canal)[4:18], las = 2)
 lines(1:15, media_finan_canal[2, 4:18], col = '#0F1EF2', type = "b", lwd = 2)
 lines(1:15, media_finan_canal[3, 4:18], col = '#19DBAD', type = "b", lwd = 2)
 lines(1:15, media_finan_canal[4, 4:18], col = '#92F20F', type = "b", lwd = 2)
 lines(1:15, media_finan_canal[5, 4:18], col = '#EBA81A', type = "b", lwd = 2)
 lines(1:15, media_finan_canal[6, 4:18], col = '#8C7AF5', type = "b", lwd = 2)
+grid()
 
 legend("top", legend=c(paste("Grupo", 1:6, sep = '')),  col=c("#E80EB8", "#0F1EF2", "#19DBAD", "#92F20F", "#EBA81A", "#8C7AF5"), lty=1, lwd = 2,  bty = 'n', cex=0.7)
 ```
@@ -2475,12 +2574,13 @@ legend("top", legend=c(paste("Grupo", 1:6, sep = '')),  col=c("#E80EB8", "#0F1EF
 En comparación con las segmentaciones hechas por los anteriores procedimientos esta es la mejor definida, ya que se esperaba que los grupos 1,3,5 fueron más similares entre si y  estuvieran más arriba y que el grupo 2,4,6 fueron muy similares entre si y estuvieran más abajo, dado que esto es lo que se ha analizado que pasa en cada una de las subagrupaciones de las variables de los canales.
 
 
+**Variables financieras**
 
-```{r}
+```{r, fig.align="center"}
 par(mfrow=c(1,3))
 
 plot(1:5, media_finan_canal [1, 19:23], type = 'b', col = "#E80EB8", 
-     xaxt = "n", xlab = '', lwd = 2, ylab = 'centroide', main = 'Grupos finales', ylim = c(0,5.5))
+     xaxt = "n", xlab = '', lwd = 2, ylab = 'Media', main = 'Grupos finales', ylim = c(0,5.5))
 axis(1, 1:5, names(media_finan_canal )[19:23], las = 2)
 lines(1:5, media_finan_canal [2, 19:23], col = '#0F1EF2', type = "b", lwd = 2)
 lines(1:5, media_finan_canal [3, 19:23], col = '#19DBAD', type = "b", lwd = 2)
@@ -2493,7 +2593,7 @@ legend("bottom", legend=c(paste("Grupo", 1:6, sep = '')),  col = c("#E80EB8", "#
 
 
 plot(1:6, media_finan_canal [1, 24:29], type = 'b', col = "#E80EB8", 
-     xaxt = "n", xlab = '', lwd = 2, ylab = 'centroide', main = 'Grupos finales', ylim = c(0,1))
+     xaxt = "n", xlab = '', lwd = 2, ylab = 'Media', main = 'Grupos finales', ylim = c(0,1))
 axis(1, 1:6, names(media_finan_canal )[24:29], las = 2)
 lines(1:6, media_finan_canal [2, 24:29], col = '#0F1EF2', type = "b", lwd = 2)
 lines(1:6, media_finan_canal [3, 24:29], col = '#19DBAD', type = "b", lwd = 2)
@@ -2505,7 +2605,7 @@ legend("topright", legend=c(paste("Grupo", 1:6, sep = '')),  col = c("#E80EB8", 
 
 
 plot(1:5, media_finan_canal [1, 30:34], type = 'b', col = "#E80EB8", 
-     xaxt = "n", xlab = '', lwd = 2, ylab = 'centroide', main = 'Grupos finales', ylim = c(0,5.5))
+     xaxt = "n", xlab = '', lwd = 2, ylab = 'Media', main = 'Grupos finales', ylim = c(0,5.5))
 axis(1, 1:5, names(media_finan_canal )[30:34], las = 2)
 lines(1:5, media_finan_canal [2, 30:34], col = '#0F1EF2', type = "b", lwd = 2)
 lines(1:5, media_finan_canal [3, 30:34], col = '#19DBAD', type = "b", lwd = 2)
