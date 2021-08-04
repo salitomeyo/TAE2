@@ -7,7 +7,7 @@ author:
 - "Juan Esteban Sanchez Pulgarin"
 - "Salome Aristizabal Giraldo"
 
-date: "31/3/2021"
+date: ""
 output:
   rmdformats::material:
   css: "style.css"
@@ -3138,6 +3138,16 @@ realmente se pasó por muchas etapas, en este documento se presentan las que gen
 - Se sugiere para futuros trabajos variar las técnicas de escalamiento de los datos por ejemplo min-max y probar otros algoritmos de agrupación y contrastar con los grupos encontrados con kmeans.
 
 - Sacar las variables que no aportaron mucho a la segmentación, ya que se comportan de manera similar en todos los grupos (ventas físicas, ventas electrónicas, recaudos personas jurídicas, recaudos personas naturales). Y excluir algunas variables en canales que estén fuertemente correlacionadas, es decir hacer una selección de variables basada en la correlación.
+
+- Dado que se caracterizo a cada uno de los grupos con un perfil puntual, se recomienda a la compañia ofrecerle sus servicios y beneficios en base a este tipo de perfiles, dado que todos tienen un uso similar de los canales pero unos con más frecuencia o mayores montos que otros, entonces mediante esto medir el grado de confiabilidad que se le va a brindar a cada uno de los clientes, además entender que financieramente cada uno tiene sus caracteristicas y por lo tanto aprender a identificar las necesidades que tienen en base a esto.
+
+
+### Link de acceso al github
+
+En el siguiente link se encuentra el acceso al github donde están los notebooks de todos los procesos de segmentación de clientes desarrollados, incluso los que no se mencionan durante este informe:
+
+* https://github.com/salitomeyo/TAE2 
+
 
 <br>
 
