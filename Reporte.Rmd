@@ -536,12 +536,12 @@ Ya que se tuvo una exploración de las diferentes variables de canales y financi
 
 Las variables de los canales son variables cuantitativas que en general tienen valores extremos, al ser utilizados en la segmentación pueden crear un gran impacto en los grupos resultantes, dado que el algoritmo que se usa "K-means" es muy sensible a observaciones extremas, por lo tanto para solucionar este problema se decide realizar una transformación logaritmo natural sobre las variables asociadas a los canales.
 
-
-<a href="#análisis-descriptivo">**(¿Por qué realizar la transformación de logaritmo natural?)**</a>
+<a onclick="porqueLog()">**(¿Por qué realizar la transformación de logaritmo natural?)**
+</a>
 
 Además de ello el algoritmo de segmentación K-means es muy sensible a las unidades de las diferentes variables dado que está basado en distancias, por lo tanto, así se aplique una transformación logaritmo natural, se deben escalar las variables para que todas puedan ser comparadas entre sí y los resultados sean estadísticamente válidos.
 
-<a href="#análisis-descriptivo">**¿Por qué escalar las variables para realizar las agrupaciones?**</a>
+<a onclick="porqueEsc()">**¿Por qué escalar las variables para realizar las agrupaciones?**</a>
 
 
 ## Introducción Kmeans
@@ -2467,7 +2467,7 @@ legend("bottomright", legend=c("Grupo1","Grupo2", "Grupo3"),
 ```
 
 
-De la gráfica anterior se muestra los grupos obtenidos con la segmentación en las variables financieras, gráficada solo en las variables financieras. Su análisis se puede observar en el procedimiento 2 <a href="#conclusiones-prod2">conclusiones</a>
+De la gráfica anterior se muestra los grupos obtenidos con la segmentación en las variables financieras, gráficada solo en las variables financieras. Su análisis se puede observar en el procedimiento 2 <a onclick="conclusiones2()">conclusiones</a>
 
 
 ## Se crean subgrupos mediante las variables de los canales nuevas para cada grupo creado con las variables financieras
@@ -3156,3 +3156,30 @@ realmente se pasó por muchas etapas, en este documento se presentan las que gen
 - Ripley, B. D. (2001). The R project in statistical computing. MSOR Connections, 1(1).
 
 - Rotación de inventarios. (2020, April 29). Gerencie.com. https://www.gerencie.com/rotacion-de-inventarios.html
+
+<script>
+function porqueLog(){
+  document.getElementById("introducción").style.display= "none"
+  document.getElementById("análisis-descriptivo").className =     "section level1 well page active"
+  document.getElementById("análisis-descriptivo").style.display=   "block"
+  document.getElementsByClassName("withripple")[2].className = "withripple"
+  document.getElementsByClassName("withripple")[1].className = "withripple active"
+  location.href = '#porque-logaritmo';
+}
+function porqueEsc(){
+  document.getElementById("introducción").style.display= "none"
+  document.getElementById("análisis-descriptivo").className =     "section level1 well page active"
+  document.getElementById("análisis-descriptivo").style.display=   "block"
+  document.getElementsByClassName("withripple")[2].className = "withripple"
+  document.getElementsByClassName("withripple")[1].className = "withripple active"
+  location.href = '#porque-escalar';
+}
+function conclusiones2(){
+  document.getElementById("procedimiento-de-segmentación-3").style.display= "none"
+  document.getElementById("procedimiento-de-segmentación-2").className =     "section level1 well page active"
+  document.getElementById("procedimiento-de-segmentación-2").style.display=   "block"
+  document.getElementsByClassName("withripple")[5].className = "withripple"
+  document.getElementsByClassName("withripple")[4].className = "withripple active"
+  location.href = '#conclusiones-prod2';
+}
+</script>
